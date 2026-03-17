@@ -1,0 +1,15 @@
+{
+  "name": "Berkah App",
+  "short_name": "Berkah",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#059669",
+  "theme_color": "#059669",
+  "icons": [
+    {
+      "src": "logo.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}
