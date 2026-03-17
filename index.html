@@ -2,365 +2,83 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Berkah - Satu Aplikasi Sejuta Keberkahan</title>
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berkah - Aplikasi Doa & Sholat</title>
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/svg+xml" href="logo.svg">
-    <link rel="apple-touch-icon" href="logo.svg">
-    <meta name="theme-color" content="#059669">
-    
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
-
+    <meta name="theme-color" content="#00a86b">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
-        body { font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        .page { display: none; padding-bottom: 8rem; }
-        .page.active { display: block; animation: slideUp 0.4s ease-out; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .glass { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
-        .btn-grad { background: linear-gradient(135deg, #10B981 0%, #059669 100%); transition: 0.3s; }
-        .btn-grad:active { transform: scale(0.96); }
-        .no-scrollbar::-webkit-scrollbar { display: none; }
+        body { font-family: sans-serif; margin: 0; background: #f4f7f6; color: #333; }
+        .header { background: #00a86b; color: white; padding: 20px; text-align: center; border-radius: 0 0 20px 20px; }
+        .card-sholat { background: linear-gradient(135deg, #00a86b, #15d18b); color: white; margin: 20px; padding: 20px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
+        .jadwal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px; }
+        .waktu-item { text-align: center; background: rgba(255,255,255,0.2); padding: 10px; border-radius: 10px; }
+        .waktu-item span { display: block; font-size: 0.8em; }
+        .waktu-item b { font-size: 1.1em; }
+        .menu-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 20px; }
+        .menu-item { background: white; padding: 20px; border-radius: 15px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .menu-item img { width: 40px; margin-bottom: 10px; }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body>
 
-    <div id="welcome-modal" class="hidden fixed inset-0 z-[100] flex items-center justify-center p-6 bg-slate-900/80 backdrop-blur-md">
-        <div class="bg-white rounded-[2.5rem] p-8 max-w-sm w-full text-center shadow-2xl">
-            <div class="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6"><i class="fas fa-star text-3xl"></i></div>
-            <h2 class="text-2xl font-black mb-3 text-slate-800">Selamat Datang! ✨</h2>
-            <p class="text-[11px] text-slate-500 mb-8 leading-relaxed italic">"Sebaik-baik manusia adalah yang paling bermanfaat bagi orang lain."</p>
-            <button onclick="closeWelcome()" class="w-full btn-grad text-white p-4 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-emerald-200">Mulai Ibadah</button>
+    <div class="header">
+        <img src="logo.svg" alt="Logo" width="50">
+        <h1>Berkah</h1>
+        <p id="tanggal">Memuat tanggal...</p>
+    </div>
+
+    <div class="card-sholat">
+        <h3 id="lokasi">Mencari Lokasi...</h3>
+        <div class="jadwal-grid" id="jadwal-sholat">
+            <div class="waktu-item"><span>Subuh</span><b id="subuh">--:--</b></div>
+            <div class="waktu-item"><span>Dzuhur</span><b id="dzuhur">--:--</b></div>
+            <div class="waktu-item"><span>Ashar</span><b id="ashar">--:--</b></div>
+            <div class="waktu-item"><span>Maghrib</span><b id="maghrib">--:--</b></div>
+            <div class="waktu-item"><span>Isya</span><b id="isya">--:--</b></div>
         </div>
     </div>
 
-    <section id="login-page" class="page active px-8 pt-20 text-center">
-        <img src="logo.svg" class="w-24 h-24 mx-auto mb-6 shadow-xl rounded-[2.5rem]">
-        <h2 class="text-4xl font-black tracking-tighter">Berkah</h2>
-        <p class="text-[10px] text-emerald-600 font-bold uppercase tracking-[0.3em] mb-12">Satu Aplikasi Sejuta Keberkahan</p>
-        <div class="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-2xl">
-            <div id="phone-input-container">
-                <div class="flex items-center gap-2 mb-2 ml-2">
-                    <i class="fas fa-lock text-[10px] text-emerald-500"></i>
-                    <label class="text-[9px] font-black uppercase text-slate-400 tracking-widest">WhatsApp HP Anda</label>
-                </div>
-                <input type="tel" id="login-phone" placeholder="628xxxxxxxx" class="w-full p-4 bg-slate-50 border rounded-2xl text-sm font-bold outline-none focus:ring-2 ring-emerald-500 transition-all">
-                <button onclick="requestOTP()" class="w-full mt-8 btn-grad text-white p-5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-xl">Kirim OTP Aman</button>
-            </div>
-            <div id="otp-input-container" class="hidden">
-                <p class="text-[9px] font-bold text-slate-400 mb-4 uppercase tracking-widest">Masukkan Kode OTP</p>
-                <input type="number" id="otp-code" placeholder="000000" class="w-full p-4 bg-slate-50 border rounded-2xl text-center text-3xl font-black tracking-[0.5em] outline-none">
-                <button onclick="verifyOTP()" class="w-full mt-6 bg-slate-800 text-white p-5 rounded-2xl font-black text-[10px] uppercase tracking-widest shadow-lg">Verifikasi Masuk</button>
-            </div>
-        </div>
-    </section>
-
-    <header id="main-header" class="hidden glass sticky top-0 z-50 p-4 px-6 border-b border-slate-100 flex justify-between items-center shadow-sm">
-        <div class="flex items-center gap-3">
-            <img src="logo.svg" class="w-10 h-10 rounded-xl shadow-md">
-            <div><h1 class="text-lg font-black leading-none text-slate-800">Berkah</h1><p id="header-date" class="text-[9px] text-slate-400 font-bold uppercase mt-1"></p></div>
-        </div>
-        <button onclick="changeTab('about')" class="w-10 h-10 bg-white border rounded-xl flex items-center justify-center text-slate-500 shadow-sm transition-active active:scale-90"><i class="fas fa-user-circle"></i></button>
-    </header>
-
-    <main id="main-app" class="hidden max-w-md mx-auto p-5">
-        <section id="home" class="page">
-            <div class="btn-grad text-white p-8 rounded-[2.5rem] shadow-xl mb-8 relative overflow-hidden">
-                <div class="relative z-10">
-                    <p class="text-emerald-100 text-[10px] uppercase font-black mb-1 opacity-70 tracking-widest">Waktu Sholat</p>
-                    <h2 id="next-sholat-name" class="text-2xl font-black italic">Memuat...</h2>
-                    <span id="next-sholat-time" class="text-6xl font-black tracking-tighter">--:--</span>
-                </div>
-                <i class="fas fa-mosque absolute -right-6 -bottom-6 text-9xl opacity-10 rotate-12"></i>
-            </div>
-
-            <div id="admin-summary" class="hidden grid grid-cols-2 gap-4 mb-8">
-                <div class="bg-slate-900 text-white p-6 rounded-3xl shadow-lg border border-slate-800">
-                    <p class="text-[9px] font-black opacity-40 uppercase tracking-widest mb-1">Pengunjung</p>
-                    <p id="stat-visit" class="text-2xl font-black italic">0</p>
-                </div>
-                <div class="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm flex flex-col">
-                    <p class="text-[9px] font-black text-emerald-600 uppercase tracking-widest mb-1">Donatur</p>
-                    <p id="stat-donatur" class="text-2xl font-black italic text-slate-800">0</p>
-                </div>
-            </div>
-
-            <div class="grid grid-cols-4 gap-4 mb-10">
-                <button onclick="showPage('quran')" class="flex flex-col items-center gap-2 group"><div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-md border group-active:scale-90 transition-all text-emerald-600"><i class="fas fa-book-quran"></i></div><span class="text-[8px] font-black uppercase text-slate-400">Quran</span></button>
-                <button onclick="showPage('dzikir')" class="flex flex-col items-center gap-2 group"><div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-md border group-active:scale-90 transition-all text-orange-500"><i class="fas fa-fingerprint"></i></div><span class="text-[8px] font-black uppercase text-slate-400">Tasbih</span></button>
-                <button onclick="showPage('toko')" class="flex flex-col items-center gap-2 group"><div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-md border group-active:scale-90 transition-all text-rose-500"><i class="fas fa-bag-shopping"></i></div><span class="text-[8px] font-black uppercase text-slate-400">Produk</span></button>
-                <button onclick="showPage('laporan')" class="flex flex-col items-center gap-2 group"><div class="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-md border group-active:scale-90 transition-all text-blue-500"><i class="fas fa-hand-holding-heart"></i></div><span class="text-[8px] font-black uppercase text-slate-400">Laporan</span></button>
-            </div>
-
-            <h3 class="font-black text-xs uppercase mb-5 tracking-widest text-slate-800">Info Penyaluran</h3>
-            <div id="program-list" class="space-y-4">
-                <div class="p-8 bg-white rounded-[2rem] border border-dashed border-slate-200 text-[10px] text-slate-400 italic text-center uppercase tracking-widest">Belum ada dokumentasi hari ini.</div>
-            </div>
-        </section>
-
-        <section id="toko" class="page">
-            <h2 class="text-3xl font-black mb-8">Pilihan Berkah</h2>
-            <div id="product-grid" class="grid grid-cols-2 gap-4"></div>
-        </section>
-
-        <section id="laporan" class="page">
-            <div class="bg-emerald-950 text-white p-8 rounded-[2.5rem] mb-8 flex justify-between items-center shadow-2xl relative overflow-hidden">
-                <div class="relative z-10">
-                    <p class="text-[9px] font-black uppercase opacity-50 mb-1 tracking-[0.2em]">Saldo Terkumpul</p>
-                    <p id="total-dana-main" class="text-3xl font-black italic text-emerald-300 tracking-tighter">Rp 0</p>
-                </div>
-                <i class="fas fa-chart-pie text-5xl opacity-10 absolute -right-2"></i>
-            </div>
-            <div id="list-donasi" class="space-y-3"></div>
-        </section>
-
-        <section id="testimoni" class="page">
-            <h2 class="text-3xl font-black mb-8 italic">Ruang Doa 🙏</h2>
-            <div class="bg-white p-7 rounded-[2.5rem] border border-slate-100 shadow-xl mb-10">
-                <textarea id="msg-doa" placeholder="Tulis doa atau hajat Anda, mari saling mendoakan..." class="w-full h-32 p-5 bg-slate-50 rounded-3xl border-none outline-none text-xs leading-relaxed italic"></textarea>
-                <button onclick="kirimDoa()" class="w-full mt-4 btn-grad text-white p-4 rounded-2xl font-black text-xs uppercase shadow-lg shadow-emerald-100">Sebarkan Kebaikan</button>
-            </div>
-            <div id="doa-list" class="space-y-4"></div>
-        </section>
-
-        <section id="admin-dashboard" class="page">
-            <div class="flex items-center gap-3 mb-8">
-                <div class="w-10 h-10 bg-slate-900 text-emerald-400 rounded-xl flex items-center justify-center shadow-lg"><i class="fas fa-shield-halved"></i></div>
-                <h2 class="text-3xl font-black">Admin Panel</h2>
-            </div>
-
-            <div class="bg-white p-7 rounded-[2.5rem] border border-slate-100 shadow-xl mb-8">
-                <div class="flex items-center gap-2 mb-6">
-                    <i class="fas fa-plus-circle text-emerald-600 text-xs"></i>
-                    <h4 class="text-[10px] font-black uppercase tracking-widest text-slate-800">Tambah Produk Afiliasi</h4>
-                </div>
-                <div class="space-y-3">
-                    <input type="text" id="p-name" placeholder="Nama Barang" class="w-full p-4 bg-slate-50 rounded-2xl border-none text-xs font-bold outline-none ring-1 ring-slate-100 focus:ring-emerald-500">
-                    <input type="text" id="p-price" placeholder="Harga (Mis: 250.000)" class="w-full p-4 bg-slate-50 rounded-2xl border-none text-xs font-bold outline-none ring-1 ring-slate-100 focus:ring-emerald-500">
-                    <input type="text" id="p-link" placeholder="Link Shopee/Tiktok" class="w-full p-4 bg-slate-50 rounded-2xl border-none text-xs font-bold outline-none ring-1 ring-slate-100 focus:ring-emerald-500">
-                    <input type="text" id="p-img" placeholder="Link Gambar (URL)" class="w-full p-4 bg-slate-50 rounded-2xl border-none text-xs font-bold outline-none ring-1 ring-slate-100 focus:ring-emerald-500">
-                    <button onclick="tambahProduk()" class="w-full btn-grad p-4 rounded-2xl text-white font-black text-[10px] uppercase shadow-lg shadow-emerald-100 mt-2">Publish ke User</button>
-                </div>
-            </div>
-
-            <div class="bg-slate-900 text-white p-8 rounded-[2.5rem] mb-8 shadow-2xl">
-                <div class="text-center mb-6">
-                    <p class="text-[10px] font-black uppercase tracking-widest text-emerald-400 italic">Konfirmasi Donasi Offline</p>
-                    <p class="text-[8px] opacity-50 mt-1 uppercase">Notifikasi WA terkirim otomatis</p>
-                </div>
-                <div class="space-y-4">
-                    <input type="number" id="adm-nominal" placeholder="Nominal Rp" class="w-full p-4 bg-slate-800 rounded-2xl border-none text-sm font-bold text-white outline-none">
-                    <input type="tel" id="adm-phone" placeholder="WhatsApp (628...)" class="w-full p-4 bg-slate-800 rounded-2xl border-none text-sm font-bold text-white outline-none">
-                    <button onclick="tambahInfaqAdmin()" class="w-full btn-grad p-5 rounded-2xl font-black text-xs uppercase shadow-xl">Input & WhatsApp</button>
-                </div>
-            </div>
-        </section>
-
-        <section id="about" class="page">
-            <div class="text-center mb-10 pt-5">
-                <div class="w-24 h-24 bg-white rounded-full mx-auto mb-5 border-4 border-emerald-500 p-1 shadow-2xl"><img src="logo.svg" class="rounded-full"></div>
-                <h3 class="text-xl font-black text-slate-800" id="user-display">Sahabat Berkah</h3>
-                <p id="user-phone-disp" class="text-[10px] text-slate-400 font-bold uppercase mt-1 tracking-widest">Akun Terverifikasi</p>
-            </div>
-            <div class="space-y-4">
-                <button onclick="logout()" class="w-full p-5 bg-rose-50 text-rose-600 rounded-2xl border border-rose-100 font-black text-xs uppercase mt-10 shadow-sm active:bg-rose-100 transition-all">Keluar dari Berkah</button>
-            </div>
-        </section>
-    </main>
-
-    <nav id="main-nav" class="hidden glass fixed bottom-0 left-0 right-0 h-24 border-t border-slate-100 flex justify-around items-center px-6 z-[60] pb-2">
-        <button onclick="changeTab('home')" id="nav-home" class="flex flex-col items-center gap-1.5 text-emerald-600 transition-all active:scale-90"><i class="fas fa-home text-lg"></i><span class="text-[8px] font-black uppercase tracking-widest">Home</span></button>
-        <button onclick="changeTab('testimoni')" id="nav-testimoni" class="flex flex-col items-center gap-1.5 text-slate-400 transition-all active:scale-90"><i class="fas fa-heart text-lg"></i><span class="text-[8px] font-black uppercase tracking-widest">Doa</span></button>
-        <button onclick="changeTab('laporan')" id="nav-laporan" class="flex flex-col items-center gap-1.5 text-slate-400 transition-all active:scale-90"><i class="fas fa-file-invoice-dollar text-lg"></i><span class="text-[8px] font-black uppercase tracking-widest">Laporan</span></button>
-        <div id="nav-admin-container" class="hidden">
-            <button onclick="changeTab('admin-dashboard')" id="nav-admin-dashboard" class="flex flex-col items-center gap-1.5 text-slate-400 transition-all active:scale-90"><i class="fas fa-user-shield text-lg text-amber-500"></i><span class="text-[8px] font-black uppercase tracking-widest">Admin</span></button>
-        </div>
-    </nav>
+    <div class="menu-grid">
+        <div class="menu-item"><h3>Quran</h3></div>
+        <div class="menu-item"><h3>Tasbih</h3></div>
+        <div class="menu-item"><h3>Produk</h3></div>
+        <div class="menu-item"><h3>Laporan</h3></div>
+    </div>
 
     <script>
-        // --- KONFIGURASI FIREBASE ---
-        const firebaseConfig = {
-          apiKey: "AIzaSyAgjm5gldCRyB9fX7e8u8vX5Y_Wk-X0YpE",
-          authDomain: "aplikasi-berkah.firebaseapp.com",
-          databaseURL: "https://aplikasi-berkah-default-rtdb.asia-southeast1.firebasedatabase.app",
-          projectId: "aplikasi-berkah",
-          storageBucket: "aplikasi-berkah.appspot.com",
-          messagingSenderId: "88998193049",
-          appId: "1:88998193049:web:4be7b7773f36611385419d",
-          measurementId: "G-W0LZ42YD1V"
-        };
-        
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.database();
-        const ADMIN_WA = "6288224806861";
+        // Set Tanggal
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        document.getElementById('tanggal').innerText = new Date().toLocaleDateString('id-ID', options);
 
-        let generatedOTP = "";
-        function requestOTP() {
-            const ph = document.getElementById('login-phone').value;
-            if(!ph.startsWith('62')) return alert("Gunakan format internasional (628...)");
-            generatedOTP = Math.floor(100000 + Math.random() * 900000).toString();
-            window.open(`https://wa.me/${ph}?text=🔒%20*KODE%20OTP%20BERKAH*:%20*${generatedOTP}*%0A%0A_Mohon%20jangan%20berikan%20kode%20ini%20pada%20siapapun._`, '_blank');
-            document.getElementById('phone-input-container').classList.add('hidden');
-            document.getElementById('otp-input-container').classList.remove('hidden');
-        }
-
-        function verifyOTP() {
-            const input = document.getElementById('otp-code').value;
-            const ph = document.getElementById('login-phone').value;
-            if(input === generatedOTP) {
-                const role = (ph === ADMIN_WA) ? 'ADMIN' : 'USER';
-                localStorage.setItem('berkah_session', JSON.stringify({ ph, role, isLoggedIn: true }));
-                localStorage.setItem('first_login', 'true');
-                db.ref('stats/visits').transaction(curr => (curr || 0) + 1);
-                location.reload();
-            } else { alert("Kode OTP tidak valid!"); }
-        }
-
-        function checkAccess() {
-            const s = JSON.parse(localStorage.getItem('berkah_session'));
-            if(s && s.isLoggedIn) {
-                document.getElementById('login-page').classList.remove('active');
-                document.getElementById('main-header').classList.remove('hidden');
-                document.getElementById('main-app').classList.remove('hidden');
-                document.getElementById('main-nav').classList.remove('hidden');
-                document.getElementById('home').classList.add('active');
-                document.getElementById('user-phone-disp').innerText = s.ph;
-                if(s.role === 'ADMIN') {
-                    document.getElementById('nav-admin-container').classList.remove('hidden');
-                    document.getElementById('admin-summary').classList.remove('hidden');
-                }
-                if(localStorage.getItem('first_login') === 'true') {
-                    document.getElementById('welcome-modal').classList.remove('hidden');
-                    localStorage.removeItem('first_login');
-                }
+        // Ambil Jadwal Sholat (Default Jakarta jika lokasi ditolak)
+        async function getJadwal(cityId = "1301") {
+            const y = new Date().getFullYear();
+            const m = new Date().getMonth() + 1;
+            const d = new Date().getDate();
+            
+            try {
+                const response = await fetch(`https://api.myquran.com/v2/sholat/jadwal/${cityId}/${y}/${m}/${d}`);
+                const data = await response.json();
+                const j = data.data.jadwal;
+                
+                document.getElementById('lokasi').innerText = data.data.lokasi;
+                document.getElementById('subuh').innerText = j.subuh;
+                document.getElementById('dzuhur').innerText = j.dzuhur;
+                document.getElementById('ashar').innerText = j.ashar;
+                document.getElementById('maghrib').innerText = j.maghrib;
+                document.getElementById('isya').innerText = j.isya;
+            } catch (e) {
+                document.getElementById('lokasi').innerText = "Gagal memuat jadwal";
             }
         }
 
-        function logout() { if(confirm("Keluar dari aplikasi?")) { localStorage.removeItem('berkah_session'); location.reload(); } }
+        // Jalankan fungsi
+        getJadwal();
 
-        function changeTab(id) {
-            document.querySelectorAll('nav button').forEach(b => b.classList.replace('text-emerald-600', 'text-slate-400'));
-            const btn = document.getElementById('nav-' + id);
-            if(btn) btn.classList.replace('text-slate-400', 'text-emerald-600');
-            showPage(id);
-        }
-
-        function showPage(id) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            const pg = document.getElementById(id);
-            if(pg) pg.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function closeWelcome() { document.getElementById('welcome-modal').classList.add('hidden'); }
-
-        function tambahProduk() {
-            const name = document.getElementById('p-name').value;
-            const price = document.getElementById('p-price').value;
-            const link = document.getElementById('p-link').value;
-            const img = document.getElementById('p-img').value;
-            if(!name || !price) return alert("Nama dan Harga wajib diisi!");
-            db.ref('produk').push({ name, price, link, img: img || 'logo.svg', timestamp: Date.now() });
-            alert("Berhasil!");
-            document.getElementById('p-name').value = '';
-            document.getElementById('p-price').value = '';
-            document.getElementById('p-link').value = '';
-            document.getElementById('p-img').value = '';
-        }
-
-        function tambahInfaqAdmin() {
-            const nom = document.getElementById('adm-nominal').value;
-            const ph = document.getElementById('adm-phone').value;
-            if(!nom || !ph) return alert("Input nominal & nomor WA!");
-            db.ref('donasi').push({
-                nominal: nom, phone: ph,
-                tanggal: new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short' }),
-                timestamp: Date.now()
-            });
-            const p = `Assalamu’alaikum, *Alhamdulillah* Infaq Anda sebesar *Rp${parseInt(nom).toLocaleString()}* telah terkonfirmasi. Jazakumullah Khairan Katsiran. 🤲`;
-            window.open(`https://wa.me/${ph}?text=${encodeURIComponent(p)}`, '_blank');
-        }
-
-        db.ref('produk').on('value', snap => {
-            const grid = document.getElementById('product-grid');
-            grid.innerHTML = '';
-            if(snap.val()) {
-                Object.values(snap.val()).reverse().forEach(p => {
-                    grid.innerHTML += `
-                        <div class="bg-white rounded-[2.5rem] border border-slate-100 overflow-hidden shadow-sm flex flex-col active:scale-95 transition-all">
-                            <div class="h-32 bg-slate-50"><img src="${p.img}" class="w-full h-full object-cover"></div>
-                            <div class="p-5 flex flex-col flex-1">
-                                <h4 class="font-black text-slate-800 text-[10px] line-clamp-2 mb-1 uppercase tracking-tighter">${p.name}</h4>
-                                <p class="text-emerald-600 font-black text-xs mb-4">Rp ${p.price}</p>
-                                <a href="${p.link}" target="_blank" class="mt-auto btn-grad text-white text-center py-3 rounded-2xl text-[8px] font-black uppercase tracking-widest shadow-md">Beli Sekarang</a>
-                            </div>
-                        </div>`;
-                });
-            }
-        });
-
-        db.ref('donasi').on('value', snap => {
-            const list = document.getElementById('list-donasi');
-            let total = 0; let count = 0;
-            list.innerHTML = '';
-            if(snap.val()) {
-                const data = Object.values(snap.val()).reverse();
-                count = data.length;
-                data.forEach(d => {
-                    total += parseInt(d.nominal);
-                    list.innerHTML += `
-                        <div class="bg-white p-5 rounded-[2rem] border border-slate-50 flex justify-between items-center shadow-sm">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 btn-grad text-white rounded-2xl flex items-center justify-center text-[11px]"><i class="fas fa-heart"></i></div>
-                                <div><p class="text-[10px] font-black uppercase text-slate-700">Hamba Allah</p><p class="text-[8px] text-slate-400 font-bold">${d.tanggal}</p></div>
-                            </div>
-                            <p class="font-black text-emerald-600 text-sm">Rp ${parseInt(d.nominal).toLocaleString()}</p>
-                        </div>`;
-                });
-            }
-            document.getElementById('total-dana-main').innerText = `Rp ${total.toLocaleString()}`;
-            if(document.getElementById('stat-donatur')) document.getElementById('stat-donatur').innerText = count;
-        });
-
-        db.ref('stats/visits').on('value', snap => { if(document.getElementById('stat-visit')) document.getElementById('stat-visit').innerText = snap.val() || 0; });
-
-        function kirimDoa() {
-            const m = document.getElementById('msg-doa').value;
-            const s = JSON.parse(localStorage.getItem('berkah_session'));
-            if(!m) return;
-            db.ref('doa').push({ msg: m, user: s.ph.substring(0,6) + 'xxxx', timestamp: Date.now() });
-            document.getElementById('msg-doa').value = '';
-            alert("Aamiin, doa terkirim.");
-        }
-
-        db.ref('doa').on('value', snap => {
-            const l = document.getElementById('doa-list');
-            l.innerHTML = '';
-            if(snap.val()) {
-                Object.values(snap.val()).reverse().forEach(d => {
-                    l.innerHTML += `<div class="p-6 bg-white rounded-[2rem] border border-slate-50 shadow-sm"><p class="text-xs italic text-slate-600 leading-relaxed">"${d.msg}"</p><p class="text-[8px] font-black mt-4 text-emerald-500 uppercase">— Sahabat ${d.user}</p></div>`;
-                });
-            }
-        });
-
-        window.onload = () => {
-            checkAccess();
-            document.getElementById('header-date').innerText = new Date().toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'short' });
-        };
-    </script>    <script>
-        // Kode untuk mendaftarkan Service Worker agar aplikasi bisa diinstal
+        // Register Service Worker
         if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js')
-                    .then(reg => console.log('Service Worker terdaftar!', reg))
-                    .catch(err => console.log('Gagal daftar Service Worker', err));
-            });
+            navigator.serviceWorker.register('sw.js');
         }
     </script>
-    
 </body>
 </html>
