@@ -66,7 +66,8 @@
     </div>
 
     <div class="menu-container">
-        <div class="menu-btn" onclick="alert('Fitur Quran Segera Hadir')">📖<span>QURAN</span></div>
+        <div class="menu-btn" onclick="bukaQuran()">📖<span>QURAN</span></div>
+
         <div class="menu-btn" onclick="alert('Fitur Tasbih Segera Hadir')">📿<span>TASBIH</span></div>
         <div class="menu-btn" onclick="alert('Fitur Produk Segera Hadir')">🛍️<span>PRODUK</span></div>
         <div class="menu-btn" onclick="alert('Fitur Laporan Segera Hadir')">📊<span>LAPORAN</span></div>
@@ -111,6 +112,10 @@
         }
 
         ambilJadwal();
+        function bukaQuran() {
+    window.location.href = 'quran.html';
+                                        }
+        
     </script>
 </body>
 </html>
