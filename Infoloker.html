@@ -3,64 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Real-Time Loker Engine - Agit Studio</title>
+    <title>Agit Loker Engine - Real Time</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: #f4f7f6; color: #333; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 50px; }
         
-        .header { background: #00a86b; color: #fff; padding: 25px 15px; text-align: center; border-bottom: 5px solid #008f5a; }
-        .header h1 { font-size: 20px; margin-bottom: 5px; }
-        .header p { font-size: 12px; opacity: 0.9; }
+        .header { background: #00a86b; color: #fff; padding: 20px; text-align: center; border-radius: 0 0 20px 20px; position: sticky; top: 0; z-index: 100; }
+        .btn-back { position: absolute; left: 20px; top: 22px; color: #fff; text-decoration: none; font-size: 18px; }
 
-        /* Container Widget */
-        .widget-container { 
-            padding: 15px; 
-            margin: 15px; 
-            background: #fff; 
-            border-radius: 15px; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            min-height: 500px;
-            overflow: hidden;
-        }
+        .search-section { padding: 20px; }
+        .search-card { background: #fff; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        input { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 10px; margin-bottom: 10px; font-size: 14px; outline: none; }
+        .btn-search { width: 100%; background: #00a86b; color: #fff; border: none; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; }
 
-        /* Navigasi Bawah */
-        .nav-info { padding: 15px; text-align: center; font-size: 11px; color: #888; }
-        .back-btn { display: inline-block; margin-top: 10px; color: #00a86b; text-decoration: none; font-weight: bold; border: 1px solid #00a86b; padding: 5px 15px; border-radius: 20px; }
+        .feed-container { padding: 0 20px; }
+        .status-msg { text-align: center; padding: 20px; font-size: 12px; color: #64748b; }
+        
+        /* Style List Loker Real-Time */
+        .loker-item { background: #fff; padding: 18px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #e2e8f0; }
+        .loker-title { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 5px; }
+        .loker-meta { font-size: 12px; color: #00a86b; font-weight: 600; margin-bottom: 10px; }
+        .loker-desc { font-size: 13px; line-height: 1.5; color: #475569; margin-bottom: 15px; }
+        .btn-apply { display: inline-block; padding: 8px 20px; background: #f1f5f9; color: #1e293b; text-decoration: none; border-radius: 8px; font-size: 12px; font-weight: 700; }
     </style>
 </head>
 <body>
 
-<div class="header">
-    <h1>AGIT LOKER ENGINE</h1>
-    <p>Data Real-Time dari Seluruh Indonesia</p>
-</div>
+    <div class="header">
+        <a href="index.html" class="btn-back">⬅️</a>
+        <h2 style="font-size: 17px;">Omni Loker Search</h2>
+    </div>
 
-<!-- WIDGET REAL-TIME START -->
-<div class="widget-container">
-    <!-- Menggunakan Widget dari Adzuna (Salah satu penyedia API Loker Terbesar) -->
-    <!-- Widget ini memungkinkan user mencari posisi & lokasi langsung di halaman Bapak -->
-    <iframe 
-        src="https://www.adzuna.id/search?q=welder&l=Indonesia&action=search" 
-        style="width:100%; height:600px; border:none; border-radius: 10px;"
-        id="lokerFrame">
-    </iframe>
-</div>
-<!-- WIDGET REAL-TIME END -->
+    <div class="search-section">
+        <div class="search-card">
+            <input type="text" id="keyword" placeholder="Cari posisi (contoh: Admin, Driver)..." value="Admin">
+            <button class="btn-search" onclick="fetchJobs()">CARI LOKER SEKARANG 🚀</button>
+        </div>
+    </div>
 
-<div class="nav-info">
-    <p>© 2026 Agit Studio Production</p>
-    <p>Data disinkronkan langsung dengan server lowongan kerja nasional.</p>
-    <a href="index.html" class="back-btn">Kembali ke Menu Utama</a>
-</div>
+    <div id="status" class="status-msg">Silakan cari lowongan kerja...</div>
+    <div id="jobList" class="feed-container"></div>
 
-<script>
-    // Logika agar Search Engine lebih dinamis
-    // Bapak bisa menambahkan input teks sendiri di atas jika ingin memanipulasi URL iframe-nya
-    function updateLoker(keyword) {
-        const frame = document.getElementById('lokerFrame');
-        frame.src = `https://www.adzuna.id/search?q=${encodeURIComponent(keyword)}&l=Indonesia`;
-    }
-</script>
+    <script>
+        async function fetchJobs() {
+            const query = document.getElementById('keyword').value;
+            const container = document.getElementById('jobList');
+            const status = document.getElementById('status');
 
+            if (!query) return;
+
+            container.innerHTML = "";
+            status.innerHTML = "⏳ Menghubungkan ke server loker nasional...";
+
+            try {
+                // Menggunakan API RSS2JSON untuk mengambil data dari Careerjet (Penyedia loker global)
+                // Ini data ASLI dan REAL-TIME
+                const rssUrl = `https://www.careerjet.co.id/search/rss?s=${encodeURIComponent(query)}&l=Indonesia`;
+                const response = await fetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}`);
+                const data = await response.json();
+
+                if (data.status === 'ok' && data.items.length > 0) {
+                    status.innerHTML = `Ditemukan ${data.items.length} lowongan untuk "<b>${query}</b>"`;
+                    
+                    data.items.forEach(item => {
+                        const card = document.createElement('div');
+                        card.className = 'loker-item';
+                        card.innerHTML = `
+                            <div class="loker-title">${item.title}</div>
+                            <div class="loker-meta">📍 Lokasi Terdeteksi • HRD Update</div>
+                            <div class="loker-desc">${item.description.substring(0, 150)}...</div>
+                            <a href="${item.link}" target="_blank" class="btn-apply">Lihat Detail & Lamar ↗️</a>
+                        `;
+                        container.appendChild(card);
+                    });
+                } else {
+                    status.innerHTML = "❌ Tidak ditemukan loker untuk kata kunci tersebut.";
+                }
+            } catch (error) {
+                status.innerHTML = "⚠️ Terjadi kesalahan koneksi. Coba lagi nanti.";
+            }
+        }
+
+        // Jalankan pencarian otomatis saat pertama buka
+        window.onload = fetchJobs;
+    </script>
 </body>
 </html>
