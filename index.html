@@ -10,100 +10,37 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: #f8fafc; color: #1e293b; padding-bottom: 80px; }
+        
+        /* Header */
         .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: white; }
         .user-profile { display: flex; align-items: center; gap: 12px; }
         .logo-box { width: 45px; height: 45px; background: #00a86b; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
         .logo-box img { width: 25px; height: 25px; }
         .user-info h2 { font-size: 18px; font-weight: 700; }
-        .user-info p { font-size: 10px; color: #64748b; font-weight: 600; }
+        .user-info p { font-size: 10px; color: #64748b; font-weight: 600; text-transform: uppercase; }
+
+        /* Hero Card */
         .hero-card { margin: 0 20px; padding: 25px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 30px; color: white; box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2); }
         .hero-card p { font-size: 12px; font-weight: 600; opacity: 0.9; text-transform: uppercase; }
         .hero-card h1 { font-size: 24px; margin: 5px 0; }
         .next-sholat { font-size: 40px; font-weight: 700; margin-bottom: 15px; }
+        
+        /* Sholat Grid */
         .sholat-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
         .sholat-item { background: rgba(255,255,255,0.2); padding: 8px 2px; border-radius: 10px; text-align: center; }
         .sholat-item span { font-size: 9px; display: block; margin-bottom: 2px; }
         .sholat-item b { font-size: 11px; }
+
+        /* Stats */
         .stats-container { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
         .stat-card { padding: 20px; border-radius: 24px; color: white; }
         .stat-card.dark { background: #0f172a; }
         .stat-card.light { background: white; color: #1e293b; border: 1px solid #e2e8f0; }
         .stat-card h2 { font-size: 24px; font-weight: 700; }
+        .stat-card p { font-size: 10px; font-weight: 600; opacity: 0.8; margin-bottom: 5px; }
+
+        /* Menu */
         .menu-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; padding: 0 20px; }
-        .menu-btn { background: white; border: 1px solid #f1f5f9; padding: 15px 5px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
-        .menu-btn span { font-size: 9px; font-weight: 700; color: #64748b; }
-        .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: white; padding: 15px; display: flex; justify-content: space-around; border-top: 1px solid #f1f5f9; }
-        .nav-item { text-align: center; text-decoration: none; color: #94a3b8; }
-        .nav-item.active { color: #00a86b; }
-        .nav-item span { font-size: 9px; display: block; font-weight: 700; }
-    </style>
-</head>
-<body>
-    <div class="header">
-        <div class="user-profile">
-            <div class="logo-box"><img src="logo.svg"></div>
-            <div class="user-info"><h2>Berkah</h2><p id="tgl-hari-ini">MEMUAT...</p></div>
-        </div>
-        <div style="font-size: 24px;">👤</div>
-    </div>
-
-    <div class="hero-card">
-        <p id="nama-kota">MENCARI LOKASI...</p>
-        <h1 id="label-sholat">WAKTU SHOLAT</h1>
-        <div class="next-sholat" id="jam-utama">--:--</div>
-        <div class="sholat-grid">
-            <div class="sholat-item"><span>Subuh</span><b id="s-subuh">--:--</b></div>
-            <div class="sholat-item"><span>Dzuhur</span><b id="s-dzuhur">--:--</b></div>
-            <div class="sholat-item"><span>Ashar</span><b id="s-ashar">--:--</b></div>
-            <div class="sholat-item"><span>Maghrib</span><b id="s-maghrib">--:--</b></div>
-            <div class="sholat-item"><span>Isya</span><b id="s-isya">--:--</b></div>
-        </div>
-    </div>
-
-    <div class="stats-container">
-        <div class="stat-card dark"><p>PENGUNJUNG</p><h2>1.240</h2></div>
-        <div class="stat-card light"><p>DONATUR</p><h2>458</h2></div>
-    </div>
-
-    <div class="menu-container">
-        <div class="menu-btn" onclick="bukaQuran()">📖<span>QURAN</span></div>
-
-        <div class="menu-btn" onclick="alert('Fitur Tasbih Segera Hadir')">📿<span>TASBIH</span></div>
-        <div class="menu-btn" onclick="alert('Fitur Produk Segera Hadir')">🛍️<span>PRODUK</span></div>
-        <div class="menu-btn" onclick="alert('Fitur Laporan Segera Hadir')">📊<span>LAPORAN</span></div>
-    </div>
-
-    <nav class="bottom-nav">
-        <a href="#" class="nav-item active">🏠<span>HOME</span></a>
-        <a href="#" class="nav-item">❤️<span>DOA</span></a>
-        <a href="#" class="nav-item">💵<span>LAPORAN</span></a>
-        <a href="#" class="nav-item">🛡️<span>ADMIN</span></a>
-    </nav>
-
-    <script>
-        // Tanggal Bahasa Indonesia
-        const tgl = new Date();
-        const opsi = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-        document.getElementById('tgl-hari-ini').innerText = tgl.toLocaleDateString('id-ID', opsi).toUpperCase();
-
-        async function ambilJadwal() {
-            try {
-                const thn = tgl.getFullYear();
-                const bln = tgl.getMonth() + 1;
-                const tglSkrg = tgl.getDate();
-                // API MyQuran untuk Jakarta (1301)
-                const response = await fetch(`https://api.myquran.com/v2/sholat/jadwal/1301/${thn}/${bln}/${tglSkrg}`);
-                const data = await response.json();
-                const j = data.data.jadwal;
-
-                document.getElementById('nama-kota').innerText = "KOTA " + data.data.lokasi;
-                document.getElementById('s-subuh').innerText = j.subuh;
-                document.getElementById('s-dzuhur').innerText = j.dzuhur;
-                document.getElementById('s-ashar').innerText = j.ashar;
-                document.getElementById('s-maghrib').innerText = j.maghrib;
-                document.getElementById('s-isya').innerText = j.isya;
-                
-                // Set tampilan utama ke waktu Dzuhur (sebagai contoh sukses)
                 document.getElementById('jam-utama').innerText = j.dzuhur;
                 document.getElementById('label-sholat').innerText = "DZUHUR";
             } catch (err) {
