@@ -1,69 +1,91 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Loker Search Engine</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #f0f2f5; }
+        .header { background: #00a86b; color: #fff; padding: 20px; text-align: center; }
+        
+        .search-box { background: #fff; padding: 20px; margin: -20px 15px 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; font-size: 14px; outline: none; }
+        
+        .engine-btn { width: 100%; background: #00a86b; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .engine-btn:active { background: #007a4d; transform: scale(0.98); }
+
+        .info-text { font-size: 11px; color: #666; text-align: center; margin-top: 10px; line-height: 1.4; }
+        
+        .results-area { padding: 0 15px; }
+        .platform-card { background: #fff; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; border-left: 5px solid #00a86b; }
+        .platform-name { font-weight: bold; font-size: 14px; }
+        .go-btn { background: #e7f3ff; color: #1877f2; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h2 style="font-size: 18px;">Omni-Search Loker</h2>
+    <p style="font-size: 12px; opacity: 0.8;">Cari info kerja di seluruh medsos via AI</p>
+</div>
+
+<div class="search-box">
+    <input type="text" id="jobQuery" placeholder="Contoh: Admin Jakarta atau Driver Bekasi" value="Purchasing Pasar Minggu">
+    <button class="engine-btn" onclick="deepSearch()">CARI LOKER LIVE 🚀</button>
+    <p class="info-text">Sistem akan mencari postingan terbaru di Threads, FB, & LinkedIn secara spesifik.</p>
+</div>
+
+<div class="results-area">
+    <div class="platform-card">
+        <div>
+            <div class="platform-name">Threads Search</div>
+            <div style="font-size: 11px; color: #999;">Mencari diskusi & postingan personal</div>
+        </div>
+        <a href="#" id="linkThreads" target="_blank" class="go-btn">BUKA</a>
+    </div>
+
+    <div class="platform-card" style="border-left-color: #1877f2;">
+        <div>
+            <div class="platform-name">Facebook Groups</div>
+            <div style="font-size: 11px; color: #999;">Mencari di komunitas loker</div>
+        </div>
+        <a href="#" id="linkFB" target="_blank" class="go-btn">BUKA</a>
+    </div>
+
+    <div class="platform-card" style="border-left-color: #0077b5;">
+        <div>
+            <div class="platform-name">LinkedIn Jobs</div>
+            <div style="font-size: 11px; color: #999;">Mencari lowongan profesional</div>
+        </div>
+        <a href="#" id="linkLI" target="_blank" class="go-btn">BUKA</a>
+    </div>
+</div>
+
 <script>
-    const data = [
-        {
-            u: "reraaasovani",
-            t: "5 jam",
-            s: "Threads",
-            c: "Urgently hiring staff purchasing tapi yang sudah berpengalaman di bidangnya lebih dari 2 thn ya untuk area Pasar Minggu Jakarta Selatan. Kirim CV ke email: <span class='email'>reramuliaperkasa@gmail.com</span> Thank u ✨",
-            // Link langsung ke pencarian user di Threads
-            l: "https://www.threads.net/search?q=purchasing%20pasar%20minggu"
-        },
-        {
-            u: "HRD_Global_Tech",
-            t: "2 jam",
-            s: "LinkedIn",
-            c: "Dibutuhkan segera Operator Produksi untuk penempatan di Cikarang. Usia maks 23 thn. Daftar melalui website resmi kami.",
-            // Link langsung ke filter loker operator produksi di LinkedIn
-            l: "https://www.linkedin.com/jobs/search/?keywords=operator%20produksi%20cikarang"
-        },
-        {
-            u: "InfoLokerJakarta",
-            t: "8 jam",
-            s: "Facebook",
-            c: "LOKER KURIR MOTOR! Area Jakarta Barat. Gaji pokok + uang bensin. Min punya SIM C aktif.",
-            // Link langsung ke grup loker/pencarian FB
-            l: "https://www.facebook.com/search/top?q=loker%20kurir%20motor%20jakarta%20barat"
-        },
-        {
-            u: "Agit_Studio",
-            t: "1 jam",
-            s: "Instagram",
-            c: "Looking for Freelance Video Editor! Paham penggunaan AI Tools lebih diutamakan. Kirim portfolio ke DM.",
-            // Link ke explore tag video editor
-            l: "https://www.instagram.com/explore/tags/loker-video-editor/"
-        },
-        {
-            u: "Bakti_Husada",
-            t: "10 jam",
-            s: "Threads",
-            c: "Lowongan Perawat Gigi (Dental Assistant). Penempatan Jakarta Selatan. Syarat: STR Aktif & Ramah.",
-            l: "https://www.threads.net/search?q=perawat%20gigi%20jakarta"
-        }
-    ];
+function deepSearch() {
+    const q = document.getElementById('jobQuery').value;
+    if(!q) return alert("Masukkan kata kunci loker!");
 
-    function start() {
-        const feed = document.getElementById('mainFeed');
-        const dateStr = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
-        document.getElementById('dateDisplay').innerText = "INFO TERBARU • " + dateStr;
+    const queryEncoded = encodeURIComponent(q);
 
-        let html = "";
-        data.forEach(item => {
-            html += `
-            <div class="card">
-                <div class="card-top">
-                    <div class="avatar">${item.u.charAt(0).toUpperCase()}</div>
-                    <div class="user-name">${item.u} <span class="time">• ${item.t}</span></div>
-                    <div class="badge">${item.s}</div>
-                </div>
-                <div class="content">${item.c}</div>
-                <div class="footer">
-                    <span style="font-size:11px; color:#999">❤️ Tersedia</span>
-                    <a href="${item.l}" target="_blank" class="link-src">Lihat Postingan Asli ↗️</a>
-                </div>
-            </div>`;
-        });
-        feed.innerHTML = html;
-    }
+    // Link Pencarian Deep Link
+    const threadsURL = `https://www.threads.net/search?q=${queryEncoded}`;
+    const fbURL = `https://www.facebook.com/search/posts/?q=${queryEncoded}`;
+    const liURL = `https://www.linkedin.com/jobs/search/?keywords=${queryEncoded}`;
 
-    start();
+    // Update Link Tombol
+    document.getElementById('linkThreads').href = threadsURL;
+    document.getElementById('linkFB').href = fbURL;
+    document.getElementById('linkLI').href = liURL;
+
+    // Otomatis buka Threads sebagai prioritas utama (paling update)
+    window.open(threadsURL, '_blank');
+}
+
+// Inisialisasi link saat pertama buka
+deepSearch();
 </script>
+
+</body>
+</html>
