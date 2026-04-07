@@ -24,7 +24,7 @@
         .sholat-box span { font-size: 8px; display: block; opacity: 0.9; }
         .sholat-box b { font-size: 11px; display: block; }
         .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 20px; }
-        .menu-item { background: white; padding: 15px 10px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; text-align: center; text-decoration: none; color: inherit; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .menu-item { background: white; padding: 15px 10px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; text-align: center; text-decoration: none; color: inherit; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.02); transition: 0.2s; }
         .menu-item:active { transform: scale(0.95); background: #f0fff4; }
         .menu-icon { font-size: 24px; margin-bottom: 8px; }
         .menu-item span { font-size: 9px; font-weight: 700; color: #334155; line-height: 1.2; text-transform: uppercase; }
@@ -58,18 +58,31 @@
     </div>
 
     <div class="menu-grid">
-        <a href="jadwal-sholat.html" class="menu-item"><div class="menu-icon">🕌</div><span>Waktu Sholat</span></a>
-        <a href="quran.html" class="menu-item"><div class="menu-icon">📖</div><span>Al-Qur'an & Audio</span></a>
-        <a href="hadist.html" class="menu-item"><div class="menu-icon">📚</div><span>Hadist Bukhori</span></a>
-        <a href="loker.html" class="menu-item"><div class="menu-icon">💼</div><span>Info Loker</span></a>
-        <a href="berita.html" class="menu-item"><div class="menu-icon">📰</div><span>Berita</span></a>
-        <a href="alat.html" class="menu-item"><div class="menu-icon">🛠️</div><span>Alat</span></a>
-        <a href="toko.html" class="menu-item"><div class="menu-icon">🛒</div><span>Toko Kita</span></a>
-        <a href="donasi.html" class="menu-item"><div class="menu-icon">🎁</div><span>Donasi</span></a>
+        <!-- LINK TERHUBUNG KE FILE BARU ANDA (CASE-SENSITIVE) -->
+        <a href="jadwal-sholat.html" class="menu-item">
+            <div class="menu-icon">🕌</div><span>Waktu Sholat</span>
+        </a>
+        <a href="Quran.html" class="menu-item">
+            <div class="menu-icon">📖</div><span>Al-Qur'an & Audio</span>
+        </a>
+        <a href="Hadist.html" class="menu-item">
+            <div class="menu-icon">📚</div><span>Hadist Bukhori</span>
+        </a>
+        <a href="Infoloker.html" class="menu-item">
+            <div class="menu-icon">💼</div><span>Info Loker</span>
+        </a>
+        <a href="Berita.html" class="menu-item">
+            <div class="menu-icon">📰</div><span>Berita</span>
+        </a>
+        
+        <!-- Menu yang belum ada filenya tetap mengarah ke index sementara -->
+        <a href="index.html" class="menu-item"><div class="menu-icon">🛠️</div><span>Alat</span></a>
+        <a href="index.html" class="menu-item"><div class="menu-icon">🛒</div><span>Toko Kita</span></a>
+        <a href="index.html" class="menu-item"><div class="menu-icon">🎁</div><span>Donasi</span></a>
         <a href="https://wa.me/628123456789" class="menu-item"><div class="menu-icon">💬</div><span>Live Chat</span></a>
-        <a href="statistik.html" class="menu-item"><div class="menu-icon">👥</div><span>Pengunjung</span></a>
-        <a href="donatur.html" class="menu-item"><div class="menu-icon">🤝</div><span>Donatur</span></a>
-        <a href="laporan.html" class="menu-item"><div class="menu-icon">📊</div><span>Laporan</span></a>
+        <a href="index.html" class="menu-item"><div class="menu-icon">👥</div><span>Pengunjung</span></a>
+        <a href="index.html" class="menu-item"><div class="menu-icon">🤝</div><span>Donatur</span></a>
+        <a href="index.html" class="menu-item"><div class="menu-icon">📊</div><span>Laporan</span></a>
     </div>
 
     <script>
@@ -82,7 +95,6 @@
             const sekarang = new Date();
             const opsi = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
             document.getElementById('tgl-jam').innerText = sekarang.toLocaleDateString('id-ID', opsi).toUpperCase();
-            
             const doa = widgetDoa[sekarang.getDate() % widgetDoa.length];
             document.getElementById('judul-doa').innerText = doa.judul;
             document.getElementById('arab-doa').innerText = doa.arab;
@@ -100,9 +112,7 @@
                 document.getElementById('j-ashar').innerText = j.ashar;
                 document.getElementById('j-maghrib').innerText = j.maghrib;
                 document.getElementById('j-isya').innerText = j.isya;
-            } catch (e) {
-                console.log("Error mengambil jadwal");
-            }
+            } catch (e) { console.log("Gagal memuat jadwal"); }
         }
 
         updateUI();
