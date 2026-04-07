@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agit Loker - Filter Seminggu</title>
+    <title>Agit Loker - Filter Email & Perusahaan</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; }
@@ -30,8 +30,8 @@
         .job-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
         .job-company { font-size: 13px; color: #00a86b; font-weight: 700; margin-bottom: 12px; display: block; }
         
-        .contact-box { background: #f0fdf4; padding: 12px; border-radius: 10px; margin: 10px 0; border: 1px solid #dcfce7; }
-        .contact-item { font-size: 12px; color: #166534; margin-bottom: 4px; display: block; font-weight: 600; }
+        .email-box { background: #f0fdf4; padding: 12px; border-radius: 10px; margin: 10px 0; border: 1px solid #dcfce7; }
+        .email-item { font-size: 12px; color: #166534; display: block; font-weight: 600; word-break: break-all; }
         
         .job-desc { font-size: 13px; color: #475569; line-height: 1.6; margin-bottom: 15px; }
         .btn-link { display: block; text-align: center; padding: 10px; background: #1e293b; color: #fff; text-decoration: none; border-radius: 10px; font-size: 11px; font-weight: 700; }
@@ -43,19 +43,19 @@
 
     <div class="header">
         <a href="index.html" class="btn-back">⬅</a>
-        <h2 style="font-size: 18px;">Arsip Loker 7 Hari</h2>
+        <h2 style="font-size: 18px;">Search Engine Loker</h2>
     </div>
 
     <div class="search-container">
         <div class="search-card">
-            <input type="text" id="jobInput" placeholder="Cari posisi (misal: Welder)...">
+            <input type="text" id="jobInput" placeholder="Ketik posisi (misal: Welder, IT)...">
             <button class="btn-go" onclick="searchJob()">CARI</button>
         </div>
     </div>
 
     <div id="contentDisplay" class="display-area">
         <div class="empty-state">
-            <p>Sistem akan menampilkan loker terverifikasi dari <b>hari ini hingga 7 hari ke belakang.</b></p>
+            <p>Mencari loker dengan kontak <b>Email & Nama Perusahaan</b> (maksimal 7 hari terakhir).</p>
         </div>
     </div>
 
@@ -69,51 +69,37 @@
                 c: "PT. Teknik Perdana", 
                 l: "Cikarang", 
                 email: "hrd@teknikperdana.co.id", 
-                hp: "0812-3456-7890",
-                d: "Mencari tukang las berpengalaman untuk proyek pabrik baru.", 
+                d: "Mencari tukang las berpengalaman untuk proyek pabrik baru. Silakan kirim CV ke email.", 
                 s: "Facebook",
                 url: "https://facebook.com",
-                tgl: "2026-04-07" // Hari Ini
+                tgl: "2026-04-07"
             },
             { 
-                t: "Senior Welder", 
-                c: "Agit Jaya Steel", 
-                l: "Bekasi", 
-                email: "karir@agitjaya.com", 
-                hp: "0899-8877-6655",
-                d: "Dibutuhkan tenaga ahli las argon untuk industri alat berat.", 
+                t: "IT Support Freelance", 
+                c: "Agit Studio Digital", 
+                l: "Remote", 
+                email: "admin@agitstudio.com", 
+                d: "Membantu maintenance website dan aplikasi client. Project based.", 
                 s: "Threads",
                 url: "https://threads.net",
-                tgl: "2026-04-05" // 2 Hari Lalu
+                tgl: "2026-04-05"
             },
             { 
-                t: "Staff Purchasing", 
-                c: "Rera Mulia Perkasa", 
+                t: "Graphic Designer", 
+                c: "Creative Media", 
                 l: "Jakarta", 
-                email: "reramulia@gmail.com", 
-                hp: "0857-0000-1111",
-                d: "Hiring staff purchasing untuk kebutuhan bahan baku konstruksi.", 
+                email: "recruitment@creative.id", 
+                d: "Dibutuhkan desainer yang paham AI tools dan desain modern.", 
                 s: "LinkedIn",
                 url: "https://linkedin.com",
-                tgl: "2026-04-01" // 6 Hari Lalu
-            },
-            { 
-                t: "Admin Gudang (Expired)", 
-                c: "Toko Lama", 
-                l: "Bogor", 
-                email: "expired@test.com", 
-                hp: "000",
-                d: "Ini tidak akan muncul karena sudah lebih dari 7 hari.", 
-                s: "Facebook",
-                url: "#",
-                tgl: "2026-03-20" // Sudah 18 hari lalu (AKAN TERFILTER KELUAR)
+                tgl: "2026-04-02"
             }
         ];
 
         function selisihHari(tglLoker) {
             const tglPost = new Date(tglLoker);
             const diffTime = Math.abs(hariIni - tglPost);
-            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            return Math.floor(diffTime / (1000 * 60 * 60 * 24));
         }
 
         function searchJob() {
@@ -122,18 +108,19 @@
 
             if (!query) return;
 
-            // FILTER: 1. Harus cocok query, 2. Maksimal 7 hari yang lalu
+            // FILTER: Cocok kata kunci, maksimal 7 hari, dan punya Email + Nama PT
             const results = lokerDB.filter(item => {
                 const cocokQuery = item.t.toLowerCase().includes(query) || item.c.toLowerCase().includes(query);
                 const jarakHari = selisihHari(item.tgl);
-                return cocokQuery && jarakHari <= 7;
+                const punyaSyarat = item.email && item.c; // Email & Nama Perusahaan WAJIB
+                return cocokQuery && jarakHari <= 7 && punyaSyarat;
             });
 
             if (results.length > 0) {
                 let html = "";
                 results.forEach(job => {
                     const selisih = selisihHari(job.tgl);
-                    const labelTgl = selisih === 0 ? "Baru Saja" : `${selisih} Hari Lalu`;
+                    const labelTgl = selisih === 0 ? "Hari Ini" : `${selisih} Hari Lalu`;
                     
                     html += `
                         <div class="job-card">
@@ -144,9 +131,8 @@
                             <div class="job-title">${job.t}</div>
                             <span class="job-company">${job.c} • ${job.l}</span>
                             
-                            <div class="contact-box">
-                                <span class="contact-item">📧 Email: ${job.email}</span>
-                                <span class="contact-item">📞 No. HP: ${job.hp}</span>
+                            <div class="email-box">
+                                <span class="email-item">📩 Kirim Lamaran: <b>${job.email}</b></span>
                             </div>
 
                             <div class="job-desc">${job.d}</div>
