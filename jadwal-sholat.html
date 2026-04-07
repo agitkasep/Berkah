@@ -3,26 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waktu Sholat - Berkah</title>
+    <title>Jadwal Sholat - Berkah</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: #f4f7f6; color: #1e293b; }
+        body { background-color: #f4f7f6; color: #1e293b; padding-bottom: 20px; }
         
         .nav-header { 
             display: flex; align-items: center; padding: 20px; 
-            background: white; border-bottom: 1px solid #eee; 
+            background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100;
         }
-        .btn-back { 
-            text-decoration: none; font-size: 20px; margin-right: 15px; color: #00a86b; 
-        }
+        .btn-back { text-decoration: none; font-size: 20px; margin-right: 15px; color: #00a86b; }
         .title { font-size: 18px; font-weight: 700; }
-        
-        .content { padding: 20px; text-align: center; }
-        .card { 
-            background: white; padding: 25px; border-radius: 20px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 10px;
+
+        .container { padding: 20px; }
+
+        /* SEARCH BOX */
+        .search-box {
+            background: white; padding: 15px; border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 20px;
         }
+        input {
+            width: 100%; padding: 12px; border: 1px solid #e2e8f0;
+            border-radius: 10px; outline: none; font-size: 14px;
+        }
+        .hasil-cari {
+            margin-top: 10px; max-height: 150px; overflow-y: auto;
+            background: #fff; border-radius: 8px;
+        }
+        .kota-item { padding: 10px; border-bottom: 1px solid #f1f5f9; cursor: pointer; font-size: 13px; }
+
+        /* INFO LOKASI */
+        .info-lokasi { text-align: center; margin-bottom: 20px; }
+        .info-lokasi h1 { font-size: 24px; color: #00a86b; }
+        .info-lokasi p { font-size: 14px; color: #64748b; }
+
+        /* JADWAL LIST */
+        .jadwal-list { display: flex; flex-direction: column; gap: 10px; }
+        .sholat-card {
+            background: white; padding: 18px; border-radius: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+        }
+        .sholat-card.active { border: 2px solid #00a86b; background: #f0fff4; }
+        .sholat-name { font-weight: 700; color: #334155; }
+        .sholat-time { font-size: 18px; font-weight: 700; color: #00a86b; }
     </style>
 </head>
 <body>
@@ -32,11 +57,113 @@
         <div class="title">Waktu Sholat</div>
     </div>
 
-    <div class="content">
-        <div class="card">
-            <p>Konten Waktu Sholat sedang dalam pengembangan...</p>
+    <div class="container">
+        <!-- Pencarian Kota -->
+        <div class="search-box">
+            <input type="text" id="input-kota" placeholder="Cari kota (Contoh: Jakarta, Bandung...)" oninput="cariKota()">
+            <div id="hasil-cari" class="hasil-cari"></div>
+        </div>
+
+        <!-- Info Wilayah -->
+        <div class="info-lokasi">
+            <p id="tgl-hijri">-- -- ----</p>
+            <h1 id="nama-kota">Memuat Lokasi...</h1>
+            <p id="tgl-masehi">-- -- ----</p>
+        </div>
+
+        <!-- Daftar Jadwal -->
+        <div class="jadwal-list" id="list-jadwal">
+            <div class="sholat-card"><span>Imsak</span><b class="sholat-time" id="imsak">--:--</b></div>
+            <div class="sholat-card"><span>Subuh</span><b class="sholat-time" id="subuh">--:--</b></div>
+            <div class="sholat-card"><span>Terbit</span><b class="sholat-time" id="terbit">--:--</b></div>
+            <div class="sholat-card"><span>Dzuhur</span><b class="sholat-time" id="dzuhur">--:--</b></div>
+            <div class="sholat-card"><span>Ashar</span><b class="sholat-time" id="ashar">--:--</b></div>
+            <div class="sholat-card"><span>Maghrib</span><b class="sholat-time" id="maghrib">--:--</b></div>
+            <div class="sholat-card"><span>Isya</span><b class="sholat-time" id="isya">--:--</b></div>
         </div>
     </div>
 
+    <script>
+        let timeout = null;
+
+        // 1. Fungsi Cari Kota
+        async function cariKota() {
+            const query = document.getElementById('input-kota').value;
+            const hasilCari = document.getElementById('hasil-cari');
+            
+            if (query.length < 3) {
+                hasilCari.innerHTML = "";
+                return;
+            }
+
+            clearTimeout(timeout);
+            timeout = setTimeout(async () => {
+                try {
+                    const res = await fetch(`https://api.myquran.com/v2/sholat/kota/cari/${query}`);
+                    const data = await res.json();
+                    if (data.status && data.data.length > 0) {
+                        let html = "";
+                        data.data.forEach(k => {
+                            html += `<div class="kota-item" onclick="pilihKota('${k.id}', '${k.lokasi}')">${k.lokasi}</div>`;
+                        });
+                        hasilCari.innerHTML = html;
+                    }
+                } catch (e) { console.error("Gagal cari kota"); }
+            }, 500);
+        }
+
+        // 2. Fungsi Pilih Kota & Ambil Jadwal
+        async function pilihKota(id, nama) {
+            document.getElementById('hasil-cari').innerHTML = "";
+            document.getElementById('input-kota').value = "";
+            document.getElementById('nama-kota').innerText = nama;
+            loadJadwal(id);
+        }
+
+        async function loadJadwal(kotaId) {
+            try {
+                const s = new Date();
+                const tgl = s.getDate();
+                const bln = s.getMonth() + 1;
+                const thn = s.getFullYear();
+
+                const res = await fetch(`https://api.myquran.com/v2/sholat/jadwal/${kotaId}/${thn}/${bln}/${tgl}`);
+                const d = await res.json();
+                const j = d.data.jadwal;
+
+                document.getElementById('tgl-masehi').innerText = j.tanggal;
+                document.getElementById('tgl-hijri').innerText = d.data.daerah;
+                document.getElementById('imsak').innerText = j.imsak;
+                document.getElementById('subuh').innerText = j.subuh;
+                document.getElementById('terbit').innerText = j.terbit;
+                document.getElementById('dzuhur').innerText = j.dzuhur;
+                document.getElementById('ashar').innerText = j.ashar;
+                document.getElementById('maghrib').innerText = j.maghrib;
+                document.getElementById('isya').innerText = j.isya;
+            } catch (e) { alert("Gagal mengambil jadwal"); }
+        }
+
+        // 3. Deteksi Lokasi Otomatis (Default Jakarta jika ditolak)
+        function deteksiOtomatis() {
+            // Default Jakarta ID (1301)
+            let defaultId = "1301";
+            let defaultNama = "JAKARTA";
+
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    // Jika ingin koordinat presisi, API myquran butuh ID Kota.
+                    // Jadi kita tetap gunakan Jakarta sebagai default awal 
+                    // atau pengguna bisa langsung cari di kolom pencarian.
+                    pilihKota(defaultId, defaultNama);
+                }, () => {
+                    pilihKota(defaultId, defaultNama);
+                });
+            } else {
+                pilihKota(defaultId, defaultNama);
+            }
+        }
+
+        deteksiOtomatis();
+    </script>
 </body>
 </html>
