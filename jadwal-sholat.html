@@ -3,161 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jadwal Sholat Otomatis - Berkah</title>
+    <title>Jadwal Sholat Akurat - Berkah</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f4f7f6; color: #1e293b; padding-bottom: 30px; }
+        body { background: #f0f4f3; color: #1a202c; }
         
-        .header { background: #00a86b; color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 25px 25px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .btn-back { position: absolute; left: 20px; top: 25px; text-decoration: none; color: white; font-size: 20px; }
+        .top-bar { background: #00a86b; color: white; padding: 20px; text-align: center; border-radius: 0 0 30px 30px; position: relative; }
+        .back-link { position: absolute; left: 20px; top: 22px; color: white; text-decoration: none; font-size: 20px; }
         
-        .location-box { background: white; margin: -20px 20px 20px; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
-        .city-name { font-weight: 700; color: #00a86b; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
-        .date-now { font-size: 13px; color: #64748b; margin-top: 5px; font-weight: 500; }
+        .main-card { background: white; margin: -20px 20px 20px; padding: 20px; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); text-align: center; }
+        #city-name { font-weight: 700; color: #00a86b; font-size: 1.2rem; margin-bottom: 5px; }
+        #full-date { font-size: 0.8rem; color: #718096; }
 
-        .search-area { padding: 0 20px; margin-bottom: 20px; }
-        input { 
-            width: 100%; padding: 14px 15px; border: 2px solid #e2e8f0; 
-            border-radius: 12px; outline: none; transition: 0.3s; font-size: 14px;
-        }
-        input:focus { border-color: #00a86b; background: white; }
-
-        .sholat-grid { padding: 0 20px; display: grid; gap: 12px; }
-        .sholat-item { 
-            background: white; padding: 18px 20px; border-radius: 15px; 
+        .sholat-list { padding: 0 20px; display: grid; gap: 10px; margin-bottom: 30px; }
+        .sholat-row { 
+            background: white; padding: 15px 20px; border-radius: 15px; 
             display: flex; justify-content: space-between; align-items: center;
-            border-left: 6px solid #00a86b; transition: 0.2s;
+            border-bottom: 3px solid #edf2f7;
         }
-        .sholat-item:active { transform: scale(0.98); }
-        .nama-sholat { font-weight: 600; color: #475569; font-size: 15px; }
-        .waktu-sholat { font-weight: 800; color: #1e293b; font-size: 20px; }
+        .sholat-row.active { border-bottom: 3px solid #00a86b; background: #f0fff4; }
+        .label { font-weight: 600; color: #4a5568; font-size: 14px; }
+        .time { font-weight: 800; color: #2d3748; font-size: 18px; }
 
-        .loading { text-align: center; padding: 50px; color: #64748b; font-size: 14px; font-style: italic; line-height: 1.6; }
-        .error-msg { color: #ef4444; font-weight: 600; margin-top: 10px; }
+        .search-box { padding: 0 20px; margin-bottom: 20px; }
+        input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; text-align: center; font-weight: 600; }
+        
+        .loading-state { text-align: center; padding: 40px; color: #718096; font-size: 14px; }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <a href="index.html" class="btn-back">⬅️</a>
-        <h2 style="font-size: 18px;">Waktu Sholat</h2>
+    <div class="top-bar">
+        <a href="index.html" class="back-link">⬅️</a>
+        <h3 style="font-size: 16px;">Jadwal Sholat</h3>
     </div>
 
-    <div class="location-box">
-        <div id="city-display" class="city-name">Mendeteksi Lokasi...</div>
-        <div id="date-display" class="date-now">Memuat tanggal...</div>
+    <div class="main-card">
+        <div id="city-name">Mencari Lokasi...</div>
+        <div id="full-date">---</div>
     </div>
 
-    <div class="search-area">
-        <input type="text" id="inputKota" placeholder="Ketik nama kota (Contoh: Bekasi)" onchange="cariManual()">
+    <div class="search-box">
+        <input type="text" id="manualCity" placeholder="Cari Kota (Contoh: Jakarta)" onchange="cariManual()">
     </div>
 
-    <div id="sholat-container" class="sholat-grid">
-        <div class="loading">⏳ Menghubungkan ke server waktu...</div>
+    <div id="display-area" class="sholat-list">
+        <div class="loading-state">⏳ Sedang mencocokkan koordinat lokasi Anda...</div>
     </div>
 
     <script>
-        const container = document.getElementById('sholat-container');
-        const cityDisplay = document.getElementById('city-display');
-        const dateDisplay = document.getElementById('date-display');
+        // Data Fallback jika koordinat gagal
+        const DEFAULT_CITY = "Jakarta";
 
-        // 1. Fungsi Utama Deteksi Lokasi Otomatis via IP
-        async function deteksiOtomatis() {
+        async function initJadwal() {
             try {
-                const res = await fetch('https://ipapi.co/json/');
-                const data = await res.json();
+                // Step 1: Ambil Koordinat via IP (Sangat Cepat)
+                const geoRes = await fetch('https://ipapi.co/json/');
+                const geoData = await geoRes.json();
                 
-                // Ambil data kota, jika "Pondok Bambu/Duren Sawit" arahkan ke Jakarta
-                let kotaDeteksi = data.city || data.region || "Jakarta";
+                // Ambil Lintang & Bujur
+                const lat = geoData.latitude;
+                const lon = geoData.longitude;
                 
-                if (kotaDeteksi.toLowerCase().includes("pondok") || 
-                    kotaDeteksi.toLowerCase().includes("sawit") || 
-                    kotaDeteksi.toLowerCase().includes("jakarta")) {
-                    kotaDeteksi = "Jakarta";
-                }
-                
-                ambilDataJadwal(kotaDeteksi);
-            } catch (e) {
-                // Jika gagal deteksi IP, pakai Jakarta sebagai standar
-                ambilDataJadwal("Jakarta");
-            }
-        }
+                // Step 2: Cari Kota Terdekat berdasarkan Koordinat ke API MyQuran
+                const findCity = await fetch(`https://api.myquran.com/v2/sholat/kota/lokasi?lat=${lat}&lon=${lon}`);
+                const cityData = await findCity.json();
 
-        // 2. Fungsi Ambil Data dari API MyQuran
-        async function ambilDataJadwal(namaKota) {
-            container.innerHTML = '<div class="loading">⏳ Memperbarui jadwal untuk ' + namaKota + '...</div>';
-            
-            const tgl = new Date();
-            const y = tgl.getFullYear();
-            const m = String(tgl.getMonth() + 1).padStart(2, '0');
-            const d = String(tgl.getDate()).padStart(2, '0');
-            
-            // Tampilkan Tanggal Indonesia
-            const opsiTgl = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            dateDisplay.innerText = tgl.toLocaleDateString('id-ID', opsiTgl);
-
-            try {
-                // Step A: Cari ID Kota
-                const resCari = await fetch(`https://api.myquran.com/v2/sholat/kota/cari/${namaKota}`);
-                const dataCari = await resCari.json();
-
-                if (dataCari.data && dataCari.data.length > 0) {
-                    const idKota = dataCari.data[0].id;
-                    const namaResmi = dataCari.data[0].lokasi;
-                    cityDisplay.innerText = namaResmi;
-
-                    // Step B: Ambil Jadwal berdasarkan ID Kota
-                    const resJadwal = await fetch(`https://api.myquran.com/v2/sholat/jadwal/${idKota}/${y}/${m}/${d}`);
-                    const dataJadwal = await resJadwal.json();
-                    
-                    if (dataJadwal.status) {
-                        tampilkanKeLayar(dataJadwal.data.jadwal);
-                    }
+                if (cityData.status && cityData.data) {
+                    loadJadwal(cityData.data.id, cityData.data.lokasi);
                 } else {
-                    // Jika kota tidak ditemukan, coba cari Jakarta
-                    if (namaKota.toLowerCase() !== "jakarta") {
-                        ambilDataJadwal("Jakarta");
-                    } else {
-                        container.innerHTML = '<div class="loading error-msg">Maaf, database jadwal tidak tersedia.</div>';
-                    }
+                    loadJadwal("1301", "Jakarta"); // ID 1301 adalah Jakarta
                 }
             } catch (err) {
-                container.innerHTML = '<div class="loading">⚠️ Koneksi terputus. Pastikan internet aktif.</div>';
+                loadJadwal("1301", "Jakarta");
             }
         }
 
-        // 3. Fungsi Render HTML
-        function tampilkanKeLayar(j) {
-            const listSholat = [
-                { key: 'imsak', label: 'IMSAK' },
-                { key: 'subuh', label: 'SUBUH' },
-                { key: 'terbit', label: 'TERBIT' },
-                { key: 'dzuhur', label: 'DZUHUR' },
-                { key: 'ashar', label: 'ASHAR' },
-                { key: 'maghrib', label: 'MAGHRIB' },
-                { key: 'isya', label: 'ISYA' }
-            ];
+        async function loadJadwal(cityId, cityName) {
+            const today = new Date();
+            const y = today.getFullYear();
+            const m = today.getMonth() + 1;
+            const d = today.getDate();
 
-            container.innerHTML = "";
-            listSholat.forEach(s => {
-                container.innerHTML += `
-                    <div class="sholat-item">
-                        <span class="nama-sholat">${s.label}</span>
-                        <span class="waktu-sholat">${j[s.key]}</span>
-                    </div>
-                `;
-            });
+            document.getElementById('city-name').innerText = cityName;
+            document.getElementById('full-date').innerText = today.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+
+            try {
+                const res = await fetch(`https://api.myquran.com/v2/sholat/jadwal/${cityId}/${y}/${m}/${d}`);
+                const result = await res.json();
+                const jadwal = result.data.jadwal;
+
+                const times = [
+                    {n: 'Imsak', v: jadwal.imsak},
+                    {n: 'Subuh', v: jadwal.subuh},
+                    {n: 'Terbit', v: jadwal.terbit},
+                    {n: 'Dzuhur', v: jadwal.dzuhur},
+                    {n: 'Ashar', v: jadwal.ashar},
+                    {n: 'Maghrib', v: jadwal.maghrib},
+                    {n: 'Isya', v: jadwal.isya}
+                ];
+
+                let html = '';
+                times.forEach(t => {
+                    html += `
+                        <div class="sholat-row">
+                            <span class="label">${t.n.toUpperCase()}</span>
+                            <span class="time">${t.v}</span>
+                        </div>
+                    `;
+                });
+                document.getElementById('display-area').innerHTML = html;
+            } catch (e) {
+                document.getElementById('display-area').innerHTML = '<div class="loading-state">Gagal memuat jadwal.</div>';
+            }
         }
 
-        // 4. Fungsi Cari Manual
-        function cariManual() {
-            const input = document.getElementById('inputKota').value;
-            if (input) ambilDataJadwal(input);
+        async function cariManual() {
+            const query = document.getElementById('manualCity').value;
+            if(!query) return;
+            
+            try {
+                const res = await fetch(`https://api.myquran.com/v2/sholat/kota/cari/${query}`);
+                const data = await res.json();
+                if(data.data && data.data.length > 0) {
+                    loadJadwal(data.data[0].id, data.data[0].lokasi);
+                }
+            } catch(e) {}
         }
 
-        // Jalankan saat halaman dibuka
-        deteksiOtomatis();
+        initJadwal();
     </script>
 </body>
 </html>
