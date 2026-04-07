@@ -3,111 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shahih Bukhari - Berkah</title>
+    <title>Pencarian Shahih Bukhari - Berkah</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 50px; }
-        .header { background: #00a86b; color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 20px 20px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        body { background: #f1f5f9; color: #1e293b; padding-bottom: 40px; }
+        .header { background: #00a86b; color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 20px 20px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .btn-back { position: absolute; left: 20px; top: 27px; color: white; text-decoration: none; font-size: 20px; }
         
-        .filter-section { background: #f8fafc; padding: 15px 20px; position: sticky; top: 75px; z-index: 999; }
-        .filter-card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-        label { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; display: block; margin-bottom: 8px; padding-left: 5px; }
-        select { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 12px; font-size: 14px; font-weight: 600; color: #334155; outline: none; background-color: #f8fafc; cursor: pointer; }
+        .search-container { padding: 20px; position: sticky; top: 75px; z-index: 999; background: #f1f5f9; }
+        .search-box { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 8px; }
+        select { width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; font-weight: 600; color: #334155; outline: none; cursor: pointer; background: #fff; }
         
-        .hadist-list { padding: 0 20px; display: grid; gap: 20px; }
-        .hadist-card { background: white; padding: 22px; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
-        .hadist-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
-        .tag-no { background: #00a86b; color: white; padding: 3px 12px; border-radius: 50px; font-size: 11px; font-weight: 700; }
-        
-        .text-arab { font-family: 'Amiri', serif; font-size: 26px; text-align: right; line-height: 2; color: #0f172a; margin-bottom: 18px; direction: rtl; }
-        .text-indo { font-size: 14px; line-height: 1.8; color: #475569; text-align: justify; border-left: 3px solid #00a86b; padding-left: 15px; }
-        .status-msg { text-align: center; padding: 60px 20px; color: #64748b; font-size: 14px; }
+        .result-info { padding: 0 20px 10px; font-size: 13px; color: #64748b; font-weight: 500; }
+        .hadist-list { padding: 0 20px; display: grid; gap: 15px; }
+        .hadist-card { background: white; padding: 20px; border-radius: 18px; border: 1px solid #e2e8f0; }
+        .tag { display: inline-block; background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; margin-bottom: 12px; }
+        .text-arab { font-family: 'Amiri', serif; font-size: 24px; text-align: right; line-height: 1.8; color: #0f172a; margin-bottom: 15px; direction: rtl; }
+        .text-indo { font-size: 14px; line-height: 1.6; color: #334155; text-align: justify; }
+        .footer-ref { margin-top: 10px; font-size: 11px; color: #94a3b8; font-style: italic; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <a href="index.html" class="btn-back">⬅️</a>
-        <h2 style="font-size: 18px;">Shahih Al-Bukhari</h2>
+        <h2 style="font-size: 18px;">Pencarian Topik Bukhari</h2>
     </div>
 
-    <div class="filter-section">
-        <div class="filter-card">
-            <label>Pilih Topik Berdasarkan Kitab Asli</label>
-            <select id="topikBukhari" onchange="muatHadist()">
-                <option value="1">✨ Permulaan Wahyu & Niat</option>
-                <option value="7">🛡️ Kitab Iman</option>
-                <option value="67">📚 Kitab Ilmu</option>
-                <option value="135">🧼 Kitab Wudhu</option>
-                <option value="248">🚿 Kitab Mandi (Ghusl)</option>
-                <option value="322">🕋 Kitab Shalat</option>
-                <option value="504">⏰ Waktu-Waktu Shalat</option>
-                <option value="584">🕌 Kitab Adzan</option>
-                <option value="603">👥 Shalat Berjamaah & Imam</option>
-                <option value="1308">💰 Kitab Zakat</option>
-                <option value="1417">🕋 Kitab Haji & Umrah</option>
-                <option value="1772">🌙 Kitab Shaum (Puasa)</option>
-                <option value="1901">🤝 Kitab Jual Beli</option>
-                <option value="2486">💍 Kitab Nikah</option>
-                <option value="5023">🥣 Kitab Makanan</option>
-                <option value="5223">🥤 Kitab Minuman</option>
-                <option value="5333">💊 Kitab Pengobatan/Kedokteran</option>
-                <option value="5737">🤝 Kitab Adab & Akhlak</option>
-                <option value="5911">🤲 Kitab Doa & Dzikir</option>
+    <div class="search-container">
+        <div class="search-box">
+            <label>Telusuri Berdasarkan Topik Spesifik</label>
+            <select id="topicSelector" onchange="searchHadist()">
+                <option value="pilih">-- Pilih Topik --</option>
+                <option value="niat">Niat & Keikhlasan</option>
+                <option value="sholat">Tata Cara Sholat</option>
+                <option value="puasa">Keutamaan Puasa</option>
+                <option value="akhlak">Akhlak & Adab</option>
+                <option value="ilmu">Menuntut Ilmu</option>
+                <option value="rezeki">Jual Beli & Rezeki</option>
             </select>
         </div>
     </div>
 
-    <div id="container-hadist" class="hadist-list"></div>
+    <div id="resultInfo" class="result-info"></div>
+    <div id="hadistContainer" class="hadist-list"></div>
 
     <script>
-        const view = document.getElementById('container-hadist');
-        const select = document.getElementById('topikBukhari');
+        // Database Hadist Terpilih (Koleksi dari 4000 Hadist Shahih Bukhari)
+        const dbHadist = {
+            "niat": [
+                { no: 1, arab: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ", indo: "Sesungguhnya setiap perbuatan tergantung niatnya. Dan setiap orang akan mendapatkan sesuai dengan apa yang ia niatkan." },
+                { no: 54, arab: "إِذَا أَنْفَقَ الرَّجُلُ عَلَى أَهْلِهِ يَحْتَسِبُهَا فَهُوَ لَهُ صَدَقَةٌ", indo: "Jika seorang muslim memberi nafkah kepada keluarganya dengan niat mengharap pahala (ikhlas), maka nafkah itu bernilai sedekah baginya." }
+            ],
+            "sholat": [
+                { no: 631, arab: "صَلُّوا كَمَا رَأَيْتُمُونِي أُصَلِّي", indo: "Shalatlah kalian sebagaimana kalian melihat aku (Rasulullah) shalat." },
+                { no: 724, arab: "كَانَ يَرْفَعُ يَدَيْهِ حَذْوَ مَنْكِبَيْهِ إِذَا افْتَتَحَ الصَّلاَةَ", indo: "Rasulullah SAW mengangkat kedua tangannya sejajar dengan pundaknya ketika memulai shalat (Takbiratul Ihram)." },
+                { no: 644, arab: "صَلاَةُ الْجَمَاعَةِ تَفْضُلُ صَلاَةَ الْفَذِّ بِسَبْعٍ وَعِشْرِينَ دَرَجَةً", indo: "Shalat berjamaah lebih utama dua puluh tujuh derajat dibanding shalat sendirian." }
+            ],
+            "puasa": [
+                { no: 1894, arab: "مَنْ لَمْ يَدَعْ قَوْلَ الزُّورِ وَالْعَمَلَ بِهِ فَلَيْسَ لِلَّهِ حَاجَةٌ فِي أَنْ يَدَعَ طَعَامَهُ وَشَرَابَهُ", indo: "Barangsiapa yang tidak meninggalkan perkataan dusta malah mengamalkannya, maka Allah tidak butuh rasa lapar dan haus yang ia tahan (puasanya sia-sia)." },
+                { no: 1901, arab: "إِذَا جَاءَ رَمَضَانُ فُتِّحَتْ أَبْوَابُ الْجَنَّةِ", indo: "Apabila bulan Ramadhan tiba, pintu-pintu surga dibuka, pintu neraka ditutup, dan setan-setan dibelenggu." }
+            ],
+            "akhlak": [
+                { no: 6035, arab: "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ", indo: "Barangsiapa beriman kepada Allah dan hari akhir, hendaklah ia berkata baik atau diam." },
+                { no: 13, arab: "لاَ يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبَّ لِنَفْسِهِ", indo: "Tidak sempurna iman salah seorang di antara kalian hingga ia mencintai saudaranya sebagaimana ia mencintai dirinya sendiri." },
+                { no: 6013, arab: "إِنَّ مِنْ خِيَارِكُمْ أَحْسَنَكُمْ أَخْلاَقًا", indo: "Sesungguhnya yang terbaik di antara kalian adalah yang paling baik akhlaknya." }
+            ],
+            "ilmu": [
+                { no: 71, arab: "مَنْ يُرِدِ اللَّهُ بِهِ خَيْرًا يُفَقِّهْهُ فِي الدِّينِ", indo: "Barangsiapa yang Allah kehendaki kebaikan baginya, maka Allah akan memahamkan dia dalam urusan agama." },
+                { no: 100, arab: "إِنَّ اللَّهَ لاَ يَقْبِضُ الْعِلْمَ انْتِزَاعًا يَنْتَزِعُهُ مِنَ الْعِبَادِ", indo: "Sesungguhnya Allah tidak mencabut ilmu dengan sekali cabut dari dada manusia, melainkan dengan mewafatkan para ulama." }
+            ],
+            "rezeki": [
+                { no: 2079, arab: "الْبَيِّعَانِ بِالْخِيَارِ مَا لَمْ يَتَفَرَّقَا", indo: "Dua orang yang berjual beli memiliki hak khiyar (memilih antara lanjut atau batal) selama keduanya belum berpisah." },
+                { no: 2083, arab: "مَا أَكَلَ أَحَدٌ طَعَامًا قَطُّ خَيْرًا مِنْ أَنْ يَأْكُلَ مِنْ عَمَلِ يَدِهِ", indo: "Tidak ada makanan yang lebih baik yang dimakan seseorang kecuali makanan yang berasal dari hasil usaha tangannya sendiri." }
+            ]
+        };
 
-        // Fungsi fetch data tunggal
-        async function fetchSatu(nomor) {
-            try {
-                const res = await fetch(`https://api.myquran.com/v2/hadits/bukhari/${nomor}`);
-                const data = await res.json();
-                if (data.status) {
-                    const h = data.data;
-                    return `
-                        <div class="hadist-card">
-                            <div class="hadist-header">
-                                <span style="font-weight:800; color:#00a86b; font-size:11px;">SHAHIH BUKHARI</span>
-                                <span class="tag-no">NO. ${h.number}</span>
-                            </div>
-                            <div class="text-arab">${h.arab}</div>
-                            <div class="text-indo">${h.id}</div>
-                        </div>
-                    `;
-                }
-            } catch (e) { return ''; }
-            return '';
-        }
-
-        async function muatHadist() {
-            view.innerHTML = '<div class="status-msg">⏳ Mengambil 5 hadits sesuai topik...</div>';
-            const nomorAwal = parseInt(select.value);
-            let htmlFinal = '';
-
-            // Looping untuk mengambil 5 hadits sekaligus
-            for (let i = 0; i < 5; i++) {
-                const hasil = await fetchSatu(nomorAwal + i);
-                if (hasil) htmlFinal += hasil;
+        function searchHadist() {
+            const topic = document.getElementById('topicSelector').value;
+            const container = document.getElementById('hadistContainer');
+            const info = document.getElementById('resultInfo');
+            
+            if (topic === "pilih") {
+                container.innerHTML = "";
+                info.innerText = "";
+                return;
             }
 
-            if (htmlFinal) {
-                view.innerHTML = htmlFinal;
-            } else {
-                view.innerHTML = '<div class="status-msg">⚠️ Gagal memuat data. Periksa koneksi internet Bapak.</div>';
-            }
+            const results = dbHadist[topic];
+            info.innerText = `Ditemukan ${results.length} hadis pilihan untuk topik ini.`;
+            
+            let html = "";
+            results.forEach(h => {
+                html += `
+                    <div class="hadist-card">
+                        <span class="tag">Shahih Bukhari</span>
+                        <div class="text-arab">${h.arab}</div>
+                        <div class="text-indo">${h.indo}</div>
+                        <div class="footer-ref">HR. Bukhari No. ${h.no}</div>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
         }
-
-        // Tampilan Pertama: Munculkan 5 Hadits Awal (Wahyu)
-        window.onload = muatHadist;
     </script>
 </body>
 </html>
