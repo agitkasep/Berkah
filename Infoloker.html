@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agit Search Engine - Terverifikasi</title>
+    <title>Agit Loker - Filter Seminggu</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; }
@@ -12,56 +12,57 @@
         .header { background: #00a86b; color: #fff; padding: 25px 20px; text-align: center; border-radius: 0 0 25px 25px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .btn-back { position: absolute; left: 20px; top: 27px; color: #fff; text-decoration: none; font-size: 20px; }
 
-        .search-container { padding: 25px 20px; }
+        .search-container { padding: 20px; }
         .search-card { background: #fff; padding: 10px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); display: flex; gap: 8px; border: 1px solid #e2e8f0; }
-        input { flex: 1; padding: 12px 15px; border: none; font-size: 15px; outline: none; background: transparent; }
+        input { flex: 1; padding: 12px; border: none; font-size: 15px; outline: none; background: transparent; }
         .btn-go { background: #00a86b; color: white; border: none; padding: 0 20px; border-radius: 10px; font-weight: 700; cursor: pointer; }
 
         .display-area { padding: 0 20px; }
         
-        /* Kartu Loker Terverifikasi */
-        .job-card { background: #fff; padding: 20px; border-radius: 18px; margin-bottom: 15px; border: 1px solid #e2e8f0; animation: fadeInUp 0.4s ease; }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        /* Kartu Loker */
+        .job-card { background: #fff; padding: 20px; border-radius: 18px; margin-bottom: 15px; border: 1px solid #e2e8f0; animation: fadeInUp 0.4s ease; position: relative; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         
-        .badge-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-        .job-source { font-size: 9px; font-weight: 800; padding: 4px 10px; border-radius: 50px; text-transform: uppercase; background: #e2e8f0; color: #475569; }
-        .verified-tag { font-size: 9px; font-weight: 800; color: #00a86b; }
+        .badge-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .date-tag { font-size: 10px; font-weight: 700; color: #64748b; background: #f1f5f9; padding: 4px 8px; border-radius: 5px; }
+        .source-tag { font-size: 9px; font-weight: 800; color: #00a86b; text-transform: uppercase; }
 
-        .job-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 5px; }
-        .job-company { font-size: 13px; color: #00a86b; font-weight: 700; margin-bottom: 10px; display: block; }
+        .job-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+        .job-company { font-size: 13px; color: #00a86b; font-weight: 700; margin-bottom: 12px; display: block; }
         
-        .contact-box { background: #f8fafc; padding: 10px; border-radius: 10px; margin: 10px 0; border: 1px dashed #cbd5e1; }
-        .contact-item { font-size: 12px; color: #334155; margin-bottom: 3px; display: block; font-weight: 600; }
+        .contact-box { background: #f0fdf4; padding: 12px; border-radius: 10px; margin: 10px 0; border: 1px solid #dcfce7; }
+        .contact-item { font-size: 12px; color: #166534; margin-bottom: 4px; display: block; font-weight: 600; }
         
-        .job-desc { font-size: 13px; color: #64748b; line-height: 1.6; margin-bottom: 15px; }
-        .link-src { display: block; text-align: center; padding: 10px; background: #f1f5f9; color: #1e293b; text-decoration: none; border-radius: 10px; font-size: 11px; font-weight: 700; transition: 0.2s; }
-        .link-src:active { background: #e2e8f0; }
+        .job-desc { font-size: 13px; color: #475569; line-height: 1.6; margin-bottom: 15px; }
+        .btn-link { display: block; text-align: center; padding: 10px; background: #1e293b; color: #fff; text-decoration: none; border-radius: 10px; font-size: 11px; font-weight: 700; }
 
-        .empty-state { text-align: center; padding: 60px 30px; color: #94a3b8; }
+        .empty-state { text-align: center; padding: 50px 20px; color: #94a3b8; font-size: 14px; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <a href="index.html" class="btn-back">⬅</a>
-        <h2 style="font-size: 18px;">Loker Terverifikasi</h2>
+        <h2 style="font-size: 18px;">Arsip Loker 7 Hari</h2>
     </div>
 
     <div class="search-container">
         <div class="search-card">
-            <input type="text" id="jobInput" placeholder="Cari posisi atau perusahaan..." onkeyup="if(event.key === 'Enter') searchJob()">
+            <input type="text" id="jobInput" placeholder="Cari posisi (misal: Welder)...">
             <button class="btn-go" onclick="searchJob()">CARI</button>
         </div>
     </div>
 
     <div id="contentDisplay" class="display-area">
         <div class="empty-state">
-            <p>Gunakan kata kunci <b>"Welder"</b> atau <b>"Purchasing"</b> untuk melihat data yang sudah dilengkapi kontak & sumber asli.</p>
+            <p>Sistem akan menampilkan loker terverifikasi dari <b>hari ini hingga 7 hari ke belakang.</b></p>
         </div>
     </div>
 
     <script>
-        // Data yang sudah disaring sesuai aturan Bapak
+        // Tanggal Hari Ini (2026-04-07)
+        const hariIni = new Date("2026-04-07");
+
         const lokerDB = [
             { 
                 t: "Welder Konstruksi Baja", 
@@ -69,42 +70,76 @@
                 l: "Cikarang", 
                 email: "hrd@teknikperdana.co.id", 
                 hp: "0812-3456-7890",
-                d: "Mencari tukang las berpengalaman untuk proyek pabrik baru. Sertifikasi welder aktif diutamakan.", 
+                d: "Mencari tukang las berpengalaman untuk proyek pabrik baru.", 
                 s: "Facebook",
-                url: "https://www.facebook.com/search/top?q=loker%20welder%20cikarang"
+                url: "https://facebook.com",
+                tgl: "2026-04-07" // Hari Ini
+            },
+            { 
+                t: "Senior Welder", 
+                c: "Agit Jaya Steel", 
+                l: "Bekasi", 
+                email: "karir@agitjaya.com", 
+                hp: "0899-8877-6655",
+                d: "Dibutuhkan tenaga ahli las argon untuk industri alat berat.", 
+                s: "Threads",
+                url: "https://threads.net",
+                tgl: "2026-04-05" // 2 Hari Lalu
             },
             { 
                 t: "Staff Purchasing", 
                 c: "Rera Mulia Perkasa", 
-                l: "Pasar Minggu", 
-                email: "reramuliaperkasa@gmail.com", 
-                hp: "0857-1122-3344",
-                d: "Urgently hiring staff purchasing berpengalaman di bidangnya lebih dari 2 tahun.", 
-                s: "Threads",
-                url: "https://www.threads.net/search?q=purchasing%20pasar%20minggu"
+                l: "Jakarta", 
+                email: "reramulia@gmail.com", 
+                hp: "0857-0000-1111",
+                d: "Hiring staff purchasing untuk kebutuhan bahan baku konstruksi.", 
+                s: "LinkedIn",
+                url: "https://linkedin.com",
+                tgl: "2026-04-01" // 6 Hari Lalu
+            },
+            { 
+                t: "Admin Gudang (Expired)", 
+                c: "Toko Lama", 
+                l: "Bogor", 
+                email: "expired@test.com", 
+                hp: "000",
+                d: "Ini tidak akan muncul karena sudah lebih dari 7 hari.", 
+                s: "Facebook",
+                url: "#",
+                tgl: "2026-03-20" // Sudah 18 hari lalu (AKAN TERFILTER KELUAR)
             }
         ];
+
+        function selisihHari(tglLoker) {
+            const tglPost = new Date(tglLoker);
+            const diffTime = Math.abs(hariIni - tglPost);
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
 
         function searchJob() {
             const query = document.getElementById('jobInput').value.toLowerCase();
             const display = document.getElementById('contentDisplay');
 
-            if (query.trim() === "") return;
+            if (!query) return;
 
-            // Filter data yang cocok dengan query
-            const results = lokerDB.filter(item => 
-                item.t.toLowerCase().includes(query) || 
-                item.c.toLowerCase().includes(query)
-            );
+            // FILTER: 1. Harus cocok query, 2. Maksimal 7 hari yang lalu
+            const results = lokerDB.filter(item => {
+                const cocokQuery = item.t.toLowerCase().includes(query) || item.c.toLowerCase().includes(query);
+                const jarakHari = selisihHari(item.tgl);
+                return cocokQuery && jarakHari <= 7;
+            });
 
             if (results.length > 0) {
                 let html = "";
                 results.forEach(job => {
+                    const selisih = selisihHari(job.tgl);
+                    const labelTgl = selisih === 0 ? "Baru Saja" : `${selisih} Hari Lalu`;
+                    
                     html += `
                         <div class="job-card">
                             <div class="badge-row">
-                                <span class="job-source">${job.s}</span>
-                                <span class="verified-tag">✓ KONTAK TERSEDIA</span>
+                                <span class="source-tag">${job.s}</span>
+                                <span class="date-tag">🕒 ${labelTgl}</span>
                             </div>
                             <div class="job-title">${job.t}</div>
                             <span class="job-company">${job.c} • ${job.l}</span>
@@ -115,17 +150,13 @@
                             </div>
 
                             <div class="job-desc">${job.d}</div>
-                            <a href="${job.url}" target="_blank" class="link-src">LIHAT SUMBER INFORMASI ↗</a>
+                            <a href="${job.url}" target="_blank" class="btn-link">SUMBER ASLI ↗</a>
                         </div>
                     `;
                 });
                 display.innerHTML = html;
             } else {
-                display.innerHTML = `
-                    <div class="empty-state">
-                        <p>Maaf, tidak ada loker untuk "${query}" yang menyertakan kontak lengkap saat ini.</p>
-                    </div>
-                `;
+                display.innerHTML = `<div class="empty-state">Data tidak ditemukan atau sudah kadaluwarsa (>7 hari).</div>`;
             }
         }
     </script>
