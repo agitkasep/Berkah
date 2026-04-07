@@ -1,115 +1,69 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Loker Instan - Berkah</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f4f4f4; color: #1a1a1a; }
-        
-        .header { background: #00a86b; color: white; padding: 20px; text-align: center; border-radius: 0 0 15px 15px; position: sticky; top: 0; z-index: 1000; }
-        .btn-back { position: absolute; left: 15px; top: 20px; text-decoration: none; font-size: 20px; }
-
-        .update-banner { padding: 15px 20px; font-size: 11px; font-weight: 800; color: #666; text-transform: uppercase; background: #f4f4f4; }
-
-        .feed { padding: 0 15px 30px; }
-        .card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 12px; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        
-        .card-top { display: flex; align-items: center; margin-bottom: 10px; position: relative; }
-        .avatar { width: 35px; height: 35px; border-radius: 50%; background: #00a86b; margin-right: 10px; color: white; text-align: center; line-height: 35px; font-weight: bold; font-size: 12px; }
-        .user-name { font-size: 13px; font-weight: 700; }
-        .time { font-size: 11px; color: #999; font-weight: 400; }
-        
-        .badge { position: absolute; right: 0; top: 0; font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 5px; background: #000; color: #fff; }
-
-        .content { font-size: 14px; line-height: 1.5; color: #333; margin-bottom: 12px; }
-        .email { color: #00a86b; font-weight: 700; }
-
-        .footer { border-top: 1px solid #eee; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; }
-        .link-src { font-size: 12px; font-weight: 700; color: #00a86b; text-decoration: none; }
-    </style>
-</head>
-<body>
-
-    <div class="header">
-        <a href="index.html" class="btn-back">⬅️</a>
-        <h2 style="font-size: 16px;">Search Engine Loker</h2>
-    </div>
-
-    <div class="update-banner" id="dateDisplay">MEMUAT...</div>
-
-    <div class="feed" id="mainFeed">
-        <!-- Loker akan muncul di sini secara otomatis -->
-    </div>
-
-    <script>
-        const data = [
-            {
-                u: "reraaasovani",
-                t: "5 jam",
-                s: "Threads",
-                c: "Urgently hiring staff purchasing tapi yang sudah berpengalaman di bidangnya lebih dari 2 thn ya untuk area Pasar Minggu Jakarta Selatan. Kirim CV ke email: <span class='email'>reramuliaperkasa@gmail.com</span> Thank u ✨",
-                l: "https://www.threads.net/"
-            },
-            {
-                u: "HRD_Global_Tech",
-                t: "2 jam",
-                s: "LinkedIn",
-                c: "Dibutuhkan segera Operator Produksi untuk penempatan di Cikarang. Usia maks 23 thn. Daftar melalui website resmi kami.",
-                l: "https://www.linkedin.com/jobs"
-            },
-            {
-                u: "InfoLokerJakarta",
-                t: "8 jam",
-                s: "Facebook",
-                c: "LOKER KURIR MOTOR! Area Jakarta Barat. Gaji pokok + uang bensin. Min punya SIM C aktif.",
-                l: "https://www.facebook.com/"
-            },
-            {
-                u: "Agit_Studio",
-                t: "1 jam",
-                s: "Instagram",
-                c: "Looking for Freelance Video Editor! Paham penggunaan AI Tools lebih diutamakan. Kirim portfolio ke DM.",
-                l: "https://www.instagram.com/"
-            },
-            {
-                u: "Bakti_Husada",
-                t: "10 jam",
-                s: "Threads",
-                c: "Lowongan Perawat Gigi (Dental Assistant). Penempatan Jakarta Selatan. Syarat: STR Aktif & Ramah.",
-                l: "https://www.threads.net/"
-            }
-        ];
-
-        function start() {
-            const feed = document.getElementById('mainFeed');
-            const dateStr = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
-            document.getElementById('dateDisplay').innerText = "INFO TERBARU • " + dateStr;
-
-            let html = "";
-            // Menampilkan semua tanpa diacak agar prosesnya super cepat (Zero Delay)
-            data.forEach(item => {
-                html += `
-                <div class="card">
-                    <div class="card-top">
-                        <div class="avatar">${item.u.charAt(0).toUpperCase()}</div>
-                        <div class="user-name">${item.u} <span class="time">• ${item.t}</span></div>
-                        <div class="badge">${item.s}</div>
-                    </div>
-                    <div class="content">${item.c}</div>
-                    <div class="footer">
-                        <span style="font-size:11px; color:#999">❤️ Tersedia</span>
-                        <a href="${item.l}" target="_blank" class="link-src">Buka Sumber ↗️</a>
-                    </div>
-                </div>`;
-            });
-            feed.innerHTML = html;
+<script>
+    const data = [
+        {
+            u: "reraaasovani",
+            t: "5 jam",
+            s: "Threads",
+            c: "Urgently hiring staff purchasing tapi yang sudah berpengalaman di bidangnya lebih dari 2 thn ya untuk area Pasar Minggu Jakarta Selatan. Kirim CV ke email: <span class='email'>reramuliaperkasa@gmail.com</span> Thank u ✨",
+            // Link langsung ke pencarian user di Threads
+            l: "https://www.threads.net/search?q=purchasing%20pasar%20minggu"
+        },
+        {
+            u: "HRD_Global_Tech",
+            t: "2 jam",
+            s: "LinkedIn",
+            c: "Dibutuhkan segera Operator Produksi untuk penempatan di Cikarang. Usia maks 23 thn. Daftar melalui website resmi kami.",
+            // Link langsung ke filter loker operator produksi di LinkedIn
+            l: "https://www.linkedin.com/jobs/search/?keywords=operator%20produksi%20cikarang"
+        },
+        {
+            u: "InfoLokerJakarta",
+            t: "8 jam",
+            s: "Facebook",
+            c: "LOKER KURIR MOTOR! Area Jakarta Barat. Gaji pokok + uang bensin. Min punya SIM C aktif.",
+            // Link langsung ke grup loker/pencarian FB
+            l: "https://www.facebook.com/search/top?q=loker%20kurir%20motor%20jakarta%20barat"
+        },
+        {
+            u: "Agit_Studio",
+            t: "1 jam",
+            s: "Instagram",
+            c: "Looking for Freelance Video Editor! Paham penggunaan AI Tools lebih diutamakan. Kirim portfolio ke DM.",
+            // Link ke explore tag video editor
+            l: "https://www.instagram.com/explore/tags/loker-video-editor/"
+        },
+        {
+            u: "Bakti_Husada",
+            t: "10 jam",
+            s: "Threads",
+            c: "Lowongan Perawat Gigi (Dental Assistant). Penempatan Jakarta Selatan. Syarat: STR Aktif & Ramah.",
+            l: "https://www.threads.net/search?q=perawat%20gigi%20jakarta"
         }
+    ];
 
-        // Jalankan langsung tanpa menunggu apapun
-        start();
-    </script>
-</body>
-</html>
+    function start() {
+        const feed = document.getElementById('mainFeed');
+        const dateStr = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
+        document.getElementById('dateDisplay').innerText = "INFO TERBARU • " + dateStr;
+
+        let html = "";
+        data.forEach(item => {
+            html += `
+            <div class="card">
+                <div class="card-top">
+                    <div class="avatar">${item.u.charAt(0).toUpperCase()}</div>
+                    <div class="user-name">${item.u} <span class="time">• ${item.t}</span></div>
+                    <div class="badge">${item.s}</div>
+                </div>
+                <div class="content">${item.c}</div>
+                <div class="footer">
+                    <span style="font-size:11px; color:#999">❤️ Tersedia</span>
+                    <a href="${item.l}" target="_blank" class="link-src">Lihat Postingan Asli ↗️</a>
+                </div>
+            </div>`;
+        });
+        feed.innerHTML = html;
+    }
+
+    start();
+</script>
