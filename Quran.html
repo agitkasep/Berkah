@@ -3,40 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waktu Sholat - Berkah</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <title>Al-Qur'an Digital - Berkah</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: #f4f7f6; color: #1e293b; }
         
+        /* Navigasi */
         .nav-header { 
-            display: flex; align-items: center; padding: 20px; 
-            background: white; border-bottom: 1px solid #eee; 
+            display: flex; align-items: center; padding: 15px 20px; 
+            background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100;
         }
-        .btn-back { 
-            text-decoration: none; font-size: 20px; margin-right: 15px; color: #00a86b; 
+        .btn-back { text-decoration: none; font-size: 18px; margin-right: 15px; color: #00a86b; cursor: pointer; }
+        .title { font-size: 16px; font-weight: 700; }
+
+        /* Search Bar */
+        .search-container { padding: 15px 20px; background: white; }
+        .search-input {
+            width: 100%; padding: 12px 15px; border: 1px solid #e2e8f0;
+            border-radius: 12px; outline: none; font-size: 14px; background: #f8fafc;
         }
-        .title { font-size: 18px; font-weight: 700; }
+
+        /* Daftar Surat */
+        .surat-list { padding: 10px 20px; display: grid; gap: 10px; }
+        .surat-item {
+            background: white; padding: 15px; border-radius: 15px;
+            display: flex; align-items: center; justify-content: space-between;
+            text-decoration: none; color: inherit; border: 1px solid #f1f5f9;
+        }
+        .surat-left { display: flex; align-items: center; gap: 15px; }
+        .nomor-surat { 
+            width: 35px; height: 35px; background: #f0fff4; color: #00a86b; 
+            display: flex; align-items: center; justify-content: center; 
+            border-radius: 10px; font-weight: 700; font-size: 12px;
+        }
+        .nama-latin { font-size: 14px; font-weight: 700; color: #334155; }
+        .arti-surat { font-size: 11px; color: #64748b; }
+        .nama-arab { font-family: 'Amiri', serif; font-size: 20px; color: #00a86b; font-weight: 700; }
+
+        /* Detail Surat (Ayat) */
+        #detail-surat { display: none; padding-bottom: 40px; }
+        .ayat-item { padding: 25px 20px; border-bottom: 1px solid #eee; background: white; }
+        .ayat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .nomor-ayat { color: #00a86b; font-weight: 700; font-size: 14px; }
+        .teks-arab { 
+            font-family: 'Amiri', serif; font-size: 28px; text-align: right; 
+            line-height: 2.2; margin-bottom: 15px; color: #0f172a;
+        }
+        .teks-latin { font-size: 13px; color: #00a86b; font-style: italic; margin-bottom: 8px; line-height: 1.5; }
+        .teks-terjemahan { font-size: 13px; color: #475569; line-height: 1.6; }
         
-        .content { padding: 20px; text-align: center; }
-        .card { 
-            background: white; padding: 25px; border-radius: 20px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 10px;
-        }
+        .audio-player { width: 100%; margin-top: 15px; height: 35px; }
+
+        .loading { text-align: center; padding: 50px; color: #64748b; font-size: 14px; }
     </style>
 </head>
 <body>
 
-    <div class="nav-header">
-        <a href="index.html" class="btn-back">⬅️</a>
-        <div class="title">Waktu Sholat</div>
-    </div>
-
-    <div class="content">
-        <div class="card">
-            <p>Konten Waktu Sholat sedang dalam pengembangan...</p>
+    <!-- Header & Search -->
+    <div id="main-view">
+        <div class="nav-header">
+            <a href="index.html" class="btn-back">⬅️</a>
+            <div class="title">Al-Qur'an Digital</div>
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchSurat" class="search-input" placeholder="Cari nama surat..." onkeyup="filterSurat()">
+        </div>
+        <div id="list-container" class="surat-list">
+            <div class="loading">Memuat daftar surat...</div>
         </div>
     </div>
 
+    <!-- Detail View -->
+    <div id="detail-surat">
+        <div class="nav-header">
+            <div class="btn-back" onclick="backToList()">⬅️</div>
+            <div class="title" id="judul-surat">Nama Surat</div>
+        </div>
+        <div id="ayat-container"></div>
+    </div>
+
+    <script>
+        let dataSurat = [];
+
+        // 1. Ambil Daftar Surat
+        async function getDaftarSurat() {
+            try {
+                const res = await fetch('https://equran.id/api/v2/surat');
+                const json = await res.json();
+                dataSurat = json.data;
+                renderSurat(dataSurat);
+            } catch (e) {
+                document.getElementById('list-container').innerHTML = "Gagal memuat data.";
+            }
+        }
+
+        // 2. Tampilkan List Surat
+        function renderSurat(list) {
+            const container = document.getElementById('list-container');
+            container.innerHTML = "";
+            list.forEach(s => {
+                container.innerHTML += `
+                    <div class="surat-item" onclick="getDetailSurat(${s.nomor})">
+                        <div class="surat-left">
+                            <div class="nomor-surat">${s.nomor}</div>
+                            <div>
+                                <div class="nama-latin">${s.namaLatin}</div>
+                                <div class="arti-surat">${s.arti} (${s.jumlahAyat} Ayat)</div>
+                            </div>
+                        </div>
+                        <div class="nama-arab">${s.nama}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // 3. Filter Pencarian
+        function filterSurat() {
+            const q = document.getElementById('searchSurat').value.toLowerCase();
+            const filtered = dataSurat.filter(s => s.namaLatin.toLowerCase().includes(q));
+            renderSurat(filtered);
+        }
+
+        // 4. Ambil Detail Ayat
+        async function getDetailSurat(nomor) {
+            window.scrollTo(0,0);
+            document.getElementById('main-view').style.display = "none";
+            document.getElementById('detail-surat').style.display = "block";
+            document.getElementById('ayat-container').innerHTML = '<div class="loading">Memuat ayat...</div>';
+
+            try {
+                const res = await fetch(`https://equran.id/api/v2/surat/${nomor}`);
+                const json = await res.json();
+                const s = json.data;
+
+                document.getElementById('judul-surat').innerText = s.namaLatin;
+                
+                let html = `<div style="padding: 20px; text-align: center; background: #fff; margin-bottom: 10px;">
+                                <audio controls class="audio-player">
+                                    <source src="${s.audioFull['05']}" type="audio/mpeg">
+                                </audio>
+                                <p style="font-size: 11px; margin-top: 8px; color: #64748b;">Putar Murottal Surat</p>
+                            </div>`;
+
+                s.ayat.forEach(a => {
+                    html += `
+                        <div class="ayat-item">
+                            <div class="ayat-header">
+                                <div class="nomor-ayat">${a.nomorAyat}</div>
+                            </div>
+                            <div class="teks-arab">${a.teksArab}</div>
+                            <div class="teks-latin">${a.teksLatin}</div>
+                            <div class="teks-terjemahan">${a.teksIndonesia}</div>
+                        </div>
+                    `;
+                });
+                document.getElementById('ayat-container').innerHTML = html;
+            } catch (e) {
+                alert("Gagal memuat ayat.");
+            }
+        }
+
+        function backToList() {
+            document.getElementById('main-view').style.display = "block";
+            document.getElementById('detail-surat').style.display = "none";
+        }
+
+        getDaftarSurat();
+    </script>
 </body>
 </html>
