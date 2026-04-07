@@ -8,41 +8,23 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background-color: #f4f7f6; color: #1e293b; padding-bottom: 40px; }
-
-        /* HEADER */
-        .header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 20px; background: white; border-bottom: 1px solid #eee;
-        }
+        .header { display: flex; justify-content: space-between; align-items: center; padding: 20px; background: white; border-bottom: 1px solid #eee; }
         .user-profile { display: flex; align-items: center; gap: 12px; }
         .logo-box { width: 45px; height: 45px; background: #00a86b; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
         .logo-box img { width: 25px; height: 25px; }
         .user-info h2 { font-size: 18px; font-weight: 700; color: #00a86b; }
         .user-info p { font-size: 10px; color: #64748b; font-weight: 600; }
         .foto-profil { width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 2px solid #00a86b; }
-
-        /* WIDGET DOA HARIAN */
-        .doa-container {
-            margin: 15px 20px; padding: 20px; background: white; border-radius: 20px;
-            text-align: center; border-left: 5px solid #00a86b; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
+        .doa-container { margin: 15px 20px; padding: 20px; background: white; border-radius: 20px; text-align: center; border-left: 5px solid #00a86b; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .doa-judul { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
         .doa-arab { font-size: 22px; font-weight: 700; margin-bottom: 10px; line-height: 1.8; color: #0f172a; direction: rtl; }
         .doa-arti { font-size: 11px; color: #64748b; font-style: italic; line-height: 1.5; }
-
-        /* JADWAL SHOLAT MINI */
         .sholat-mini { margin: 0 20px 20px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
         .sholat-box { background: #00a86b; color: white; padding: 10px 5px; border-radius: 12px; text-align: center; }
         .sholat-box span { font-size: 8px; display: block; opacity: 0.9; }
         .sholat-box b { font-size: 11px; display: block; }
-
-        /* MENU GRID */
         .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 20px; }
-        .menu-item {
-            background: white; padding: 15px 10px; border-radius: 18px;
-            display: flex; flex-direction: column; align-items: center; text-align: center;
-            text-decoration: none; color: inherit; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
+        .menu-item { background: white; padding: 15px 10px; border-radius: 18px; display: flex; flex-direction: column; align-items: center; text-align: center; text-decoration: none; color: inherit; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         .menu-item:active { transform: scale(0.95); background: #f0fff4; }
         .menu-icon { font-size: 24px; margin-bottom: 8px; }
         .menu-item span { font-size: 9px; font-weight: 700; color: #334155; line-height: 1.2; text-transform: uppercase; }
@@ -67,7 +49,6 @@
         <div class="doa-arti" id="arti-doa"></div>
     </div>
 
-    <!-- Jadwal Sholat Mini -->
     <div class="sholat-mini">
         <div class="sholat-box"><span>Subuh</span><b id="j-subuh">--:--</b></div>
         <div class="sholat-box"><span>Dzuhur</span><b id="j-dzuhur">--:--</b></div>
@@ -77,11 +58,7 @@
     </div>
 
     <div class="menu-grid">
-        <!-- LINK KE HALAMAN BARU ANDA -->
-        <a href="jadwal-sholat.html" class="menu-item">
-            <div class="menu-icon">🕌</div><span>Waktu Sholat</span>
-        </a>
-        
+        <a href="jadwal-sholat.html" class="menu-item"><div class="menu-icon">🕌</div><span>Waktu Sholat</span></a>
         <a href="quran.html" class="menu-item"><div class="menu-icon">📖</div><span>Al-Qur'an & Audio</span></a>
         <a href="hadist.html" class="menu-item"><div class="menu-icon">📚</div><span>Hadist Bukhori</span></a>
         <a href="loker.html" class="menu-item"><div class="menu-icon">💼</div><span>Info Loker</span></a>
@@ -96,129 +73,16 @@
     </div>
 
     <script>
-        // Data Doa Tetap Instan
         const widgetDoa = [
             { judul: "Doa Sapu Jagad", arab: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", arti: "Ya Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan lindungilah kami dari azab neraka." },
             { judul: "Doa Kedua Orang Tua", arab: "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا", arti: "Ya Tuhanku, ampunilah dosaku dan dosa kedua orang tuaku, dan sayangilah mereka sebagaimana mereka mendidikku di waktu kecil." }
         ];
 
         function updateUI() {
-            // Waktu
             const sekarang = new Date();
-            document.getElementById('tgl-jam').innerText = sekarang.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
+            const opsi = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
+            document.getElementById('tgl-jam').innerText = sekarang.toLocaleDateString('id-ID', opsi).toUpperCase();
             
-            // Doa
-            const doa = widgetDoa[sekarang.getDate() % widgetDoa.length];
-      <!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Berkah - Aplikasi Islami</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: #f4f7f6; color: #1e293b; padding-bottom: 40px; }
-
-        /* HEADER */
-        .header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 20px; background: white; border-bottom: 1px solid #eee;
-        }
-        .user-profile { display: flex; align-items: center; gap: 12px; }
-        .logo-box { width: 45px; height: 45px; background: #00a86b; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
-        .logo-box img { width: 25px; height: 25px; }
-        .user-info h2 { font-size: 18px; font-weight: 700; color: #00a86b; }
-        .user-info p { font-size: 10px; color: #64748b; font-weight: 600; }
-        .foto-profil { width: 40px; height: 40px; border-radius: 50%; background: #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 20px; border: 2px solid #00a86b; }
-
-        /* WIDGET DOA HARIAN */
-        .doa-container {
-            margin: 15px 20px; padding: 20px; background: white; border-radius: 20px;
-            text-align: center; border-left: 5px solid #00a86b; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-        }
-        .doa-judul { font-size: 14px; font-weight: 700; color: #1e293b; margin-bottom: 8px; }
-        .doa-arab { font-size: 22px; font-weight: 700; margin-bottom: 10px; line-height: 1.8; color: #0f172a; direction: rtl; }
-        .doa-arti { font-size: 11px; color: #64748b; font-style: italic; line-height: 1.5; }
-
-        /* JADWAL SHOLAT MINI */
-        .sholat-mini { margin: 0 20px 20px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-        .sholat-box { background: #00a86b; color: white; padding: 10px 5px; border-radius: 12px; text-align: center; }
-        .sholat-box span { font-size: 8px; display: block; opacity: 0.9; }
-        .sholat-box b { font-size: 11px; display: block; }
-
-        /* MENU GRID */
-        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 20px; }
-        .menu-item {
-            background: white; padding: 15px 10px; border-radius: 18px;
-            display: flex; flex-direction: column; align-items: center; text-align: center;
-            text-decoration: none; color: inherit; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-        .menu-item:active { transform: scale(0.95); background: #f0fff4; }
-        .menu-icon { font-size: 24px; margin-bottom: 8px; }
-        .menu-item span { font-size: 9px; font-weight: 700; color: #334155; line-height: 1.2; text-transform: uppercase; }
-    </style>
-</head>
-<body>
-
-    <div class="header">
-        <div class="user-profile">
-            <div class="logo-box"><img src="logo.svg" alt="L"></div>
-            <div class="user-info">
-                <h2>BERKAH</h2>
-                <p id="tgl-jam">MEMUAT...</p>
-            </div>
-        </div>
-        <div class="foto-profil">👤</div>
-    </div>
-
-    <div class="doa-container">
-        <div class="doa-judul" id="judul-doa">Memuat Doa...</div>
-        <div class="doa-arab" id="arab-doa"></div>
-        <div class="doa-arti" id="arti-doa"></div>
-    </div>
-
-    <!-- Jadwal Sholat Mini -->
-    <div class="sholat-mini">
-        <div class="sholat-box"><span>Subuh</span><b id="j-subuh">--:--</b></div>
-        <div class="sholat-box"><span>Dzuhur</span><b id="j-dzuhur">--:--</b></div>
-        <div class="sholat-box"><span>Ashar</span><b id="j-ashar">--:--</b></div>
-        <div class="sholat-box"><span>Maghrib</span><b id="j-maghrib">--:--</b></div>
-        <div class="sholat-box"><span>Isya</span><b id="j-isya">--:--</b></div>
-    </div>
-
-    <div class="menu-grid">
-        <!-- LINK KE HALAMAN BARU ANDA -->
-        <a href="jadwal-sholat.html" class="menu-item">
-            <div class="menu-icon">🕌</div><span>Waktu Sholat</span>
-        </a>
-        
-        <a href="quran.html" class="menu-item"><div class="menu-icon">📖</div><span>Al-Qur'an & Audio</span></a>
-        <a href="hadist.html" class="menu-item"><div class="menu-icon">📚</div><span>Hadist Bukhori</span></a>
-        <a href="loker.html" class="menu-item"><div class="menu-icon">💼</div><span>Info Loker</span></a>
-        <a href="berita.html" class="menu-item"><div class="menu-icon">📰</div><span>Berita</span></a>
-        <a href="alat.html" class="menu-item"><div class="menu-icon">🛠️</div><span>Alat</span></a>
-        <a href="toko.html" class="menu-item"><div class="menu-icon">🛒</div><span>Toko Kita</span></a>
-        <a href="donasi.html" class="menu-item"><div class="menu-icon">🎁</div><span>Donasi</span></a>
-        <a href="https://wa.me/628123456789" class="menu-item"><div class="menu-icon">💬</div><span>Live Chat</span></a>
-        <a href="statistik.html" class="menu-item"><div class="menu-icon">👥</div><span>Pengunjung</span></a>
-        <a href="donatur.html" class="menu-item"><div class="menu-icon">🤝</div><span>Donatur</span></a>
-        <a href="laporan.html" class="menu-item"><div class="menu-icon">📊</div><span>Laporan</span></a>
-    </div>
-
-    <script>
-        // Data Doa Tetap Instan
-        const widgetDoa = [
-            { judul: "Doa Sapu Jagad", arab: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", arti: "Ya Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan lindungilah kami dari azab neraka." },
-            { judul: "Doa Kedua Orang Tua", arab: "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا", arti: "Ya Tuhanku, ampunilah dosaku dan dosa kedua orang tuaku, dan sayangilah mereka sebagaimana mereka mendidikku di waktu kecil." }
-        ];
-
-        function updateUI() {
-            // Waktu
-            const sekarang = new Date();
-            document.getElementById('tgl-jam').innerText = sekarang.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).toUpperCase();
-            
-            // Doa
             const doa = widgetDoa[sekarang.getDate() % widgetDoa.length];
             document.getElementById('judul-doa').innerText = doa.judul;
             document.getElementById('arab-doa').innerText = doa.arab;
@@ -236,7 +100,9 @@
                 document.getElementById('j-ashar').innerText = j.ashar;
                 document.getElementById('j-maghrib').innerText = j.maghrib;
                 document.getElementById('j-isya').innerText = j.isya;
-            } catch (e) {}
+            } catch (e) {
+                console.log("Error mengambil jadwal");
+            }
         }
 
         updateUI();
@@ -244,28 +110,3 @@
     </script>
 </body>
 </html>
-      document.getElementById('judul-doa').innerText = doa.judul;
-            document.getElementById('arab-doa').innerText = doa.arab;
-            document.getElementById('arti-doa').innerText = doa.arti;
-        }
-
-        async function ambilSholat() {
-            try {
-                const s = new Date();
-                const res = await fetch(`https://api.myquran.com/v2/sholat/jadwal/1301/${s.getFullYear()}/${s.getMonth()+1}/${s.getDate()}`);
-                const d = await res.json();
-                const j = d.data.jadwal;
-                document.getElementById('j-subuh').innerText = j.subuh;
-                document.getElementById('j-dzuhur').innerText = j.dzuhur;
-                document.getElementById('j-ashar').innerText = j.ashar;
-                document.getElementById('j-maghrib').innerText = j.maghrib;
-                document.getElementById('j-isya').innerText = j.isya;
-            } catch (e) {}
-        }
-
-        updateUI();
-        ambilSholat();
-    </script>
-</body>
-        </html>
-            
