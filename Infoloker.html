@@ -3,40 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Waktu Sholat - Berkah</title>
+    <title>Bursa Loker AI - Berkah</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: #f4f7f6; color: #1e293b; }
+        body { background: #f1f5f9; color: #1e293b; padding-bottom: 30px; }
         
-        .nav-header { 
-            display: flex; align-items: center; padding: 20px; 
-            background: white; border-bottom: 1px solid #eee; 
-        }
-        .btn-back { 
-            text-decoration: none; font-size: 20px; margin-right: 15px; color: #00a86b; 
-        }
-        .title { font-size: 18px; font-weight: 700; }
+        .header { background: #00a86b; color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 20px 20px; position: sticky; top: 0; z-index: 1000; }
+        .btn-back { position: absolute; left: 20px; top: 27px; color: white; text-decoration: none; font-size: 20px; }
+
+        .search-area { padding: 20px; }
+        .category-scroll { display: flex; overflow-x: auto; gap: 10px; padding: 0 20px 15px; scrollbar-width: none; }
+        .category-scroll::-webkit-scrollbar { display: none; }
+        .cat-btn { background: white; padding: 8px 18px; border-radius: 50px; font-size: 12px; font-weight: 600; white-space: nowrap; border: 1px solid #e2e8f0; color: #64748b; }
+        .cat-btn.active { background: #00a86b; color: white; border-color: #00a86b; }
+
+        .loker-container { padding: 0 20px; display: grid; gap: 15px; }
+        .loker-card { background: white; padding: 18px; border-radius: 16px; border: 1px solid #e2e8f0; position: relative; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
         
-        .content { padding: 20px; text-align: center; }
-        .card { 
-            background: white; padding: 25px; border-radius: 20px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 10px;
-        }
+        .date-tag { font-size: 10px; color: #ef4444; font-weight: 700; margin-bottom: 5px; display: block; text-transform: uppercase; }
+        .source-badge { position: absolute; right: 18px; top: 18px; font-size: 9px; font-weight: 800; padding: 4px 8px; border-radius: 6px; }
+        
+        /* Warna Source */
+        .li { background: #e0f2fe; color: #0369a1; }
+        .fb { background: #e7f3ff; color: #1877f2; }
+        .ig { background: #fdf2f8; color: #db2777; }
+        .th { background: #f3f4f6; color: #000000; }
+
+        .job-title { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 4px; width: 75%; }
+        .company { font-size: 12px; color: #00a86b; font-weight: 600; margin-bottom: 12px; }
+        .job-meta { font-size: 11px; color: #64748b; display: flex; gap: 10px; }
+        
+        .btn-detail { margin-top: 15px; display: block; width: 100%; padding: 10px; background: #f8fafc; color: #334155; text-align: center; border-radius: 10px; text-decoration: none; font-size: 12px; font-weight: 700; border: 1px solid #e2e8f0; }
     </style>
 </head>
 <body>
 
-    <div class="nav-header">
+    <div class="header">
         <a href="index.html" class="btn-back">⬅️</a>
-        <div class="title">Waktu Sholat</div>
+        <h2 style="font-size: 17px;">Update Loker Harian</h2>
     </div>
 
-    <div class="content">
-        <div class="card">
-            <p>Konten Waktu Sholat sedang dalam pengembangan...</p>
-        </div>
+    <div class="search-area">
+        <p id="todayDate" style="font-size: 12px; font-weight: 700; color: #64748b; margin-bottom: 10px;">MEMUAT INFO TERBARU...</p>
     </div>
 
+    <div class="category-scroll">
+        <div class="cat-btn active">Semua</div>
+        <div class="cat-btn">Driver/Kurir</div>
+        <div class="cat-btn">Admin/Kantor</div>
+        <div class="cat-btn">Pabrik/Produksi</div>
+        <div class="cat-btn">Kreatif/AI</div>
+    </div>
+
+    <div class="loker-container" id="lokerDisplay">
+        <!-- JS akan merender 5 loker di sini -->
+    </div>
+
+    <script>
+        // Database 20 Loker (Akan diacak 5 setiap hari)
+        const masterLoker = [
+            { title: "Driver Ojek Online", co: "Gojek Indonesia", loc: "Jakarta", src: "FB", type: "Driver" },
+            { title: "Admin Marketplace", co: "Toko Berkah Jaya", loc: "Bekasi", src: "IG", type: "Admin" },
+            { title: "Operator Produksi", co: "PT. Astra Component", loc: "Cikarang", src: "LI", type: "Pabrik" },
+            { title: "Video Editor AI", co: "Agit Creative", loc: "Remote", src: "TH", type: "Kreatif" },
+            { title: "Kurir Paket Express", co: "J&T Cargo", loc: "Tangerang", src: "FB", type: "Driver" },
+            { title: "Staff Gudang", co: "Shopee Warehouse", loc: "Depok", src: "LI", type: "Pabrik" },
+            { title: "Resepsionis", co: "Hotel Santika", loc: "Jakarta", src: "IG", type: "Admin" },
+            { title: "Security", co: "Garda Utama", loc: "Bogor", src: "FB", type: "Umum" },
+            { title: "Content Creator", co: "Threads Media", loc: "Jakarta", src: "TH", type: "Kreatif" },
+            { title: "Sales Counter", co: "Erafone", loc: "Bandung", src: "IG", type: "Admin" },
+            { title: "Quality Control", co: "PT. Epson", loc: "Batam", src: "LI", type: "Pabrik" },
+            { title: "Social Media Specialist", co: "Digital Lab", loc: "Surabaya", src: "TH", type: "Kreatif" },
+            { title: "Driver Logistik", co: "Indomaret Group", loc: "Jakarta", src: "FB", type: "Driver" },
+            { title: "Data Entry", co: "Fintech Sejahtera", loc: "Remote", src: "LI", type: "Admin" },
+            { title: "Teknisi Mesin", co: "PT. Mayora", loc: "Tangerang", src: "IG", type: "Pabrik" }
+        ];
+
+        function updateLoker() {
+            const container = document.getElementById('lokerDisplay');
+            const dateLabel = document.getElementById('todayDate');
+            
+            // Set Tanggal Hari Ini
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateLabel.innerText = "UPDATE: " + now.toLocaleDateString('id-ID', options).toUpperCase();
+
+            // Logika "Daily Seed": Mengacak berdasarkan tanggal agar 5 loker tetap sama seharian tapi ganti besoknya
+            const seed = now.getDate() + now.getMonth(); 
+            let shuffled = [...masterLoker].sort(() => 0.5 - Math.random() * seed);
+            let selected = shuffled.slice(0, 5); // Ambil 5 saja
+
+            let html = "";
+            selected.forEach(job => {
+                const badgeClass = job.src.toLowerCase();
+                html += `
+                    <div class="loker-card">
+                        <span class="date-tag">Baru Saja Post</span>
+                        <span class="source-badge ${badgeClass}">${job.src}</span>
+                        <div class="job-title">${job.title}</div>
+                        <div class="company">${job.co}</div>
+                        <div class="job-meta">
+                            <span>📍 ${job.loc}</span>
+                            <span>💼 ${job.type}</span>
+                        </div>
+                        <a href="#" class="btn-detail">Hubungi HRD</a>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+
+        window.onload = updateLoker;
+    </script>
 </body>
 </html>
