@@ -3,77 +3,89 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kajian Hadist - Berkah</title>
+    <title>Shahih Bukhari Lengkap - Berkah</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f8fafc; color: #1e293b; padding-bottom: 40px; }
-        .header { background: #00a86b; color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 25px 25px; position: sticky; top: 0; z-index: 1000; }
+        body { background: #f4f7f6; color: #1e293b; padding-bottom: 50px; }
+        
+        /* Header */
+        .header { background: #00a86b; color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 25px 25px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
         .btn-back { position: absolute; left: 20px; top: 27px; color: white; text-decoration: none; font-size: 20px; }
-        .filter-card { background: white; margin: 15px 20px; padding: 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; position: sticky; top: 80px; z-index: 999; }
-        label { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; display: block; margin-bottom: 5px; }
-        select { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 10px; font-size: 14px; margin-bottom: 10px; outline: none; background: #f8fafc; font-weight: 600; }
+        
+        /* Filter Kategori */
+        .filter-section { background: #f4f7f6; padding: 15px 20px; position: sticky; top: 75px; z-index: 999; }
+        .filter-card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        label { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; display: block; margin-bottom: 8px; padding-left: 5px; }
+        select { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 12px; font-size: 14px; font-weight: 600; color: #334155; outline: none; background-color: #f8fafc; appearance: none; cursor: pointer; }
+        select:focus { border-color: #00a86b; background: white; }
+
+        /* List Hadist */
         .hadist-list { padding: 0 20px; display: grid; gap: 20px; }
-        .hadist-card { background: white; padding: 20px; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .hadist-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
-        .perawi-tag { font-weight: 800; color: #00a86b; font-size: 11px; text-transform: uppercase; }
-        .nomor-tag { background: #00a86b; color: white; padding: 2px 8px; border-radius: 50px; font-size: 11px; }
-        .text-arab { font-family: 'Amiri', serif; font-size: 26px; text-align: right; line-height: 1.9; margin-bottom: 15px; direction: rtl; color: #0f172a; }
-        .text-indo { font-size: 14px; line-height: 1.7; color: #475569; text-align: justify; }
-        .status-box { text-align: center; padding: 50px; color: #64748b; font-size: 14px; }
+        .hadist-card { background: white; padding: 22px; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: 0.3s; }
+        .hadist-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; border-bottom: 1px solid #f1f5f9; padding-bottom: 12px; }
+        .tag-bukhari { font-size: 11px; font-weight: 800; color: #00a86b; text-transform: uppercase; letter-spacing: 0.5px; }
+        .tag-no { background: #00a86b; color: white; padding: 3px 12px; border-radius: 50px; font-size: 11px; font-weight: 700; }
+        
+        .text-arab { font-family: 'Amiri', serif; font-size: 26px; text-align: right; line-height: 2; color: #0f172a; margin-bottom: 20px; direction: rtl; }
+        .text-indo { font-size: 15px; line-height: 1.8; color: #475569; text-align: justify; border-left: 3px solid #00a86b; padding-left: 15px; }
+        
+        .status-msg { text-align: center; padding: 60px 20px; color: #64748b; font-size: 14px; line-height: 1.6; }
+        .loader { border: 3px solid #f3f3f3; border-top: 3px solid #00a86b; border-radius: 50%; width: 25px; height: 25px; animation: spin 1s linear infinite; display: inline-block; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
 
     <div class="header">
         <a href="index.html" class="btn-back">⬅️</a>
-        <h2 style="font-size: 18px;">Kajian Fiqih & Hadist</h2>
+        <h2 style="font-size: 18px;">Shahih Al-Bukhari</h2>
     </div>
 
-    <div class="filter-card">
-        <label>Kategori Ilmu Fiqih</label>
-        <select id="selectTopik" onchange="muatHadist()">
-            <option value="1">📖 Wahyu & Permulaan Iman</option>
-            <option value="21">💡 Ilmu & Pengetahuan</option>
-            <option value="51">🧼 Thaharah (Bersuci)</option>
-            <option value="101">🕋 Sholat & Waktu</option>
-            <option value="151">🕌 Adzan & Berjamaah</option>
-            <option value="201">💰 Zakat & Sedekah</option>
-            <option value="251">🌙 Puasa & I'tikaf</option>
-            <option value="301">🕋 Haji & Umrah</option>
-            <option value="351">🤝 Jual Beli (Muamalah)</option>
-            <option value="401">💍 Nikah & Keluarga</option>
-        </select>
-
-        <label>Pilih Perawi</label>
-        <select id="selectPerawi" onchange="muatHadist()">
-            <option value="bukhari">Shahih Bukhari</option>
-            <option value="muslim">Shahih Muslim</option>
-            <option value="abu-daud">Sunan Abu Dawud</option>
-            <option value="tirmidzi">Sunan Tirmidzi</option>
-            <option value="nasai">Sunan Nasai</option>
-            <option value="ibnu-majah">Sunan Ibnu Majah</option>
-            <option value="ahmad">Musnad Ahmad</option>
-        </select>
+    <div class="filter-section">
+        <div class="filter-card">
+            <label>Pilih Topik Hadist (Detail)</label>
+            <select id="topikBukhari" onchange="muatHadistBukhari()">
+                <option value="1">✨ Wahyu & Niat</option>
+                <option value="7">🛡️ Iman & Islam</option>
+                <option value="51">📚 Ilmu Pengetahuan</option>
+                <option value="133">🧼 Thaharah (Wudhu)</option>
+                <option value="245">🚿 Mandi Wajib</option>
+                <option value="301">🕋 Sholat (Dasar)</option>
+                <option value="500">⏰ Waktu-Waktu Sholat</option>
+                <option value="580">🕌 Adzan & Iqamah</option>
+                <option value="600">👥 Sholat Berjamaah</option>
+                <option value="1000">🕌 Masjid & Kiblat</option>
+                <option value="1300">💰 Zakat & Sedekah</option>
+                <option value="1770">🌙 Puasa (Saum)</option>
+                <option value="1400">🕋 Haji & Umrah</option>
+                <option value="1900">🤝 Jual Beli (Muamalah)</option>
+                <option value="2500">💍 Nikah & Keluarga</option>
+                <option value="3000">🥣 Makanan & Minuman</option>
+                <option value="3500">⚖️ Hukum & Peradilan</option>
+                <option value="3800">🤲 Doa & Dzikir</option>
+            </select>
+        </div>
     </div>
 
-    <div id="hadist-view" class="hadist-list"></div>
+    <div id="container-hadist" class="hadist-list"></div>
 
     <script>
-        const view = document.getElementById('hadist-view');
+        const view = document.getElementById('container-hadist');
+        const select = document.getElementById('topikBukhari');
 
-        async function ambilData(slug, nomor) {
+        // Fungsi fetch data dengan proteksi error
+        async function ambilDataBukhari(nomor) {
             try {
-                // Menggunakan API MyQuran (Backup & Lebih Stabil)
-                const res = await fetch(`https://api.myquran.com/v2/hadits/${slug}/${nomor}`);
-                const data = await res.json();
-                if (data.status) {
-                    const h = data.data;
+                const response = await fetch(`https://api.myquran.com/v2/hadits/bukhari/${nomor}`);
+                const resJson = await response.json();
+                if (resJson.status) {
+                    const h = resJson.data;
                     return `
                         <div class="hadist-card">
                             <div class="hadist-header">
-                                <span class="perawi-tag">${slug.replace('-',' ')}</span>
-                                <span class="nomor-tag">No. ${h.number}</span>
+                                <span class="tag-bukhari">Shahih Bukhari</span>
+                                <span class="tag-no">No. ${h.number}</span>
                             </div>
                             <div class="text-arab">${h.arab}</div>
                             <div class="text-indo">${h.id}</div>
@@ -84,25 +96,30 @@
             return '';
         }
 
-        async function muatHadist() {
-            view.innerHTML = '<div class="status-box">⏳ Membuka Kitab...</div>';
-            const perawi = document.getElementById('selectPerawi').value;
-            const nomor = document.getElementById('selectTopik').value;
+        async function muatHadistBukhari() {
+            view.innerHTML = '<div class="status-msg"><div class="loader"></div><br>Membuka Kitab Shahih Bukhari...</div>';
             
-            let html = '';
-            // Kita ambil 3 hadist agar loading cepat dan aman dari blokir
-            for(let i=0; i<3; i++) {
-                html += await ambilData(perawi, parseInt(nomor) + i);
+            const nomorAwal = parseInt(select.value);
+            let htmlResult = '';
+
+            // Mengambil 5 hadist berurutan agar konten terasa detail
+            for (let i = 0; i < 5; i++) {
+                const item = await ambilDataBukhari(nomorAwal + i);
+                if (item) htmlResult += item;
             }
-            
-            view.innerHTML = html || '<div class="status-box">Maaf, koneksi ke server hadist terputus. Coba ganti perawi lain.</div>';
+
+            if (htmlResult) {
+                view.innerHTML = htmlResult;
+            } else {
+                view.innerHTML = '<div class="status-msg">⚠️ Gagal terhubung ke server. Pastikan internet aktif dan coba lagi.</div>';
+            }
         }
 
-        // Langsung munculkan Bukhari No 1 saat pertama buka
+        // Tampilan Standar: Bukhari No 1 (Hadist Niat)
         window.onload = async () => {
-            view.innerHTML = '<div class="status-box">⏳ Menyiapkan Kajian Utama...</div>';
-            const dataAwal = await ambilData('bukhari', 1);
-            view.innerHTML = dataAwal;
+            view.innerHTML = '<div class="status-msg"><div class="loader"></div><br>Menyiapkan Kajian Utama...</div>';
+            const intro = await ambilDataBukhari(1);
+            view.innerHTML = intro || '<div class="status-msg">Silakan pilih topik di atas.</div>';
         };
     </script>
 </body>
