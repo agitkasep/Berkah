@@ -3,28 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kajian Hadist Lengkap - Berkah</title>
+    <title>Kajian Hadist - Berkah</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #f8fafc; color: #1e293b; padding-bottom: 40px; }
-        .header { background: #00a86b; color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 25px 25px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .header { background: #00a86b; color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 25px 25px; position: sticky; top: 0; z-index: 1000; }
         .btn-back { position: absolute; left: 20px; top: 27px; color: white; text-decoration: none; font-size: 20px; }
-        
-        .filter-container { background: #f8fafc; padding: 15px 20px; position: sticky; top: 75px; z-index: 999; }
-        .filter-card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); border: 1px solid #e2e8f0; }
-        label { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; display: block; margin-bottom: 5px; padding-left: 5px; }
-        select { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 10px; font-size: 14px; font-weight: 600; color: #334155; outline: none; margin-bottom: 12px; background-color: #f8fafc; }
-        
+        .filter-card { background: white; margin: 15px 20px; padding: 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; position: sticky; top: 80px; z-index: 999; }
+        label { font-size: 10px; font-weight: 800; color: #94a3b8; text-transform: uppercase; display: block; margin-bottom: 5px; }
+        select { width: 100%; padding: 12px; border: 2px solid #f1f5f9; border-radius: 10px; font-size: 14px; margin-bottom: 10px; outline: none; background: #f8fafc; font-weight: 600; }
         .hadist-list { padding: 0 20px; display: grid; gap: 20px; }
         .hadist-card { background: white; padding: 20px; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .hadist-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
-        .perawi-tag { font-size: 11px; font-weight: 800; color: #00a86b; text-transform: uppercase; }
-        .nomor-tag { background: #00a86b; color: white; padding: 3px 10px; border-radius: 50px; font-size: 11px; font-weight: 700; }
-        
-        .text-arab { font-family: 'Amiri', serif; font-size: 26px; text-align: right; line-height: 1.9; color: #0f172a; margin-bottom: 15px; direction: rtl; }
+        .hadist-header { display: flex; justify-content: space-between; margin-bottom: 15px; border-bottom: 1px solid #f1f5f9; padding-bottom: 10px; }
+        .perawi-tag { font-weight: 800; color: #00a86b; font-size: 11px; text-transform: uppercase; }
+        .nomor-tag { background: #00a86b; color: white; padding: 2px 8px; border-radius: 50px; font-size: 11px; }
+        .text-arab { font-family: 'Amiri', serif; font-size: 26px; text-align: right; line-height: 1.9; margin-bottom: 15px; direction: rtl; color: #0f172a; }
         .text-indo { font-size: 14px; line-height: 1.7; color: #475569; text-align: justify; }
-        .status-box { text-align: center; padding: 40px; color: #64748b; font-size: 14px; }
+        .status-box { text-align: center; padding: 50px; color: #64748b; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -34,57 +30,49 @@
         <h2 style="font-size: 18px;">Kajian Fiqih & Hadist</h2>
     </div>
 
-    <div class="filter-container">
-        <div class="filter-card">
-            <label>Kategori Ilmu Fiqih Detail</label>
-            <select id="selectTopik" onchange="muatHadist()">
-                <option value="1-10">📖 Wahyu & Permulaan Iman</option>
-                <option value="11-30">💡 Ilmu & Pengetahuan</option>
-                <option value="31-60">🧼 Thaharah (Bersuci)</option>
-                <option value="61-90">🕋 Sholat (Rukun & Syarat)</option>
-                <option value="91-120">⏰ Waktu-Waktu Sholat</option>
-                <option value="121-150">🕌 Adzan & Berjamaah</option>
-                <option value="151-180">💰 Zakat & Sedekah</option>
-                <option value="181-210">🌙 Puasa & I'tikaf</option>
-                <option value="211-240">🕋 Haji & Umrah</option>
-                <option value="241-270">🤝 Jual Beli (Muamalah)</option>
-                <option value="271-300">💍 Nikah & Keluarga</option>
-                <option value="301-330">🥣 Makanan & Minuman</option>
-            </select>
+    <div class="filter-card">
+        <label>Kategori Ilmu Fiqih</label>
+        <select id="selectTopik" onchange="muatHadist()">
+            <option value="1">📖 Wahyu & Permulaan Iman</option>
+            <option value="21">💡 Ilmu & Pengetahuan</option>
+            <option value="51">🧼 Thaharah (Bersuci)</option>
+            <option value="101">🕋 Sholat & Waktu</option>
+            <option value="151">🕌 Adzan & Berjamaah</option>
+            <option value="201">💰 Zakat & Sedekah</option>
+            <option value="251">🌙 Puasa & I'tikaf</option>
+            <option value="301">🕋 Haji & Umrah</option>
+            <option value="351">🤝 Jual Beli (Muamalah)</option>
+            <option value="401">💍 Nikah & Keluarga</option>
+        </select>
 
-            <label>Pilih Perawi</label>
-            <select id="selectPerawi" onchange="muatHadist()">
-                <option value="bukhari">Shahih Bukhari</option>
-                <option value="muslim">Shahih Muslim</option>
-                <option value="abu-daud">Sunan Abu Dawud</option>
-                <option value="tirmidzi">Sunan Tirmidzi</option>
-                <option value="nasai">Sunan Nasai</option>
-                <option value="ibnu-majah">Sunan Ibnu Majah</option>
-                <option value="ahmad">Musnad Ahmad</option>
-            </select>
-        </div>
+        <label>Pilih Perawi</label>
+        <select id="selectPerawi" onchange="muatHadist()">
+            <option value="bukhari">Shahih Bukhari</option>
+            <option value="muslim">Shahih Muslim</option>
+            <option value="abu-daud">Sunan Abu Dawud</option>
+            <option value="tirmidzi">Sunan Tirmidzi</option>
+            <option value="nasai">Sunan Nasai</option>
+            <option value="ibnu-majah">Sunan Ibnu Majah</option>
+            <option value="ahmad">Musnad Ahmad</option>
+        </select>
     </div>
 
     <div id="hadist-view" class="hadist-list"></div>
 
     <script>
         const view = document.getElementById('hadist-view');
-        const perawi = document.getElementById('selectPerawi');
-        const topik = document.getElementById('selectTopik');
 
-        // Fungsi pembantu untuk memberi jeda (agar API tidak error)
-        const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-
-        async function fetchSatuHadist(slug, nomor) {
+        async function ambilData(slug, nomor) {
             try {
-                const res = await fetch(`https://api.hadits.gading.dev/books/${slug}/${nomor}`);
+                // Menggunakan API MyQuran (Backup & Lebih Stabil)
+                const res = await fetch(`https://api.myquran.com/v2/hadits/${slug}/${nomor}`);
                 const data = await res.json();
-                if (data.code === 200) {
-                    const h = data.data.contents;
+                if (data.status) {
+                    const h = data.data;
                     return `
                         <div class="hadist-card">
                             <div class="hadist-header">
-                                <span class="perawi-tag">${data.data.name}</span>
+                                <span class="perawi-tag">${slug.replace('-',' ')}</span>
                                 <span class="nomor-tag">No. ${h.number}</span>
                             </div>
                             <div class="text-arab">${h.arab}</div>
@@ -97,26 +85,24 @@
         }
 
         async function muatHadist() {
-            view.innerHTML = '<div class="status-box">⏳ Membuka kitab...</div>';
-            const slug = perawi.value;
-            const [awal, akhir] = topik.value.split('-');
+            view.innerHTML = '<div class="status-box">⏳ Membuka Kitab...</div>';
+            const perawi = document.getElementById('selectPerawi').value;
+            const nomor = document.getElementById('selectTopik').value;
+            
             let html = '';
-
-            // Mengambil 5 hadist berurutan dengan jeda singkat
-            for (let i = parseInt(awal); i < parseInt(awal) + 5; i++) {
-                const data = await fetchSatuHadist(slug, i);
-                if (data) html += data;
-                await delay(300); // Jeda 0,3 detik
+            // Kita ambil 3 hadist agar loading cepat dan aman dari blokir
+            for(let i=0; i<3; i++) {
+                html += await ambilData(perawi, parseInt(nomor) + i);
             }
             
-            view.innerHTML = html || '<div class="status-box">Gagal memuat data. Silakan coba perawi lain atau ulangi sebentar lagi.</div>';
+            view.innerHTML = html || '<div class="status-box">Maaf, koneksi ke server hadist terputus. Coba ganti perawi lain.</div>';
         }
 
-        // Tampilan awal: Shahih Bukhari No 1 (Hadist tentang Niat)
+        // Langsung munculkan Bukhari No 1 saat pertama buka
         window.onload = async () => {
-            view.innerHTML = '<div class="status-box">⏳ Menyiapkan kajian...</div>';
-            const intro = await fetchSatuHadist('bukhari', 1);
-            view.innerHTML = intro || '<div class="status-box">Klik kategori untuk mulai membaca.</div>';
+            view.innerHTML = '<div class="status-box">⏳ Menyiapkan Kajian Utama...</div>';
+            const dataAwal = await ambilData('bukhari', 1);
+            view.innerHTML = dataAwal;
         };
     </script>
 </body>
