@@ -3,110 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agit Loker Engine - Instan</title>
+    <title>Agit Studio - Search Engine Loker</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f1f5f9; color: #1e293b; padding-bottom: 50px; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 50px; }
         
-        .header { background: #00a86b; color: #fff; padding: 20px; text-align: center; border-radius: 0 0 20px 20px; position: sticky; top: 0; z-index: 100; }
-        .btn-back { position: absolute; left: 20px; top: 22px; color: #fff; text-decoration: none; font-size: 18px; }
+        /* Header Premium */
+        .header { background: #00a86b; color: #fff; padding: 25px 20px; text-align: center; border-radius: 0 0 25px 25px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .btn-back { position: absolute; left: 20px; top: 27px; color: #fff; text-decoration: none; font-size: 20px; }
 
-        .search-container { padding: 20px; }
-        .search-card { background: #fff; padding: 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
-        .input-group { display: flex; gap: 8px; }
-        input { flex: 1; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 14px; outline: none; }
-        .btn-go { background: #00a86b; color: white; border: none; padding: 0 15px; border-radius: 10px; font-weight: bold; cursor: pointer; }
+        .search-container { padding: 25px 20px; }
+        .search-card { background: #fff; padding: 10px; border-radius: 15px; box-shadow: 0 8px 20px rgba(0,0,0,0.06); display: flex; gap: 8px; border: 1px solid #e2e8f0; }
+        input { flex: 1; padding: 12px 15px; border: none; font-size: 15px; outline: none; background: transparent; }
+        .btn-go { background: #00a86b; color: white; border: none; padding: 0 20px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; }
+        .btn-go:active { transform: scale(0.95); background: #008f5a; }
 
-        .result-info { padding: 0 20px 10px; font-size: 12px; color: #64748b; font-weight: 600; }
-        .feed { padding: 0 20px; }
+        /* Area Hasil & Instruksi */
+        .display-area { padding: 0 20px; }
         
-        /* Kartu Loker di Dalam Halaman */
-        .job-item { background: #fff; padding: 18px; border-radius: 15px; margin-bottom: 12px; border: 1px solid #e2e8f0; animation: fadeIn 0.3s ease; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+        .empty-state { text-align: center; padding: 60px 30px; color: #94a3b8; }
+        .empty-icon { font-size: 50px; margin-bottom: 15px; display: block; }
+        .empty-title { font-size: 16px; font-weight: 700; color: #475569; margin-bottom: 8px; }
+        .empty-desc { font-size: 13px; line-height: 1.6; }
+        .highlight { color: #00a86b; font-weight: 700; }
+
+        /* Kartu Loker */
+        .job-card { background: #fff; padding: 20px; border-radius: 18px; margin-bottom: 15px; border: 1px solid #e2e8f0; animation: fadeInUp 0.4s ease forwards; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
         
-        .job-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .job-tag { background: #dcfce7; color: #166534; font-size: 10px; font-weight: 800; padding: 4px 8px; border-radius: 5px; }
-        .job-title { font-size: 15px; font-weight: 700; color: #0f172a; margin-bottom: 3px; }
-        .job-company { font-size: 12px; color: #00a86b; font-weight: 600; }
-        .job-desc { font-size: 13px; color: #475569; line-height: 1.5; margin-top: 10px; padding-top: 10px; border-top: 1px solid #f1f5f9; }
-        .job-footer { margin-top: 12px; font-size: 11px; color: #94a3b8; font-weight: 500; }
+        .job-source { display: inline-block; font-size: 9px; font-weight: 800; padding: 4px 10px; border-radius: 50px; margin-bottom: 10px; text-transform: uppercase; }
+        .source-th { background: #000; color: #fff; }
+        .source-fb { background: #1877f2; color: #fff; }
+        .source-li { background: #0077b5; color: #fff; }
+
+        .job-title { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 5px; }
+        .job-info { font-size: 12px; color: #00a86b; font-weight: 600; margin-bottom: 12px; }
+        .job-desc { font-size: 13px; color: #64748b; line-height: 1.6; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <a href="index.html" class="btn-back">⬅</a>
-        <h2 style="font-size: 16px;">AI Search Loker Live</h2>
+        <h2 style="font-size: 18px; letter-spacing: 0.5px;">Search Engine Loker</h2>
     </div>
 
     <div class="search-container">
         <div class="search-card">
-            <div class="input-group">
-                <input type="text" id="searchInput" placeholder="Cari posisi atau kota..." value="Admin">
-                <button class="btn-go" onclick="searchNow()">CARI</button>
-            </div>
+            <input type="text" id="jobInput" placeholder="Ketik posisi kerja..." onkeyup="if(event.key === 'Enter') searchJob()">
+            <button class="btn-go" onclick="searchJob()">CARI</button>
         </div>
     </div>
 
-    <div id="statusLabel" class="result-info"></div>
-    <div id="resultFeed" class="feed"></div>
+    <div id="contentDisplay" class="display-area">
+        <div class="empty-state">
+            <span class="empty-icon">🔍</span>
+            <div class="empty-title">Siap Mencari Kerja?</div>
+            <p class="empty-desc">
+                Masukkan kata kunci di kolom atas untuk memulai.<br>
+                Contoh: <span class="highlight">"loker IT"</span>, <span class="highlight">"freelance"</span>, <span class="highlight">"welder"</span>, atau <span class="highlight">"Jakarta"</span>.
+            </p>
+        </div>
+    </div>
 
     <script>
-        // Database Internal (Ribuan Data Disimulasikan dalam Logika Search)
-        // Ini membuat pencarian tidak perlu buka halaman baru/aplikasi lain
-        const dbLoker = [
-            { t: "Admin Gudang", c: "PT. Logistik Jaya", l: "Jakarta Timur", d: "Bertanggung jawab atas pencatatan stok barang masuk dan keluar. Minimal lulusan SMA/SMK.", s: "Threads" },
-            { t: "Driver Pengiriman", c: "CV. Maju Berkah", l: "Bekasi", d: "Mengantar barang ke pelanggan tepat waktu. Memiliki SIM A/C aktif dan hafal rute jalan.", s: "Facebook" },
-            { t: "Welder (Tukang Las)", c: "PT. Teknik Utama", l: "Tangerang", d: "Melakukan pengelasan konstruksi baja sesuai blueprint. Sertifikasi welder diutamakan.", s: "LinkedIn" },
-            { t: "Staff Purchasing", c: "Rera Mulia Perkasa", l: "Jakarta Selatan", d: "Mencari supplier bahan baku terbaik dan melakukan negosiasi harga. Pengalaman min 2 tahun.", s: "Threads" },
-            { t: "Content Creator", c: "Agit Studio", l: "Remote", d: "Membuat konten kreatif untuk media sosial menggunakan tools AI terbaru.", s: "Instagram" },
-            { t: "Operator Produksi", c: "PT. Global Tech", l: "Cikarang", d: "Menjalankan mesin produksi sesuai SOP perusahaan. Bersedia sistem kerja shift.", s: "LinkedIn" },
-            { t: "Kurir Motor", c: "Express Delivery", l: "Jakarta Barat", d: "Pengiriman paket area Jakarta Barat. Memiliki motor pribadi dan HP Android.", s: "Facebook" }
+        // Database Internal Terpadu (Simulasi hasil Real-Time)
+        const lokerDB = [
+            { t: "Frontend Developer (React/Vue)", c: "Tech Solutions ID", l: "Jakarta / Remote", d: "Dibutuhkan pengembang IT freelance untuk proyek aplikasi e-commerce 3 bulan. Menguasai HTML, CSS, dan JS.", s: "Threads", k: "it freelance developer" },
+            { t: "Welder Konstruksi Baja", c: "PT. Teknik Perdana", l: "Cikarang", d: "Mencari tukang las berpengalaman untuk proyek pabrik baru. Sertifikasi welder aktif diutamakan.", s: "Facebook", k: "welder las teknik" },
+            { t: "IT Support Specialist", c: "Digital Media Group", l: "Bandung", d: "Maintenance jaringan dan hardware kantor. Paham troubleshoot PC dan Mikrotik.", s: "LinkedIn", k: "it support komputer" },
+            { t: "Graphic Designer Freelance", c: "Creative Studio", l: "Remote", d: "Project-based konten media sosial. Bisa kerja cepat dan paham gaya desain modern.", s: "Instagram", k: "freelance desain graphic" },
+            { t: "Software QA Engineer", c: "Fintech Sejahtera", l: "Jakarta", d: "Melakukan testing pada aplikasi sebelum rilis. Paham automation testing adalah nilai plus.", s: "LinkedIn", k: "it qa testing" }
         ];
 
-        function searchNow() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
-            const feed = document.getElementById('resultFeed');
-            const status = document.getElementById('statusLabel');
-            
-            feed.innerHTML = "";
-            status.innerText = "MENCARI DATA TERKINI...";
+        function searchJob() {
+            const query = document.getElementById('jobInput').value.toLowerCase();
+            const display = document.getElementById('contentDisplay');
 
-            // Simulasi delay pencarian 0.5 detik agar terasa "searching" tapi tetap di halaman
-            setTimeout(() => {
-                const hasil = dbLoker.filter(item => 
-                    item.t.toLowerCase().includes(query) || 
-                    item.l.toLowerCase().includes(query) ||
-                    item.c.toLowerCase().includes(query)
-                );
+            if (query.trim() === "") {
+                return; // Jangan lakukan apa-apa jika kosong
+            }
 
-                if(hasil.length > 0) {
-                    status.innerText = `DITEMUKAN ${hasil.length} INFO LOKER SESUAI KATA KUNCI:`;
-                    let html = "";
-                    hasil.forEach(job => {
-                        html += `
-                        <div class="job-item">
-                            <div class="job-top">
-                                <div>
-                                    <div class="job-title">${job.t}</div>
-                                    <div class="job-company">${job.c}</div>
-                                </div>
-                                <span class="job-tag">${job.s}</span>
-                            </div>
+            // Filter data berdasarkan kata kunci
+            const results = lokerDB.filter(item => 
+                item.t.toLowerCase().includes(query) || 
+                item.k.toLowerCase().includes(query) ||
+                item.l.toLowerCase().includes(query)
+            );
+
+            if (results.length > 0) {
+                let html = `<div style="font-size:12px; font-weight:700; color:#94a3b8; margin-bottom:15px; text-transform:uppercase;">Hasil untuk "${query}":</div>`;
+                results.forEach(job => {
+                    const sClass = job.s === "Threads" ? "source-th" : (job.s === "Facebook" ? "source-fb" : "source-li");
+                    html += `
+                        <div class="job-card">
+                            <span class="job-source ${sClass}">${job.s}</span>
+                            <div class="job-title">${job.t}</div>
+                            <div class="job-info">${job.c} • ${job.l}</div>
                             <div class="job-desc">${job.d}</div>
-                            <div class="job-footer">📍 Lokasi: ${job.l} • Update: Hari ini</div>
-                        </div>`;
-                    });
-                    feed.innerHTML = html;
-                } else {
-                    status.innerText = "TIDAK DITEMUKAN HASIL. COBA KATA KUNCI LAIN.";
-                }
-            }, 500);
+                        </div>
+                    `;
+                });
+                display.innerHTML = html;
+            } else {
+                display.innerHTML = `
+                    <div class="empty-state">
+                        <span class="empty-icon">⚠️</span>
+                        <div class="empty-title">Tidak Ditemukan</div>
+                        <p class="empty-desc">Maaf, loker untuk "<span class="highlight">${query}</span>" belum tersedia hari ini. Coba kata kunci lain.</p>
+                    </div>
+                `;
+            }
         }
-
-        // Jalankan pencarian otomatis saat pertama buka (Tanpa pindah halaman)
-        window.onload = searchNow;
     </script>
 </body>
 </html>
