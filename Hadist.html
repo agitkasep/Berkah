@@ -3,156 +3,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Perpustakaan Hadist & Fiqih - Berkah</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <title>Kajian Hadist - Berkah</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: #f1f5f9; color: #1e293b; }
+        body { background: #f8fafc; color: #334155; padding-bottom: 20px; }
         
-        .nav-header { 
-            display: flex; align-items: center; padding: 15px 20px; 
-            background: #00a86b; color: white; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .btn-back { text-decoration: none; font-size: 18px; margin-right: 15px; color: white; }
-        .title { font-size: 16px; font-weight: 700; }
+        .header { background: #00a86b; color: white; padding: 20px; text-align: center; border-radius: 0 0 20px 20px; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .btn-back { position: absolute; left: 20px; top: 22px; color: white; text-decoration: none; font-size: 20px; }
+        
+        .filter-section { padding: 20px; display: grid; gap: 15px; }
+        .filter-group { display: flex; flex-direction: column; gap: 5px; }
+        label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-left: 5px; }
+        select { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; background: white; font-size: 14px; font-weight: 600; color: #1e293b; outline: none; }
+        select:focus { border-color: #00a86b; }
 
-        .sticky-tools { background: white; padding: 15px 20px; position: sticky; top: 54px; z-index: 90; border-bottom: 2px solid #e2e8f0; }
-        label { font-size: 10px; font-weight: 800; color: #64748b; text-transform: uppercase; margin-bottom: 5px; display: block; }
-        select { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; margin-bottom: 10px; background: #f8fafc; font-weight: 600; }
-
-        .content-area { padding: 15px 20px; }
-        .hadist-card {
-            background: white; padding: 25px; border-radius: 20px; margin-bottom: 20px;
-            border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-        }
-        .nomor-badge { background: #00a86b; color: white; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; margin-bottom: 15px; display: inline-block; }
-        .hadist-arab { font-family: 'Amiri', serif; font-size: 24px; text-align: right; line-height: 2.3; margin-bottom: 20px; color: #0f172a; direction: rtl; }
-        .hadist-indo { font-size: 14px; color: #334155; line-height: 1.8; text-align: justify; border-top: 1px solid #f1f5f9; padding-top: 15px; }
-
-        .load-more { text-align: center; margin: 20px 0 40px; }
-        .btn-more { background: #00a86b; color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: 700; cursor: pointer; font-size: 14px; }
-        .loading-text { text-align: center; padding: 40px; color: #64748b; font-size: 14px; font-style: italic; }
+        .hadist-list { padding: 0 20px; display: grid; gap: 15px; }
+        .hadist-card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); border: 1px solid #e2e8f0; }
+        .hadist-meta { font-size: 12px; font-weight: 700; color: #00a86b; margin-bottom: 10px; display: flex; justify-content: space-between; }
+        .arabic { font-family: 'Amiri', serif; font-size: 24px; text-align: right; line-height: 1.8; margin-bottom: 15px; color: #1e293b; direction: rtl; }
+        .translation { font-size: 14px; line-height: 1.6; color: #475569; text-align: justify; }
+        
+        .loading { text-align: center; padding: 50px; color: #64748b; font-style: italic; }
     </style>
 </head>
 <body>
 
-    <div class="nav-header">
+    <div class="header">
         <a href="index.html" class="btn-back">⬅️</a>
-        <div class="title">Kajian Fiqih & Hadist</div>
+        <h2 style="font-size: 18px;">Kajian Fiqih & Hadist</h2>
     </div>
 
-    <div class="sticky-tools">
-        <label>Topik Ilmu Fiqih Lengkap</label>
-        <select id="fiqihSelect" onchange="loadTopic()">
-            <option value="1-50">-- Pilih Kategori Fiqih --</option>
-            <optgroup label="IBADAH">
-                <option value="1-30">Kitab Wahyu & Iman</option>
-                <option value="141-200">Fiqih Wudhu & Mandi</option>
-                <option value="324-400">Fiqih Haid (Wanita)</option>
-                <option value="349-500">Fiqih Sholat & Kiblat</option>
-                <option value="595-650">Fiqih Adzan & Jamaah</option>
-                <option value="1395-1450">Fiqih Zakat & Sedekah</option>
-                <option value="1423-1550">Fiqih Haji & Umrah</option>
-                <option value="1774-1850">Fiqih Puasa (Shaum)</option>
-            </optgroup>
-            <optgroup label="MUAMALAH (SOSIAL)">
-                <option value="1934-2050">Fiqih Jual Beli (Perdagangan)</option>
-                <option value="2051-2100">Fiqih Kerjasama (Syirkah)</option>
-                <option value="2124-2150">Fiqih Gadai & Wakalah</option>
-                <option value="2182-2250">Fiqih Bercocok Tanam</option>
-                <option value="2251-2300">Fiqih Distribusi Air</option>
-                <option value="2301-2350">Fiqih Pinjaman & Utang</option>
-            </optgroup>
-            <optgroup label="KELUARGA & HUKUM">
-                <option value="4677-4800">Fiqih Nikah (Rumah Tangga)</option>
-                <option value="4842-4950">Fiqih Thalaq (Perceraian)</option>
-                <option value="4951-5000">Fiqih Nafkah Keluarga</option>
-                <option value="6226-6300">Fiqih Waris (Faraid)</option>
-                <option value="6301-6400">Fiqih Sumpah & Nadzar</option>
-            </optgroup>
-            <optgroup label="ADAB & LAINNYA">
-                <option value="5545-5700">Adab & Akhlak Mulia</option>
-                <option value="5223-5300">Kesehatan & Pengobatan</option>
-                <option value="5050-5150">Fiqih Makanan & Sembelihan</option>
-            </optgroup>
-        </select>
+    <div class="filter-section">
+        <div class="filter-group">
+            <label>Pilih Perawi</label>
+            <select id="selectPerawi" onchange="loadHadist()">
+                <option value="bukhari">Shahih Bukhari</option>
+                <option value="muslim">Shahih Muslim</option>
+                <option value="abu-daud">Sunan Abu Dawud</option>
+                <option value="tirmidzi">Sunan Tirmidzi</option>
+                <option value="nasai">Sunan Nasai</option>
+            </select>
+        </div>
         
-        <label>Pilih Perawi</label>
-        <select id="perawiSelect" onchange="loadTopic()">
-            <option value="bukhari">Shahih Bukhari (Utama)</option>
-            <option value="muslim">Shahih Muslim</option>
-            <option value="abu-dawud">Shahih Abu Dawud</option>
-        </select>
+        <div class="filter-group">
+            <label>Topik Ilmu Fiqih</label>
+            <select id="selectRange" onchange="loadHadist()">
+                <option value="1-20">Kitab Wahyu & Iman (1-20)</option>
+                <option value="21-50">Kitab Ilmu (21-50)</option>
+                <option value="51-100">Kitab Thaharah/Bersuci (51-100)</option>
+                <option value="101-150">Kitab Sholat (101-150)</option>
+            </select>
+        </div>
     </div>
 
-    <div id="hadist-list" class="content-area">
-        <!-- List hadist akan muncul di sini -->
-    </div>
-
-    <div class="load-more" id="loadMoreContainer" style="display:none;">
-        <button class="btn-more" onclick="renderMore()">Tampilkan Lebih Banyak</button>
+    <div id="hadist-container" class="hadist-list">
+        <!-- Data Hadist muncul di sini -->
     </div>
 
     <script>
-        let allHadist = [];
-        let currentIndex = 0;
-        const limit = 10; // Jumlah hadist per sekali klik "Tampilkan Lebih Banyak"
+        const container = document.getElementById('hadist-container');
+        const perawi = document.getElementById('selectPerawi');
+        const range = document.getElementById('selectRange');
 
-        async function loadTopic() {
-            const container = document.getElementById('hadist-list');
-            const range = document.getElementById('fiqihSelect').value;
-            const perawi = document.getElementById('perawiSelect').value;
-            const loadMoreBtn = document.getElementById('loadMoreContainer');
+        async function loadHadist() {
+            container.innerHTML = '<div class="loading">⏳ Mencari hadist yang sahih...</div>';
             
-            container.innerHTML = '<div class="loading-text">Sedang menyusun daftar hadist topik ini...</div>';
-            loadMoreBtn.style.display = "none";
-            allHadist = [];
-            currentIndex = 0;
+            const slug = perawi.value;
+            const [start, end] = range.value.split('-');
 
             try {
-                // Mengambil range hadist (Contoh: 10 hadist sekaligus dari nomor awal)
-                const startNum = range.split('-')[0];
-                const endNum = parseInt(startNum) + 19; // Ambil 20 hadis sekaligus agar puas
+                // Menampilkan minimal 5 hadist dari range yang dipilih
+                let html = '';
                 
-                const response = await fetch(`https://api.hadith.gading.dev/books/${perawi}?range=${startNum}-${endNum}`);
-                const json = await response.json();
-                
-                if (json.code === 200) {
-                    allHadist = json.data.hadiths;
-                    container.innerHTML = "";
-                    renderMore();
-                    loadMoreBtn.style.display = "block";
-                } else {
-                    container.innerHTML = '<div class="loading-text">Maaf, topik ini belum tersedia di perawi ini.</div>';
+                // Looping untuk mengambil beberapa nomor hadist sekaligus
+                for (let i = parseInt(start); i <= parseInt(start) + 4; i++) {
+                    const res = await fetch(`https://api.hadits.gading.dev/books/${slug}/${i}`);
+                    const data = await res.json();
+                    
+                    if (data.code === 200) {
+                        const h = data.data.contents;
+                        html += `
+                            <div class="hadist-card">
+                                <div class="hadist-meta">
+                                    <span>${data.data.name.toUpperCase()}</span>
+                                    <span>NO. ${h.number}</span>
+                                </div>
+                                <div class="arabic">${h.arab}</div>
+                                <div class="translation">${h.id}</div>
+                            </div>
+                        `;
+                    }
                 }
-            } catch (e) {
-                container.innerHTML = '<div class="loading-text">Koneksi gagal. Silakan coba pilih topik lain atau perawi lain.</div>';
+                container.innerHTML = html;
+            } catch (err) {
+                container.innerHTML = '<div class="loading">⚠️ Gagal memuat data. Periksa koneksi internet Anda.</div>';
             }
         }
 
-        function renderMore() {
-            const container = document.getElementById('hadist-list');
-            const nextBatch = allHadist.slice(currentIndex, currentIndex + limit);
-            
-            nextBatch.forEach(h => {
-                const card = document.createElement('div');
-                card.className = 'hadist-card';
-                card.innerHTML = `
-                    <div class="nomor-badge">HADIST NO. ${h.number}</div>
-                    <div class="hadist-arab">${h.arab}</div>
-                    <div class="hadist-indo">${h.id}</div>
-                `;
-                container.appendChild(card);
-            });
-
-            currentIndex += limit;
-            if (currentIndex >= allHadist.length) {
-                document.getElementById('loadMoreContainer').style.display = "none";
-            }
-        }
-
-        // Jalankan awal
-        loadTopic();
+        // Jalankan saat pertama kali dibuka
+        window.onload = loadHadist;
     </script>
 </body>
 </html>
