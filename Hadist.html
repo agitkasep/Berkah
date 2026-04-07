@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shahih Bukhari - Berkah</title>
+    <title>Shahih Bukhari Akurat - Berkah</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -35,26 +35,26 @@
 
     <div class="filter-section">
         <div class="filter-card">
-            <label>Pilih Kategori Shahih Bukhari</label>
+            <label>Pilih Kategori (Rujukan Akurat)</label>
             <select id="topikBukhari" onchange="muatHadist()">
-                <option value="1">✨ Wahyu & Niat</option>
-                <option value="7">🛡️ Kitab Iman</option>
-                <option value="52">📚 Kitab Ilmu</option>
-                <option value="135">🧼 Wudhu (Thaharah)</option>
-                <option value="248">🚿 Mandi Wajib</option>
-                <option value="322">🕋 Sholat</option>
-                <option value="504">⏰ Waktu Sholat</option>
-                <option value="584">🕌 Adzan</option>
-                <option value="603">👥 Sholat Berjamaah</option>
-                <option value="1308">💰 Zakat</option>
-                <option value="1417">🕋 Haji</option>
-                <option value="1772">🌙 Puasa</option>
-                <option value="1901">🤝 Jual Beli</option>
-                <option value="2486">💍 Nikah</option>
-                <option value="5023">🥣 Makanan</option>
-                <option value="5223">🥤 Minuman</option>
-                <option value="5911">🤲 Doa & Dzikir</option>
-                <option value="5737">🤝 Adab/Etika</option>
+                <option value="1">✨ Permulaan Wahyu & Niat</option>
+                <option value="8">🛡️ Kitab Iman</option>
+                <option value="67">📚 Kitab Ilmu</option>
+                <option value="157">🧼 Kitab Wudhu</option>
+                <option value="252">🚿 Kitab Mandi (Ghusl)</option>
+                <option value="343">🕋 Kitab Shalat</option>
+                <option value="504">⏰ Waktu-Waktu Shalat</option>
+                <option value="584">🕌 Kitab Adzan</option>
+                <option value="603">👥 Shalat Berjamaah & Imam</option>
+                <option value="1308">💰 Kitab Zakat</option>
+                <option value="1417">🕋 Kitab Haji</option>
+                <option value="1772">🌙 Kitab Shaum (Puasa)</option>
+                <option value="1901">🤝 Jual Beli (Buyu')</option>
+                <option value="2486">💍 Kitab Nikah</option>
+                <option value="5023">🥣 Kitab Makanan (Ath'imah)</option>
+                <option value="5223">🥤 Kitab Minuman (Asyribah)</option>
+                <option value="5911">🤲 Doa-Doa (Da'awat)</option>
+                <option value="5737">🤝 Adab & Akhlak</option>
             </select>
         </div>
     </div>
@@ -65,14 +65,46 @@
         const view = document.getElementById('container-hadist');
         const select = document.getElementById('topikBukhari');
 
-        async function ambilData(nomor) {
+        async function muatHadist() {
+            view.innerHTML = '<div class="status-msg">⏳ Menuju bab pilihan...</div>';
+            const nomorAwal = parseInt(select.value);
+            let htmlResult = '';
+
             try {
-                // Menggunakan API MyQuran yang lebih stabil untuk Bukhari
-                const res = await fetch(`https://api.myquran.com/v2/hadits/bukhari/${nomor}`);
+                // Mengambil 3 hadits pertama di setiap bab agar pas dengan topik
+                for (let i = 0; i < 3; i++) {
+                    const res = await fetch(`https://api.myquran.com/v2/hadits/bukhari/${nomorAwal + i}`);
+                    const data = await res.json();
+                    
+                    if (data.status) {
+                        const h = data.data;
+                        htmlResult += `
+                            <div class="hadist-card">
+                                <div class="hadist-header">
+                                    <span style="font-weight:800; color:#00a86b; font-size:11px;">SHAHIH BUKHARI</span>
+                                    <span class="tag-no">NO. ${h.number}</span>
+                                </div>
+                                <div class="text-arab">${h.arab}</div>
+                                <div class="text-indo">${h.id}</div>
+                            </div>
+                        `;
+                    }
+                }
+                view.innerHTML = htmlResult || '<div class="status-msg">Gagal memuat. Silakan coba lagi.</div>';
+            } catch (e) {
+                view.innerHTML = '<div class="status-msg">⚠️ Masalah koneksi server.</div>';
+            }
+        }
+
+        // Tampilan Awal: Hadist Niat (Bukhari No 1)
+        window.onload = async () => {
+            view.innerHTML = '<div class="status-msg">⏳ Menyiapkan kajian utama...</div>';
+            try {
+                const res = await fetch(`https://api.myquran.com/v2/hadits/bukhari/1`);
                 const data = await res.json();
                 if (data.status) {
                     const h = data.data;
-                    return `
+                    view.innerHTML = `
                         <div class="hadist-card">
                             <div class="hadist-header">
                                 <span style="font-weight:800; color:#00a86b; font-size:11px;">SHAHIH BUKHARI</span>
@@ -83,28 +115,9 @@
                         </div>
                     `;
                 }
-            } catch (e) { return ''; }
-            return '';
-        }
-
-        async function muatHadist() {
-            view.innerHTML = '<div class="status-msg">⏳ Mencari bab dalam kitab...</div>';
-            const nomorAwal = parseInt(select.value);
-            let html = '';
-
-            // Mengambil 3 hadis berurutan dari bab tersebut
-            for(let i=0; i<3; i++) {
-                html += await ambilData(nomorAwal + i);
+            } catch (e) {
+                view.innerHTML = '<div class="status-msg">Silakan pilih kategori di atas.</div>';
             }
-
-            view.innerHTML = html || '<div class="status-msg">Koneksi gagal. Coba pilih kategori lain.</div>';
-        }
-
-        // Tampilan Awal: Hadist Niat (Bukhari No 1)
-        window.onload = async () => {
-            view.innerHTML = '<div class="status-msg">⏳ Menyiapkan kajian...</div>';
-            const intro = await ambilData(1);
-            view.innerHTML = intro;
         };
     </script>
 </body>
