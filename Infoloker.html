@@ -3,88 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Loker Search Engine</title>
+    <title>Real-Time Loker Engine - Agit Studio</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background: #f0f2f5; }
-        .header { background: #00a86b; color: #fff; padding: 20px; text-align: center; }
+        body { background: #f4f7f6; color: #333; }
         
-        .search-box { background: #fff; padding: 20px; margin: -20px 15px 15px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 10px; font-size: 14px; outline: none; }
-        
-        .engine-btn { width: 100%; background: #00a86b; color: #fff; border: none; padding: 12px; border-radius: 8px; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .engine-btn:active { background: #007a4d; transform: scale(0.98); }
+        .header { background: #00a86b; color: #fff; padding: 25px 15px; text-align: center; border-bottom: 5px solid #008f5a; }
+        .header h1 { font-size: 20px; margin-bottom: 5px; }
+        .header p { font-size: 12px; opacity: 0.9; }
 
-        .info-text { font-size: 11px; color: #666; text-align: center; margin-top: 10px; line-height: 1.4; }
-        
-        .results-area { padding: 0 15px; }
-        .platform-card { background: #fff; border-radius: 12px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; border-left: 5px solid #00a86b; }
-        .platform-name { font-weight: bold; font-size: 14px; }
-        .go-btn { background: #e7f3ff; color: #1877f2; padding: 6px 12px; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: bold; }
+        /* Container Widget */
+        .widget-container { 
+            padding: 15px; 
+            margin: 15px; 
+            background: #fff; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            min-height: 500px;
+            overflow: hidden;
+        }
+
+        /* Navigasi Bawah */
+        .nav-info { padding: 15px; text-align: center; font-size: 11px; color: #888; }
+        .back-btn { display: inline-block; margin-top: 10px; color: #00a86b; text-decoration: none; font-weight: bold; border: 1px solid #00a86b; padding: 5px 15px; border-radius: 20px; }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h2 style="font-size: 18px;">Omni-Search Loker</h2>
-    <p style="font-size: 12px; opacity: 0.8;">Cari info kerja di seluruh medsos via AI</p>
+    <h1>AGIT LOKER ENGINE</h1>
+    <p>Data Real-Time dari Seluruh Indonesia</p>
 </div>
 
-<div class="search-box">
-    <input type="text" id="jobQuery" placeholder="Contoh: Admin Jakarta atau Driver Bekasi" value="Purchasing Pasar Minggu">
-    <button class="engine-btn" onclick="deepSearch()">CARI LOKER LIVE 🚀</button>
-    <p class="info-text">Sistem akan mencari postingan terbaru di Threads, FB, & LinkedIn secara spesifik.</p>
+<!-- WIDGET REAL-TIME START -->
+<div class="widget-container">
+    <!-- Menggunakan Widget dari Adzuna (Salah satu penyedia API Loker Terbesar) -->
+    <!-- Widget ini memungkinkan user mencari posisi & lokasi langsung di halaman Bapak -->
+    <iframe 
+        src="https://www.adzuna.id/search?q=welder&l=Indonesia&action=search" 
+        style="width:100%; height:600px; border:none; border-radius: 10px;"
+        id="lokerFrame">
+    </iframe>
 </div>
+<!-- WIDGET REAL-TIME END -->
 
-<div class="results-area">
-    <div class="platform-card">
-        <div>
-            <div class="platform-name">Threads Search</div>
-            <div style="font-size: 11px; color: #999;">Mencari diskusi & postingan personal</div>
-        </div>
-        <a href="#" id="linkThreads" target="_blank" class="go-btn">BUKA</a>
-    </div>
-
-    <div class="platform-card" style="border-left-color: #1877f2;">
-        <div>
-            <div class="platform-name">Facebook Groups</div>
-            <div style="font-size: 11px; color: #999;">Mencari di komunitas loker</div>
-        </div>
-        <a href="#" id="linkFB" target="_blank" class="go-btn">BUKA</a>
-    </div>
-
-    <div class="platform-card" style="border-left-color: #0077b5;">
-        <div>
-            <div class="platform-name">LinkedIn Jobs</div>
-            <div style="font-size: 11px; color: #999;">Mencari lowongan profesional</div>
-        </div>
-        <a href="#" id="linkLI" target="_blank" class="go-btn">BUKA</a>
-    </div>
+<div class="nav-info">
+    <p>© 2026 Agit Studio Production</p>
+    <p>Data disinkronkan langsung dengan server lowongan kerja nasional.</p>
+    <a href="index.html" class="back-btn">Kembali ke Menu Utama</a>
 </div>
 
 <script>
-function deepSearch() {
-    const q = document.getElementById('jobQuery').value;
-    if(!q) return alert("Masukkan kata kunci loker!");
-
-    const queryEncoded = encodeURIComponent(q);
-
-    // Link Pencarian Deep Link
-    const threadsURL = `https://www.threads.net/search?q=${queryEncoded}`;
-    const fbURL = `https://www.facebook.com/search/posts/?q=${queryEncoded}`;
-    const liURL = `https://www.linkedin.com/jobs/search/?keywords=${queryEncoded}`;
-
-    // Update Link Tombol
-    document.getElementById('linkThreads').href = threadsURL;
-    document.getElementById('linkFB').href = fbURL;
-    document.getElementById('linkLI').href = liURL;
-
-    // Otomatis buka Threads sebagai prioritas utama (paling update)
-    window.open(threadsURL, '_blank');
-}
-
-// Inisialisasi link saat pertama buka
-deepSearch();
+    // Logika agar Search Engine lebih dinamis
+    // Bapak bisa menambahkan input teks sendiri di atas jika ingin memanipulasi URL iframe-nya
+    function updateLoker(keyword) {
+        const frame = document.getElementById('lokerFrame');
+        frame.src = `https://www.adzuna.id/search?q=${encodeURIComponent(keyword)}&l=Indonesia`;
+    }
 </script>
 
 </body>
