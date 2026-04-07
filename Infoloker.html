@@ -3,38 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Info Loker Sosmed - Berkah</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Loker Instan - Berkah</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f9f9f9; color: #1a1a1a; padding-bottom: 50px; }
+        body { background: #f4f4f4; color: #1a1a1a; }
         
-        .header { background: #00a86b; color: white; padding: 20px; text-align: center; border-radius: 0 0 20px 20px; position: sticky; top: 0; z-index: 1000; }
-        .btn-back { position: absolute; left: 20px; top: 22px; color: white; text-decoration: none; font-size: 18px; }
+        .header { background: #00a86b; color: white; padding: 20px; text-align: center; border-radius: 0 0 15px 15px; position: sticky; top: 0; z-index: 1000; }
+        .btn-back { position: absolute; left: 15px; top: 20px; text-decoration: none; font-size: 20px; }
 
-        .date-header { padding: 15px 20px 5px; font-size: 11px; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: 1px; }
+        .update-banner { padding: 15px 20px; font-size: 11px; font-weight: 800; color: #666; text-transform: uppercase; background: #f4f4f4; }
 
-        /* Card Style ala Threads/Sosmed */
-        .loker-container { padding: 10px 15px; }
-        .post-card { background: white; border-radius: 20px; padding: 16px; margin-bottom: 15px; border: 1px solid #efefef; box-shadow: 0 2px 10px rgba(0,0,0,0.02); }
+        .feed { padding: 0 15px 30px; }
+        .card { background: white; border-radius: 15px; padding: 15px; margin-bottom: 12px; border: 1px solid #ddd; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         
-        .post-header { display: flex; align-items: center; margin-bottom: 12px; position: relative; }
-        .user-avatar { width: 42px; height: 42px; border-radius: 50%; background: #eee; margin-right: 12px; object-fit: cover; }
-        .user-info { display: flex; flex-direction: column; }
-        .username { font-size: 14px; font-weight: 700; color: #000; }
-        .post-time { font-size: 12px; color: #999; margin-left: 5px; }
+        .card-top { display: flex; align-items: center; margin-bottom: 10px; position: relative; }
+        .avatar { width: 35px; height: 35px; border-radius: 50%; background: #00a86b; margin-right: 10px; color: white; text-align: center; line-height: 35px; font-weight: bold; font-size: 12px; }
+        .user-name { font-size: 13px; font-weight: 700; }
+        .time { font-size: 11px; color: #999; font-weight: 400; }
         
-        .source-tag { position: absolute; right: 0; top: 0; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 20px; }
-        .tag-threads { background: #000; color: #fff; }
-        .tag-fb { background: #1877f2; color: #fff; }
-        .tag-li { background: #0077b5; color: #fff; }
+        .badge { position: absolute; right: 0; top: 0; font-size: 9px; font-weight: 800; padding: 3px 8px; border-radius: 5px; background: #000; color: #fff; }
 
-        .post-content { font-size: 14px; line-height: 1.5; color: #333; margin-bottom: 15px; }
-        .email-link { color: #00a86b; font-weight: 700; text-decoration: none; }
+        .content { font-size: 14px; line-height: 1.5; color: #333; margin-bottom: 12px; }
+        .email { color: #00a86b; font-weight: 700; }
 
-        .action-bar { border-top: 1px solid #f0f0f0; padding-top: 12px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-visit { font-size: 13px; font-weight: 700; color: #00a86b; text-decoration: none; display: flex; align-items: center; gap: 5px; }
-        .stats { font-size: 12px; color: #999; }
+        .footer { border-top: 1px solid #eee; padding-top: 10px; display: flex; justify-content: space-between; align-items: center; }
+        .link-src { font-size: 12px; font-weight: 700; color: #00a86b; text-decoration: none; }
     </style>
 </head>
 <body>
@@ -44,99 +38,78 @@
         <h2 style="font-size: 16px;">Search Engine Loker</h2>
     </div>
 
-    <div class="date-header" id="currentDate">Memuat info terbaru...</div>
+    <div class="update-banner" id="dateDisplay">MEMUAT...</div>
 
-    <div class="loker-container" id="lokerFeed">
-        <!-- Feed loker akan muncul di sini -->
+    <div class="feed" id="mainFeed">
+        <!-- Loker akan muncul di sini secara otomatis -->
     </div>
 
     <script>
-        const databaseLoker = [
+        const data = [
             {
-                user: "reraaasovani",
-                avatar: "https://i.pravatar.cc/150?u=rera",
-                time: "5 jam",
-                source: "Threads",
-                content: "Urgently hiring staff purchasing tapi yang sudah berpengalaman di bidangnya lebih dari 2 thn ya untuk area Pasar Minggu Jakarta Selatan. Kirim CV ke email: <span class='email-link'>reramuliaperkasa@gmail.com</span> Thank u ✨",
-                link: "https://www.threads.net/",
-                stats: "❤️ 23  💬 12"
+                u: "reraaasovani",
+                t: "5 jam",
+                s: "Threads",
+                c: "Urgently hiring staff purchasing tapi yang sudah berpengalaman di bidangnya lebih dari 2 thn ya untuk area Pasar Minggu Jakarta Selatan. Kirim CV ke email: <span class='email'>reramuliaperkasa@gmail.com</span> Thank u ✨",
+                l: "https://www.threads.net/"
             },
             {
-                user: "HRD_Global_Tech",
-                avatar: "https://i.pravatar.cc/150?u=hrd",
-                time: "2 jam",
-                source: "LinkedIn",
-                content: "Dibutuhkan segera Operator Produksi untuk penempatan di Cikarang. Usia maks 23 thn. Daftar melalui website resmi kami di bawah ini.",
-                link: "https://www.linkedin.com/jobs",
-                stats: "❤️ 105  💬 45"
+                u: "HRD_Global_Tech",
+                t: "2 jam",
+                s: "LinkedIn",
+                c: "Dibutuhkan segera Operator Produksi untuk penempatan di Cikarang. Usia maks 23 thn. Daftar melalui website resmi kami.",
+                l: "https://www.linkedin.com/jobs"
             },
             {
-                user: "InfoLokerJakarta",
-                avatar: "https://i.pravatar.cc/150?u=jkt",
-                time: "8 jam",
-                source: "Facebook",
-                content: "LOKER KURIR MOTOR! Area Jakarta Barat. Gaji pokok + uang bensin. Min punya SIM C aktif. Info lanjut cek link sumber.",
-                link: "https://www.facebook.com/groups/loker",
-                stats: "❤️ 56  💬 89"
+                u: "InfoLokerJakarta",
+                t: "8 jam",
+                s: "Facebook",
+                c: "LOKER KURIR MOTOR! Area Jakarta Barat. Gaji pokok + uang bensin. Min punya SIM C aktif.",
+                l: "https://www.facebook.com/"
             },
             {
-                user: "Agit_Creative_Studio",
-                avatar: "https://i.pravatar.cc/150?u=agit",
-                time: "1 jam",
-                source: "Instagram",
-                content: "Looking for Freelance Video Editor! Paham penggunaan AI Tools lebih diutamakan. Kirim portfolio ke DM atau email kami. 🚀",
-                link: "https://www.instagram.com/",
-                stats: "❤️ 210  💬 30"
+                u: "Agit_Studio",
+                t: "1 jam",
+                s: "Instagram",
+                c: "Looking for Freelance Video Editor! Paham penggunaan AI Tools lebih diutamakan. Kirim portfolio ke DM.",
+                l: "https://www.instagram.com/"
             },
             {
-                user: "Bakti_Husada_Clinic",
-                avatar: "https://i.pravatar.cc/150?u=clinic",
-                time: "10 jam",
-                source: "Threads",
-                content: "Lowongan Perawat Gigi (Dental Assistant). Penempatan Jakarta Selatan. Syarat: STR Aktif & Ramah. Klik link untuk apply.",
-                link: "https://www.threads.net/",
-                stats: "❤️ 12  💬 5"
+                u: "Bakti_Husada",
+                t: "10 jam",
+                s: "Threads",
+                c: "Lowongan Perawat Gigi (Dental Assistant). Penempatan Jakarta Selatan. Syarat: STR Aktif & Ramah.",
+                l: "https://www.threads.net/"
             }
         ];
 
-        function renderFeed() {
-            const feed = document.getElementById('lokerFeed');
-            const dateLabel = document.getElementById('currentDate');
-            
-            // Tampilkan Tanggal
-            const now = new Date();
-            dateLabel.innerText = "LOKER TERKINI • " + now.toLocaleDateString('id-ID', {day:'numeric', month:'LONG', year:'numeric'});
-
-            // Ambil 5 secara acak (Simulasi Update Harian)
-            const seed = now.getDate(); // Mengunci urutan yang sama dalam 24 jam
-            let shuffled = [...databaseLoker].sort(() => 0.5 - Math.random());
-            let dailySelection = shuffled.slice(0, 5);
+        function start() {
+            const feed = document.getElementById('mainFeed');
+            const dateStr = new Date().toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'});
+            document.getElementById('dateDisplay').innerText = "INFO TERBARU • " + dateStr;
 
             let html = "";
-            dailySelection.forEach(item => {
-                const tagClass = item.source === "Threads" ? "tag-threads" : (item.source === "Facebook" ? "tag-fb" : "tag-li");
-                
+            // Menampilkan semua tanpa diacak agar prosesnya super cepat (Zero Delay)
+            data.forEach(item => {
                 html += `
-                    <div class="post-card">
-                        <div class="post-header">
-                            <img src="${item.avatar}" class="user-avatar">
-                            <div class="user-info">
-                                <span class="username">${item.user} <span class="post-time">• ${item.time}</span></span>
-                            </div>
-                            <span class="source-tag ${tagClass}">${item.source}</span>
-                        </div>
-                        <div class="post-content">${item.content}</div>
-                        <div class="action-bar">
-                            <span class="stats">${item.stats}</span>
-                            <a href="${item.link}" target="_blank" class="btn-visit">Buka Sumber ↗️</a>
-                        </div>
+                <div class="card">
+                    <div class="card-top">
+                        <div class="avatar">${item.u.charAt(0).toUpperCase()}</div>
+                        <div class="user-name">${item.u} <span class="time">• ${item.t}</span></div>
+                        <div class="badge">${item.s}</div>
                     </div>
-                `;
+                    <div class="content">${item.c}</div>
+                    <div class="footer">
+                        <span style="font-size:11px; color:#999">❤️ Tersedia</span>
+                        <a href="${item.l}" target="_blank" class="link-src">Buka Sumber ↗️</a>
+                    </div>
+                </div>`;
             });
             feed.innerHTML = html;
         }
 
-        window.onload = renderFeed;
+        // Jalankan langsung tanpa menunggu apapun
+        start();
     </script>
 </body>
 </html>
