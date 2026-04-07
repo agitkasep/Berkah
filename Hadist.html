@@ -3,111 +3,134 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pencarian Shahih Bukhari - Berkah</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri&display=swap" rel="stylesheet">
+    <title>Agit Studio - Hadist Shahih Terverifikasi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f1f5f9; color: #1e293b; padding-bottom: 40px; }
-        .header { background: #00a86b; color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 20px 20px; position: sticky; top: 0; z-index: 1000; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        .btn-back { position: absolute; left: 20px; top: 27px; color: white; text-decoration: none; font-size: 20px; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family: 'Inter', sans-serif; }
+        body { background: #f8fafc; color: #1e293b; padding-bottom: 40px; }
         
-        .search-container { padding: 20px; position: sticky; top: 75px; z-index: 999; background: #f1f5f9; }
-        .search-box { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
-        label { font-size: 11px; font-weight: 800; color: #64748b; text-transform: uppercase; display: block; margin-bottom: 8px; }
-        select { width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px; font-weight: 600; color: #334155; outline: none; cursor: pointer; background: #fff; }
+        .header { background: #15803d; color: #fff; padding: 25px; text-align: center; border-radius: 0 0 25px 25px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .btn-back { position: absolute; left: 20px; top: 27px; color: #fff; text-decoration: none; font-size: 20px; }
+
+        .search-section { padding: 20px; }
+        .search-box { background: #fff; padding: 15px; border-radius: 18px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e2e8f0; }
+        input { width: 100%; padding: 12px; border: 1.5px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; margin-bottom: 15px; transition: 0.3s; }
+        input:focus { border-color: #15803d; box-shadow: 0 0 0 3px rgba(21, 128, 61, 0.1); }
         
-        .result-info { padding: 0 20px 10px; font-size: 13px; color: #64748b; font-weight: 500; }
-        .hadist-list { padding: 0 20px; display: grid; gap: 15px; }
-        .hadist-card { background: white; padding: 20px; border-radius: 18px; border: 1px solid #e2e8f0; }
-        .tag { display: inline-block; background: #dcfce7; color: #166534; padding: 4px 10px; border-radius: 6px; font-size: 10px; font-weight: 700; margin-bottom: 12px; }
-        .text-arab { font-family: 'Amiri', serif; font-size: 24px; text-align: right; line-height: 1.8; color: #0f172a; margin-bottom: 15px; direction: rtl; }
-        .text-indo { font-size: 14px; line-height: 1.6; color: #334155; text-align: justify; }
-        .footer-ref { margin-top: 10px; font-size: 11px; color: #94a3b8; font-style: italic; }
+        .topic-label { font-size: 11px; font-weight: 700; color: #64748b; margin-bottom: 8px; text-transform: uppercase; }
+        .topic-container { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 5px; scrollbar-width: none; }
+        .btn-topic { padding: 8px 16px; background: #f1f5f9; border: none; border-radius: 50px; font-size: 12px; font-weight: 600; cursor: pointer; white-space: nowrap; color: #475569; transition: 0.2s; }
+        .btn-topic.active { background: #15803d; color: #fff; transform: scale(1.05); }
+
+        .content-area { padding: 0 20px; }
+        .hadist-card { background: #fff; padding: 25px; border-radius: 20px; margin-bottom: 15px; border: 1px solid #e2e8f0; position: relative; overflow: hidden; }
+        .hadist-card::before { content: ""; position: absolute; left: 0; top: 0; width: 4px; height: 100%; background: #15803d; }
+        
+        .hadist-arabic { font-family: 'Amiri', serif; font-size: 26px; text-align: right; color: #111827; line-height: 2; margin-bottom: 15px; direction: rtl; }
+        .hadist-indo { font-size: 14px; line-height: 1.6; color: #334155; margin-bottom: 15px; }
+        .hadist-meta { font-size: 11px; font-weight: 700; color: #15803d; background: #f0fdf4; padding: 8px 12px; border-radius: 8px; display: inline-block; }
+
+        .status-bar { padding: 0 25px 15px; font-size: 12px; color: #64748b; }
+        .highlight { color: #15803d; font-weight: 800; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <a href="index.html" class="btn-back">⬅️</a>
-        <h2 style="font-size: 18px;">Pencarian Topik Bukhari</h2>
+        <a href="index.html" class="btn-back">⬅</a>
+        <h2 style="font-size: 18px;">Hadist Shahih Digital</h2>
     </div>
 
-    <div class="search-container">
+    <div class="search-section">
         <div class="search-box">
-            <label>Telusuri Berdasarkan Topik Spesifik</label>
-            <select id="topicSelector" onchange="searchHadist()">
-                <option value="pilih">-- Pilih Topik --</option>
-                <option value="niat">Niat & Keikhlasan</option>
-                <option value="sholat">Tata Cara Sholat</option>
-                <option value="puasa">Keutamaan Puasa</option>
-                <option value="akhlak">Akhlak & Adab</option>
-                <option value="ilmu">Menuntut Ilmu</option>
-                <option value="rezeki">Jual Beli & Rezeki</option>
-            </select>
+            <div class="topic-label">Cari Berdasarkan Kata Kunci:</div>
+            <input type="text" id="searchInput" placeholder="Contoh: Niat, Shalat, Sabar..." onkeyup="processFilter()">
+            
+            <div class="topic-label">Pilih Topik Utama:</div>
+            <div class="topic-container" id="topicList">
+                <button class="btn-topic active" onclick="setTopic('Semua')">Semua</button>
+                <button class="btn-topic" onclick="setTopic('Akidah')">Akidah</button>
+                <button class="btn-topic" onclick="setTopic('Ibadah')">Ibadah</button>
+                <button class="btn-topic" onclick="setTopic('Akhlak')">Akhlak</button>
+                <button class="btn-topic" onclick="setTopic('Muamalah')">Muamalah</button>
+            </div>
         </div>
     </div>
 
-    <div id="resultInfo" class="result-info"></div>
-    <div id="hadistContainer" class="hadist-list"></div>
+    <div id="statusInfo" class="status-bar"></div>
+    <div id="hadistContainer" class="content-area"></div>
 
     <script>
-        // Database Hadist Terpilih (Koleksi dari 4000 Hadist Shahih Bukhari)
-        const dbHadist = {
-            "niat": [
-                { no: 1, arab: "إِنَّمَا الأَعْمَالُ بِالنِّيَّاتِ", indo: "Sesungguhnya setiap perbuatan tergantung niatnya. Dan setiap orang akan mendapatkan sesuai dengan apa yang ia niatkan." },
-                { no: 54, arab: "إِذَا أَنْفَقَ الرَّجُلُ عَلَى أَهْلِهِ يَحْتَسِبُهَا فَهُوَ لَهُ صَدَقَةٌ", indo: "Jika seorang muslim memberi nafkah kepada keluarganya dengan niat mengharap pahala (ikhlas), maka nafkah itu bernilai sedekah baginya." }
-            ],
-            "sholat": [
-                { no: 631, arab: "صَلُّوا كَمَا رَأَيْتُمُونِي أُصَلِّي", indo: "Shalatlah kalian sebagaimana kalian melihat aku (Rasulullah) shalat." },
-                { no: 724, arab: "كَانَ يَرْفَعُ يَدَيْهِ حَذْوَ مَنْكِبَيْهِ إِذَا افْتَتَحَ الصَّلاَةَ", indo: "Rasulullah SAW mengangkat kedua tangannya sejajar dengan pundaknya ketika memulai shalat (Takbiratul Ihram)." },
-                { no: 644, arab: "صَلاَةُ الْجَمَاعَةِ تَفْضُلُ صَلاَةَ الْفَذِّ بِسَبْعٍ وَعِشْرِينَ دَرَجَةً", indo: "Shalat berjamaah lebih utama dua puluh tujuh derajat dibanding shalat sendirian." }
-            ],
-            "puasa": [
-                { no: 1894, arab: "مَنْ لَمْ يَدَعْ قَوْلَ الزُّورِ وَالْعَمَلَ بِهِ فَلَيْسَ لِلَّهِ حَاجَةٌ فِي أَنْ يَدَعَ طَعَامَهُ وَشَرَابَهُ", indo: "Barangsiapa yang tidak meninggalkan perkataan dusta malah mengamalkannya, maka Allah tidak butuh rasa lapar dan haus yang ia tahan (puasanya sia-sia)." },
-                { no: 1901, arab: "إِذَا جَاءَ رَمَضَانُ فُتِّحَتْ أَبْوَابُ الْجَنَّةِ", indo: "Apabila bulan Ramadhan tiba, pintu-pintu surga dibuka, pintu neraka ditutup, dan setan-setan dibelenggu." }
-            ],
-            "akhlak": [
-                { no: 6035, arab: "مَنْ كَانَ يُؤْمِنُ بِاللَّهِ وَالْيَوْمِ الآخِرِ فَلْيَقُلْ خَيْرًا أَوْ لِيَصْمُتْ", indo: "Barangsiapa beriman kepada Allah dan hari akhir, hendaklah ia berkata baik atau diam." },
-                { no: 13, arab: "لاَ يُؤْمِنُ أَحَدُكُمْ حَتَّى يُحِبَّ لأَخِيهِ مَا يُحِبَّ لِنَفْسِهِ", indo: "Tidak sempurna iman salah seorang di antara kalian hingga ia mencintai saudaranya sebagaimana ia mencintai dirinya sendiri." },
-                { no: 6013, arab: "إِنَّ مِنْ خِيَارِكُمْ أَحْسَنَكُمْ أَخْلاَقًا", indo: "Sesungguhnya yang terbaik di antara kalian adalah yang paling baik akhlaknya." }
-            ],
-            "ilmu": [
-                { no: 71, arab: "مَنْ يُرِدِ اللَّهُ بِهِ خَيْرًا يُفَقِّهْهُ فِي الدِّينِ", indo: "Barangsiapa yang Allah kehendaki kebaikan baginya, maka Allah akan memahamkan dia dalam urusan agama." },
-                { no: 100, arab: "إِنَّ اللَّهَ لاَ يَقْبِضُ الْعِلْمَ انْتِزَاعًا يَنْتَزِعُهُ مِنَ الْعِبَادِ", indo: "Sesungguhnya Allah tidak mencabut ilmu dengan sekali cabut dari dada manusia, melainkan dengan mewafatkan para ulama." }
-            ],
-            "rezeki": [
-                { no: 2079, arab: "الْبَيِّعَانِ بِالْخِيَارِ مَا لَمْ يَتَفَرَّقَا", indo: "Dua orang yang berjual beli memiliki hak khiyar (memilih antara lanjut atau batal) selama keduanya belum berpisah." },
-                { no: 2083, arab: "مَا أَكَلَ أَحَدٌ طَعَامًا قَطُّ خَيْرًا مِنْ أَنْ يَأْكُلَ مِنْ عَمَلِ يَدِهِ", indo: "Tidak ada makanan yang lebih baik yang dimakan seseorang kecuali makanan yang berasal dari hasil usaha tangannya sendiri." }
-            ]
-        };
-
-        function searchHadist() {
-            const topic = document.getElementById('topicSelector').value;
-            const container = document.getElementById('hadistContainer');
-            const info = document.getElementById('resultInfo');
+        // Database Hadist - Pastikan Tag Topik Sangat Akurat
+        const HADIST_DATA = [
+            { t: "Ibadah", a: "إنما الأعمال بالنيات", i: "Sesungguhnya setiap amal perbuatan tergantung pada niatnya.", r: "HR. Bukhari & Muslim" },
+            { t: "Ibadah", a: "بُنِيَ الإِسْلَامُ عَلَى خَمْسٍ", i: "Islam dibangun di atas lima perkara: Syahadat, Shalat, Zakat, Haji, dan Puasa.", r: "HR. Bukhari" },
+            { t: "Ibadah", a: "الصَّلَاةُ نُورٌ", i: "Shalat itu adalah cahaya.", r: "HR. Muslim" },
+            { t: "Ibadah", a: "الطُّهُورُ شَطْرُ الإِيمَانِ", i: "Kebersihan (bersuci) itu adalah sebagian dari iman.", r: "HR. Muslim" },
+            { t: "Ibadah", a: "مَنْ صَامَ رَمَضَانَ إِيمَانًا وَاحْتِسَابًا غُفِرَ لَهُ مَا تَقَدَّمَ مِنْ ذَنْبِهِ", i: "Barangsiapa berpuasa Ramadhan karena iman dan mengharap pahala, dosanya yang lalu diampuni.", r: "HR. Bukhari" },
+            { t: "Ibadah", a: "لا تزال أمتي بخير ما عجلوا الفطر", i: "Umatku senantiasa dalam kebaikan selama mereka menyegerakan berbuka puasa.", r: "HR. Bukhari" },
             
-            if (topic === "pilih") {
-                container.innerHTML = "";
-                info.innerText = "";
-                return;
-            }
-
-            const results = dbHadist[topic];
-            info.innerText = `Ditemukan ${results.length} hadis pilihan untuk topik ini.`;
+            { t: "Akhlak", a: "خَيْرُكُمْ مَنْ تَعَلَّمَ الْقُرْآنَ وَعَلَّمَهُ", i: "Sebaik-baik kalian adalah orang yang belajar Al-Qur'an dan mengajarkannya.", r: "HR. Bukhari" },
+            { t: "Akhlak", a: "الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ", i: "Seorang muslim adalah yang muslim lainnya selamat dari gangguan lisan dan tangannya.", r: "HR. Muslim" },
+            { t: "Akhlak", a: "إِنَّمَا بُعِثْتُ لِأُتَمِّمَ مَكَارِمَ الْأَخْلَاقِ", i: "Sesungguhnya aku diutus hanyalah untuk menyempurnakan kemuliaan akhlak.", r: "HR. Ahmad" },
+            { t: "Akhlak", a: "الدال على الخير كفاعله", i: "Orang yang menunjukkan jalan kebaikan, baginya pahala seperti orang yang mengamalkannya.", r: "HR. Muslim" },
             
-            let html = "";
-            results.forEach(h => {
-                html += `
-                    <div class="hadist-card">
-                        <span class="tag">Shahih Bukhari</span>
-                        <div class="text-arab">${h.arab}</div>
-                        <div class="text-indo">${h.indo}</div>
-                        <div class="footer-ref">HR. Bukhari No. ${h.no}</div>
-                    </div>
-                `;
+            { t: "Akidah", a: "جَدِّدُوا إِيمَانَكُمْ", i: "Perbaruilah iman kalian (dengan memperbanyak ucapan Laa ilaaha illallah).", r: "HR. Ahmad" },
+            { t: "Akidah", a: "قُلْ آمَنْتُ بِاللَّهِ فَاسْتَقِمْ", i: "Katakanlah: 'Aku beriman kepada Allah', kemudian istiqamahlah.", r: "HR. Muslim" },
+            
+            { t: "Muamalah", a: "مَنْ غَشَّ فَلَيْسَ مِنَّا", i: "Siapa yang berbuat curang, maka dia bukan bagian dari golongan kami.", r: "HR. Muslim" },
+            { t: "Muamalah", a: "رحم الله رجلاً سمحاً إذا باع، وإذا اشترى", i: "Semoga Allah merahmati orang yang memudahkan saat menjual dan saat membeli.", r: "HR. Bukhari" }
+        ];
+
+        let selectedTopic = "Semua";
+
+        function setTopic(topic) {
+            selectedTopic = topic;
+            
+            // Update UI Tombol
+            const btns = document.querySelectorAll('.btn-topic');
+            btns.forEach(btn => {
+                btn.classList.remove('active');
+                if(btn.innerText === topic) btn.classList.add('active');
             });
-            container.innerHTML = html;
+
+            processFilter();
         }
+
+        function processFilter() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const container = document.getElementById('hadistContainer');
+            const status = document.getElementById('statusInfo');
+            
+            // LOGIKA FILTER GANDA: Topik + Kata Kunci
+            const filteredResults = HADIST_DATA.filter(hadist => {
+                const matchTopic = (selectedTopic === "Semua" || hadist.t === selectedTopic);
+                const matchQuery = (hadist.i.toLowerCase().includes(query) || hadist.t.toLowerCase().includes(query));
+                return matchTopic && matchQuery;
+            });
+
+            // Tampilkan Hasil
+            container.innerHTML = "";
+            status.innerHTML = `Menampilkan <span class="highlight">${filteredResults.length}</span> hadist pada topik <span class="highlight">${selectedTopic}</span>`;
+
+            if(filteredResults.length > 0) {
+                filteredResults.forEach(data => {
+                    const card = `
+                        <div class="hadist-card">
+                            <div class="hadist-arabic">${data.a}</div>
+                            <div class="hadist-indo">${data.i}</div>
+                            <div class="hadist-meta">📚 ${data.r} • Topik: ${data.t}</div>
+                        </div>
+                    `;
+                    container.innerHTML += card;
+                });
+            } else {
+                container.innerHTML = `<div style="text-align:center; padding:50px; color:#94a3b8;">Hadist tidak ditemukan.</div>`;
+            }
+        }
+
+        // Jalankan saat pertama dimuat
+        window.onload = processFilter;
     </script>
 </body>
 </html>
