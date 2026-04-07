@@ -8,42 +8,53 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #f4f7f6; color: #1e293b; padding-bottom: 30px; }
-        .header { background: #00a86b; color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 25px 25px; position: relative; }
+        
+        .header { background: #00a86b; color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 25px 25px; position: relative; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .btn-back { position: absolute; left: 20px; top: 25px; text-decoration: none; color: white; font-size: 20px; }
-        .location-box { background: white; margin: -20px 20px 20px; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
-        .city-name { font-weight: 700; color: #00a86b; font-size: 18px; text-transform: uppercase; }
-        .date-now { font-size: 12px; color: #64748b; margin-top: 5px; }
+        
+        .location-box { background: white; margin: -20px 20px 20px; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
+        .city-name { font-weight: 700; color: #00a86b; font-size: 20px; text-transform: uppercase; letter-spacing: 1px; }
+        .date-now { font-size: 13px; color: #64748b; margin-top: 5px; font-weight: 500; }
+
         .search-area { padding: 0 20px; margin-bottom: 20px; }
-        input { width: 100%; padding: 12px 15px; border: 1px solid #e2e8f0; border-radius: 12px; outline: none; background: white; }
-        .sholat-grid { padding: 0 20px; display: grid; gap: 10px; }
-        .sholat-item { 
-            background: white; padding: 15px 20px; border-radius: 12px; 
-            display: flex; justify-content: space-between; align-items: center;
-            border-left: 5px solid #00a86b;
+        input { 
+            width: 100%; padding: 14px 15px; border: 2px solid #e2e8f0; 
+            border-radius: 12px; outline: none; transition: 0.3s; font-size: 14px;
         }
-        .nama-sholat { font-weight: 600; color: #475569; font-size: 14px; }
-        .waktu-sholat { font-weight: 700; color: #1e293b; font-size: 18px; }
-        .loading { text-align: center; padding: 40px; color: #64748b; font-size: 14px; font-style: italic; }
+        input:focus { border-color: #00a86b; background: white; }
+
+        .sholat-grid { padding: 0 20px; display: grid; gap: 12px; }
+        .sholat-item { 
+            background: white; padding: 18px 20px; border-radius: 15px; 
+            display: flex; justify-content: space-between; align-items: center;
+            border-left: 6px solid #00a86b; transition: 0.2s;
+        }
+        .sholat-item:active { transform: scale(0.98); }
+        .nama-sholat { font-weight: 600; color: #475569; font-size: 15px; }
+        .waktu-sholat { font-weight: 800; color: #1e293b; font-size: 20px; }
+
+        .loading { text-align: center; padding: 50px; color: #64748b; font-size: 14px; font-style: italic; line-height: 1.6; }
+        .error-msg { color: #ef4444; font-weight: 600; margin-top: 10px; }
     </style>
 </head>
 <body>
 
     <div class="header">
         <a href="index.html" class="btn-back">⬅️</a>
-        <h2>Jadwal Sholat</h2>
+        <h2 style="font-size: 18px;">Waktu Sholat</h2>
     </div>
 
     <div class="location-box">
         <div id="city-display" class="city-name">Mendeteksi Lokasi...</div>
-        <div id="date-display" class="date-now">---</div>
+        <div id="date-display" class="date-now">Memuat tanggal...</div>
     </div>
 
     <div class="search-area">
-        <input type="text" id="inputKota" placeholder="Ketik nama kota (ex: Bandung)" onchange="cariManual()">
+        <input type="text" id="inputKota" placeholder="Ketik nama kota (Contoh: Bekasi)" onchange="cariManual()">
     </div>
 
     <div id="sholat-container" class="sholat-grid">
-        <div class="loading">Menghubungkan ke satelit...</div>
+        <div class="loading">⏳ Menghubungkan ke server waktu...</div>
     </div>
 
     <script>
@@ -51,64 +62,102 @@
         const cityDisplay = document.getElementById('city-display');
         const dateDisplay = document.getElementById('date-display');
 
-        // Fungsi Deteksi Lokasi lewat IP (Tanpa perlu klik 'Allow' GPS)
-        async function deteksiLokasiOtomatis() {
+        // 1. Fungsi Utama Deteksi Lokasi Otomatis via IP
+        async function deteksiOtomatis() {
             try {
                 const res = await fetch('https://ipapi.co/json/');
                 const data = await res.json();
-                const kotaUser = data.city || "Jakarta";
-                ambilJadwal(kotaUser);
+                
+                // Ambil data kota, jika "Pondok Bambu/Duren Sawit" arahkan ke Jakarta
+                let kotaDeteksi = data.city || data.region || "Jakarta";
+                
+                if (kotaDeteksi.toLowerCase().includes("pondok") || 
+                    kotaDeteksi.toLowerCase().includes("sawit") || 
+                    kotaDeteksi.toLowerCase().includes("jakarta")) {
+                    kotaDeteksi = "Jakarta";
+                }
+                
+                ambilDataJadwal(kotaDeteksi);
             } catch (e) {
-                ambilJadwal("Jakarta"); // Fallback jika gagal
+                // Jika gagal deteksi IP, pakai Jakarta sebagai standar
+                ambilDataJadwal("Jakarta");
             }
         }
 
-        async function ambilJadwal(namaKota) {
-            container.innerHTML = '<div class="loading">Memuat jadwal...</div>';
-            cityDisplay.innerText = namaKota;
-
+        // 2. Fungsi Ambil Data dari API MyQuran
+        async function ambilDataJadwal(namaKota) {
+            container.innerHTML = '<div class="loading">⏳ Memperbarui jadwal untuk ' + namaKota + '...</div>';
+            
             const tgl = new Date();
             const y = tgl.getFullYear();
             const m = String(tgl.getMonth() + 1).padStart(2, '0');
             const d = String(tgl.getDate()).padStart(2, '0');
-            dateDisplay.innerText = `${d}/${m}/${y}`;
+            
+            // Tampilkan Tanggal Indonesia
+            const opsiTgl = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            dateDisplay.innerText = tgl.toLocaleDateString('id-ID', opsiTgl);
 
             try {
-                // Cari ID Kota di MyQuran API
+                // Step A: Cari ID Kota
                 const resCari = await fetch(`https://api.myquran.com/v2/sholat/kota/cari/${namaKota}`);
                 const dataCari = await resCari.json();
 
                 if (dataCari.data && dataCari.data.length > 0) {
                     const idKota = dataCari.data[0].id;
+                    const namaResmi = dataCari.data[0].lokasi;
+                    cityDisplay.innerText = namaResmi;
+
+                    // Step B: Ambil Jadwal berdasarkan ID Kota
                     const resJadwal = await fetch(`https://api.myquran.com/v2/sholat/jadwal/${idKota}/${y}/${m}/${d}`);
                     const dataJadwal = await resJadwal.json();
-                    const j = dataJadwal.data.jadwal;
-
-                    const list = ['subuh', 'terbit', 'dzuhur', 'ashar', 'maghrib', 'isya'];
-                    container.innerHTML = "";
-                    list.forEach(s => {
-                        container.innerHTML += `
-                            <div class="sholat-item">
-                                <span class="nama-sholat">${s.toUpperCase()}</span>
-                                <span class="waktu-sholat">${j[s]}</span>
-                            </div>
-                        `;
-                    });
+                    
+                    if (dataJadwal.status) {
+                        tampilkanKeLayar(dataJadwal.data.jadwal);
+                    }
                 } else {
-                    container.innerHTML = '<div class="loading">Kota tidak terdaftar.</div>';
+                    // Jika kota tidak ditemukan, coba cari Jakarta
+                    if (namaKota.toLowerCase() !== "jakarta") {
+                        ambilDataJadwal("Jakarta");
+                    } else {
+                        container.innerHTML = '<div class="loading error-msg">Maaf, database jadwal tidak tersedia.</div>';
+                    }
                 }
             } catch (err) {
-                container.innerHTML = '<div class="loading">Gagal mengambil data.</div>';
+                container.innerHTML = '<div class="loading">⚠️ Koneksi terputus. Pastikan internet aktif.</div>';
             }
         }
 
-        function cariManual() {
-            const val = document.getElementById('inputKota').value;
-            if(val) ambilJadwal(val);
+        // 3. Fungsi Render HTML
+        function tampilkanKeLayar(j) {
+            const listSholat = [
+                { key: 'imsak', label: 'IMSAK' },
+                { key: 'subuh', label: 'SUBUH' },
+                { key: 'terbit', label: 'TERBIT' },
+                { key: 'dzuhur', label: 'DZUHUR' },
+                { key: 'ashar', label: 'ASHAR' },
+                { key: 'maghrib', label: 'MAGHRIB' },
+                { key: 'isya', label: 'ISYA' }
+            ];
+
+            container.innerHTML = "";
+            listSholat.forEach(s => {
+                container.innerHTML += `
+                    <div class="sholat-item">
+                        <span class="nama-sholat">${s.label}</span>
+                        <span class="waktu-sholat">${j[s.key]}</span>
+                    </div>
+                `;
+            });
         }
 
-        // Jalankan otomatis
-        deteksiLokasiOtomatis();
+        // 4. Fungsi Cari Manual
+        function cariManual() {
+            const input = document.getElementById('inputKota').value;
+            if (input) ambilDataJadwal(input);
+        }
+
+        // Jalankan saat halaman dibuka
+        deteksiOtomatis();
     </script>
 </body>
 </html>
