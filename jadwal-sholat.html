@@ -8,27 +8,22 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: #f4f7f6; color: #1e293b; padding-bottom: 30px; }
-        
-        .header { background: #00a86b; color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 25px 25px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .header { background: #00a86b; color: white; padding: 25px 20px; text-align: center; border-radius: 0 0 25px 25px; position: relative; }
         .btn-back { position: absolute; left: 20px; top: 25px; text-decoration: none; color: white; font-size: 20px; }
-        
-        .location-box { background: white; margin: -20px 20px 20px; padding: 15px; border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; }
-        .city-name { font-weight: 700; color: #00a86b; font-size: 18px; text-transform: capitalize; }
+        .location-box { background: white; margin: -20px 20px 20px; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
+        .city-name { font-weight: 700; color: #00a86b; font-size: 18px; text-transform: uppercase; }
         .date-now { font-size: 12px; color: #64748b; margin-top: 5px; }
-
         .search-area { padding: 0 20px; margin-bottom: 20px; }
-        input { width: 100%; padding: 12px 15px; border: 1px solid #e2e8f0; border-radius: 12px; outline: none; }
-
-        .sholat-grid { padding: 0 20px; display: grid; gap: 12px; }
+        input { width: 100%; padding: 12px 15px; border: 1px solid #e2e8f0; border-radius: 12px; outline: none; background: white; }
+        .sholat-grid { padding: 0 20px; display: grid; gap: 10px; }
         .sholat-item { 
-            background: white; padding: 18px 20px; border-radius: 15px; 
+            background: white; padding: 15px 20px; border-radius: 12px; 
             display: flex; justify-content: space-between; align-items: center;
-            border-left: 5px solid #00a86b; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            border-left: 5px solid #00a86b;
         }
-        .nama-sholat { font-weight: 600; color: #475569; }
+        .nama-sholat { font-weight: 600; color: #475569; font-size: 14px; }
         .waktu-sholat { font-weight: 700; color: #1e293b; font-size: 18px; }
-
-        .loading { text-align: center; padding: 50px; color: #64748b; font-size: 14px; }
+        .loading { text-align: center; padding: 40px; color: #64748b; font-size: 14px; font-style: italic; }
     </style>
 </head>
 <body>
@@ -39,16 +34,16 @@
     </div>
 
     <div class="location-box">
-        <div id="city-display" class="city-name">Mencari Lokasi...</div>
-        <div id="date-display" class="date-now"></div>
+        <div id="city-display" class="city-name">Mendeteksi Lokasi...</div>
+        <div id="date-display" class="date-now">---</div>
     </div>
 
     <div class="search-area">
-        <input type="text" id="inputKota" placeholder="Cari kota lain... (Contoh: Jakarta)" onchange="cariManual()">
+        <input type="text" id="inputKota" placeholder="Ketik nama kota (ex: Bandung)" onchange="cariManual()">
     </div>
 
     <div id="sholat-container" class="sholat-grid">
-        <div class="loading">Mengambil data jadwal...</div>
+        <div class="loading">Menghubungkan ke satelit...</div>
     </div>
 
     <script>
@@ -56,59 +51,42 @@
         const cityDisplay = document.getElementById('city-display');
         const dateDisplay = document.getElementById('date-display');
 
-        // 1. Fungsi Ambil Lokasi Otomatis saat dibuka
-        window.onload = function() {
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(getPosition, getDefault);
-            } else {
-                getDefault(); // Jika browser tidak dukung GPS
+        // Fungsi Deteksi Lokasi lewat IP (Tanpa perlu klik 'Allow' GPS)
+        async function deteksiLokasiOtomatis() {
+            try {
+                const res = await fetch('https://ipapi.co/json/');
+                const data = await res.json();
+                const kotaUser = data.city || "Jakarta";
+                ambilJadwal(kotaUser);
+            } catch (e) {
+                ambilJadwal("Jakarta"); // Fallback jika gagal
             }
-        };
-
-        function getPosition(position) {
-            const lat = position.coords.latitude;
-            const lon = position.coords.longitude;
-            
-            // Menggunakan Reverse Geocoding gratis untuk cari nama kota dari koordinat
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`)
-                .then(res => res.json())
-                .then(data => {
-                    const kota = data.address.city || data.address.town || data.address.suburb || "Jakarta";
-                    ambilJadwal(kota.replace("Kota ", ""));
-                })
-                .catch(() => getDefault());
         }
 
-        function getDefault() {
-            ambilJadwal("Jakarta"); // Default jika GPS dimatikan
-        }
+        async function ambilJadwal(namaKota) {
+            container.innerHTML = '<div class="loading">Memuat jadwal...</div>';
+            cityDisplay.innerText = namaKota;
 
-        async function ambilJadwal(kota) {
-            cityDisplay.innerText = kota;
             const tgl = new Date();
             const y = tgl.getFullYear();
             const m = String(tgl.getMonth() + 1).padStart(2, '0');
             const d = String(tgl.getDate()).padStart(2, '0');
-            
-            dateDisplay.innerText = `${d}-${m}-${y}`;
+            dateDisplay.innerText = `${d}/${m}/${y}`;
 
             try {
-                // Cari ID Kota dulu
-                const resKota = await fetch(`https://api.myquran.com/v2/sholat/kota/cari/${kota}`);
-                const dataKota = await resKota.json();
+                // Cari ID Kota di MyQuran API
+                const resCari = await fetch(`https://api.myquran.com/v2/sholat/kota/cari/${namaKota}`);
+                const dataCari = await resCari.json();
 
-                if (dataKota.status && dataKota.data.length > 0) {
-                    const idKota = dataKota.data[0].id;
-                    
-                    // Ambil Jadwal berdasarkan ID
+                if (dataCari.data && dataCari.data.length > 0) {
+                    const idKota = dataCari.data[0].id;
                     const resJadwal = await fetch(`https://api.myquran.com/v2/sholat/jadwal/${idKota}/${y}/${m}/${d}`);
                     const dataJadwal = await resJadwal.json();
                     const j = dataJadwal.data.jadwal;
 
-                    const listSholat = ['subuh', 'terbit', 'dzuhur', 'ashar', 'maghrib', 'isya'];
+                    const list = ['subuh', 'terbit', 'dzuhur', 'ashar', 'maghrib', 'isya'];
                     container.innerHTML = "";
-                    
-                    listSholat.forEach(s => {
+                    list.forEach(s => {
                         container.innerHTML += `
                             <div class="sholat-item">
                                 <span class="nama-sholat">${s.toUpperCase()}</span>
@@ -117,17 +95,20 @@
                         `;
                     });
                 } else {
-                    container.innerHTML = '<div class="loading">Kota tidak ditemukan.</div>';
+                    container.innerHTML = '<div class="loading">Kota tidak terdaftar.</div>';
                 }
-            } catch (e) {
-                container.innerHTML = '<div class="loading">Gagal memuat data.</div>';
+            } catch (err) {
+                container.innerHTML = '<div class="loading">Gagal mengambil data.</div>';
             }
         }
 
         function cariManual() {
-            const kotaInput = document.getElementById('inputKota').value;
-            if(kotaInput) ambilJadwal(kotaInput);
+            const val = document.getElementById('inputKota').value;
+            if(val) ambilJadwal(val);
         }
+
+        // Jalankan otomatis
+        deteksiLokasiOtomatis();
     </script>
 </body>
 </html>
