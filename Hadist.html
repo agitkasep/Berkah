@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kumpulan Hadist - Berkah</title>
+    <title>Hadist & Fiqih - Berkah</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
@@ -16,12 +16,15 @@
         .btn-back { text-decoration: none; font-size: 18px; margin-right: 15px; color: #00a86b; cursor: pointer; }
         .title { font-size: 16px; font-weight: 700; }
 
-        /* Kontrol Panel */
         .control-panel { padding: 15px 20px; background: white; display: flex; flex-direction: column; gap: 10px; border-bottom: 1px solid #f1f5f9; }
+        
+        label { font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: -5px; display: block; }
+        
         select, .input-nomor {
             width: 100%; padding: 12px; border: 1px solid #e2e8f0;
             border-radius: 12px; outline: none; font-size: 14px; background: #f8fafc;
         }
+
         .search-row { display: flex; gap: 10px; }
         .btn-cari { 
             background: #00a86b; color: white; border: none; padding: 0 20px; 
@@ -34,52 +37,67 @@
             border-radius: 20px; border: 1px solid #eee;
             box-shadow: 0 4px 15px rgba(0,0,0,0.03);
         }
-        .hadist-meta { font-size: 12px; font-weight: 700; color: #00a86b; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .hadist-meta { font-size: 12px; font-weight: 700; color: #00a86b; margin-bottom: 15px; text-transform: uppercase; }
         .hadist-arab { 
             font-family: 'Amiri', serif; font-size: 26px; text-align: right; 
             line-height: 2.2; margin-bottom: 20px; color: #0f172a; direction: rtl;
         }
         .hadist-indo { font-size: 14px; color: #475569; line-height: 1.7; text-align: justify; }
 
-        /* Navigasi Bawah */
         .pagination { display: flex; justify-content: space-between; padding: 0 20px; gap: 15px; margin-top: 10px; }
         .btn-nav {
             flex: 1; padding: 14px; border-radius: 15px; border: none;
-            background: #00a86b; color: white; font-weight: 700; font-size: 14px; 
-            cursor: pointer; transition: 0.2s;
+            background: #00a86b; color: white; font-weight: 700; font-size: 14px; cursor: pointer;
         }
-        .btn-nav:active { transform: scale(0.95); opacity: 0.9; }
-        .btn-nav:disabled { background: #cbd5e1; cursor: not-allowed; }
+        .btn-nav:disabled { background: #cbd5e1; }
 
-        .loading { text-align: center; padding: 50px; color: #64748b; font-size: 14px; line-height: 1.6; }
-        .error-btn { margin-top: 15px; padding: 10px 20px; border-radius: 10px; border: none; background: #00a86b; color: white; font-weight: 700; }
+        .loading { text-align: center; padding: 50px; color: #64748b; font-size: 14px; }
+        .info-tag { background: #fff9c4; color: #f57f17; padding: 5px 10px; border-radius: 8px; font-size: 10px; font-weight: 700; margin-bottom: 10px; display: inline-block; }
     </style>
 </head>
 <body>
 
     <div class="nav-header">
         <a href="index.html" class="btn-back">⬅️</a>
-        <div class="title">Hadist Digital</div>
+        <div class="title">Hadist & Ilmu Fiqih</div>
     </div>
 
     <div class="control-panel">
-        <select id="perawi" onchange="resetDanMuat()">
-            <option value="bukhari">Shahih Bukhari</option>
-            <option value="muslim">Shahih Muslim</option>
-            <option value="abu-dawud">Sunan Abu Dawud</option>
-            <option value="tirmidzi">Sunan Tirmidzi</option>
-            <option value="nasai">Sunan Nasai</option>
-            <option value="ibnu-majah">Sunan Ibnu Majah</option>
-        </select>
+        <div>
+            <label>Pilih Kitab Hadist</label>
+            <select id="perawi" onchange="resetDanMuat()">
+                <option value="bukhari">Shahih Bukhari</option>
+                <option value="muslim">Shahih Muslim</option>
+                <option value="abu-dawud">Sunan Abu Dawud</option>
+                <option value="tirmidzi">Sunan Tirmidzi</option>
+                <option value="nasai">Sunan Nasai</option>
+                <option value="ibnu-majah">Sunan Ibnu Majah</option>
+            </select>
+        </div>
+
+        <div>
+            <label>Kategori Ilmu Fiqih (Topik)</label>
+            <select id="kategoriFiqih" onchange="pilihFiqih()">
+                <option value="">-- Pilih Topik Fiqih --</option>
+                <option value="8">Fiqih Bersuci (Thaharah)</option>
+                <option value="11">Fiqih Sholat</option>
+                <option value="24">Fiqih Zakat</option>
+                <option value="25">Fiqih Haji & Umrah</option>
+                <option value="34">Fiqih Jual Beli (Buyu')</option>
+                <option value="62">Fiqih Nikah (Rumah Tangga)</option>
+                <option value="63">Fiqih Thalaq (Cerai)</option>
+                <option value="80">Fiqih Waris (Faraid)</option>
+                <option value="86">Fiqih Adab & Akhlak</option>
+            </select>
+        </div>
+
         <div class="search-row">
-            <input type="number" id="inputNomor" class="input-nomor" placeholder="No. Hadist (Contoh: 10)">
+            <input type="number" id="inputNomor" class="input-nomor" placeholder="Cari No. Hadist...">
             <button class="btn-cari" onclick="cariNomor()">Cari</button>
         </div>
     </div>
 
-    <div id="hadist-container">
-        <!-- Hadist akan muncul di sini -->
-    </div>
+    <div id="hadist-container"></div>
 
     <div class="pagination">
         <button class="btn-nav" id="prev" onclick="gantiHadist(-1)">⬅️ Prev</button>
@@ -90,23 +108,48 @@
         let perawiSekarang = "bukhari";
         let nomorHadist = 1;
 
+        // Fungsi saat kategori fiqih dipilih
+        // Kita mengarahkan ke nomor hadist awal bab terkait di Shahih Bukhari
+        function pilihFiqih() {
+            const bab = document.getElementById('kategoriFiqih').value;
+            if (bab !== "") {
+                perawiSekarang = "bukhari"; // Default ke Bukhari untuk kategori ini
+                document.getElementById('perawi').value = "bukhari";
+                
+                // Mapping sederhana nomor hadist awal bab di Bukhari
+                const mapBab = {
+                    "8": 349,  // Sholat
+                    "11": 595, // Adzan/Sholat
+                    "24": 1395, // Zakat
+                    "25": 1423, // Haji
+                    "34": 1934, // Jual Beli
+                    "62": 4677, // Nikah
+                    "63": 4842, // Thalaq
+                    "80": 6226, // Waris
+                    "86": 5545  // Adab
+                };
+                
+                nomorHadist = mapBab[bab] || 1;
+                muatHadist();
+            }
+        }
+
         async function muatHadist() {
             const container = document.getElementById('hadist-container');
             const btnPrev = document.getElementById('prev');
             container.innerHTML = '<div class="loading">⏳ Memuat hadist...</div>';
-            
             btnPrev.disabled = nomorHadist <= 1;
 
             try {
-                // Menggunakan endpoint alternatif yang lebih stabil
                 const url = `https://api.hadith.gading.dev/books/${perawiSekarang}/${nomorHadist}`;
                 const response = await fetch(url);
                 const json = await response.json();
                 
-                if (json.code === 200 || json.status === 200) {
+                if (json.code === 200) {
                     const data = json.data.contents;
                     container.innerHTML = `
                         <div class="hadist-card">
+                            <div class="info-tag">Topik Terkait: ${document.getElementById('kategoriFiqih').options[document.getElementById('kategoriFiqih').selectedIndex].text}</div>
                             <div class="hadist-meta">${json.data.name} - No. ${data.number}</div>
                             <div class="hadist-arab">${data.arab}</div>
                             <div class="hadist-indo">${data.id}</div>
@@ -114,14 +157,10 @@
                     `;
                     window.scrollTo(0,0);
                 } else {
-                    container.innerHTML = '<div class="loading">❌ Hadist tidak ditemukan.</div>';
+                    container.innerHTML = '<div class="loading">❌ Data tidak ditemukan.</div>';
                 }
             } catch (e) {
-                container.innerHTML = `
-                    <div class="loading">
-                        <p>⚠️ Server API sedang sibuk atau sedang gangguan.</p>
-                        <button class="error-btn" onclick="muatHadist()">Coba Lagi</button>
-                    </div>`;
+                container.innerHTML = '<div class="loading">⚠️ Server sibuk. Silakan coba lagi nanti.</div>';
             }
         }
 
@@ -132,7 +171,7 @@
 
         function cariNomor() {
             const input = document.getElementById('inputNomor').value;
-            if (input && input > 0) {
+            if (input > 0) {
                 nomorHadist = parseInt(input);
                 muatHadist();
             }
@@ -141,11 +180,9 @@
         function resetDanMuat() {
             perawiSekarang = document.getElementById('perawi').value;
             nomorHadist = 1;
-            document.getElementById('inputNomor').value = "";
             muatHadist();
         }
 
-        // Jalankan saat pertama kali halaman dibuka
         muatHadist();
     </script>
 </body>
