@@ -3,27 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Qur'an Berkah - Multi API</title>
+    <title>Al-Qur'an Berkah - Mashup System</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00a86b; --accent: #f59e0b; --ghunnah: #ff7e00; --ikhfa: #ff0000; --idgham: #2196f3; --qlq: #9c27b0; --mad: #e91e63; }
+        :root { --primary: #00a86b; --ghunnah: #ff7e00; --ikhfa: #ff0000; --idgham: #2196f3; --qlq: #9c27b0; --mad: #e91e63; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f1f5f9; color: #1e293b; }
-        .nav-header { padding: 15px; background: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; }
+        body { background: #f8fafc; color: #1e293b; }
+        .nav-header { padding: 15px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; }
         .btn-back { border: none; background: none; font-size: 20px; cursor: pointer; color: var(--primary); margin-right: 10px; }
         .container { max-width: 600px; margin: 0 auto; padding: 10px; }
-        
-        /* Card Styles */
-        .audio-card { background: white; padding: 15px; border-radius: 15px; margin-bottom: 15px; text-align: center; border: 1px solid #e2e8f0; }
-        .asbab-card { background: #fffbeb; border: 1px solid #fde68a; padding: 15px; border-radius: 15px; margin-bottom: 15px; font-size: 13px; color: #92400e; }
-        .ayat-card { background: white; margin-bottom: 15px; padding: 25px 20px; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); }
-        
-        /* Text Styles */
-        .teks-arab { font-family: 'Amiri', serif; font-size: 30px; text-align: right; line-height: 2.5; direction: rtl; margin-bottom: 15px; color: #000; }
-        .teks-latin { font-size: 14px; color: var(--primary); font-style: italic; margin-bottom: 10px; font-weight: 500; }
-        .teks-indo { font-size: 14px; color: #475569; border-top: 1px solid #f1f5f9; padding-top: 12px; line-height: 1.6; }
-        .loading-text { text-align: center; padding: 50px; color: #64748b; }
-
+        .audio-card { background: white; padding: 15px; border-radius: 15px; text-align: center; margin-bottom: 15px; border: 1px solid #eee; }
+        .ayat-card { background: white; margin-bottom: 15px; padding: 25px 20px; border-radius: 18px; border: 1px solid #e2e8f0; }
+        .teks-arab { font-family: 'Amiri', serif; font-size: 30px; text-align: right; line-height: 2.5; direction: rtl; margin-bottom: 15px; }
+        .teks-latin { font-size: 14px; color: var(--primary); font-style: italic; margin-bottom: 8px; }
+        .teks-indo { font-size: 14px; color: #475569; border-top: 1px solid #f1f5f9; padding-top: 12px; }
+        .loading-text { text-align: center; padding: 50px; color: #94a3b8; }
         /* Tajwid Colors */
         .ghn { color: var(--ghunnah) !important; font-weight: bold; }
         .ikh { color: var(--ikhfa) !important; font-weight: bold; }
@@ -42,7 +36,7 @@
     <div id="detail-surat" style="display:none;">
         <div class="nav-header">
             <button class="btn-back" onclick="backToList()">⬅️</button>
-            <div id="judul-surat" style="font-weight:700;"></div>
+            <b id="judul-surat"></b>
         </div>
         <div id="ayat-container" class="container"></div>
     </div>
@@ -50,15 +44,15 @@
     <script src="https://cdn.jsdelivr.net/gh/alif-type/alif-tajwid@main/dist/alif-tajwid.min.js"></script>
 
     <script>
-        // Load Daftar Surat (Source: API A)
+        // Load Daftar Surat (Situs A)
         async function loadSurat() {
             const container = document.getElementById('list-container');
-            container.innerHTML = '<div class="loading-text">Menyiapkan Daftar...</div>';
+            container.innerHTML = '<div class="loading-text">Memuat Daftar Surat...</div>';
             try {
                 const res = await fetch('https://equran.id/api/v2/surat');
                 const json = await res.json();
                 container.innerHTML = json.data.map(s => `
-                    <div style="background:white; padding:15px; border-radius:12px; margin-bottom:8px; border:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center;" onclick="openSurat(${s.nomor}, '${s.namaLatin}')">
+                    <div style="background:white; padding:15px; border-radius:12px; margin-bottom:8px; border:1px solid #eee; display:flex; justify-content:space-between; align-items:center;" onclick="openSurat(${s.nomor}, '${s.namaLatin}')">
                         <div><b>${s.nomor}. ${s.namaLatin}</b><br><small>${s.arti}</small></div>
                         <div style="font-family:'Amiri'; font-size:20px; color:var(--primary);">${s.nama}</div>
                     </div>
@@ -66,62 +60,51 @@
             } catch (e) { container.innerHTML = "Gagal memuat."; }
         }
 
-        // MASHUP API FUNCTION
         async function openSurat(nomor, nama) {
             const container = document.getElementById('ayat-container');
             document.getElementById('main-view').style.display = "none";
             document.getElementById('detail-surat').style.display = "block";
             document.getElementById('judul-surat').innerText = nama;
-            container.innerHTML = '<div class="loading-text">Menggabungkan Data API...</div>';
+            container.innerHTML = '<div class="loading-text">Merakit Ayat dari Berbagai Sumber...</div>';
             window.scrollTo(0,0);
 
             try {
-                // Memanggil 3 API Berbeda secara bersamaan (Mashup)
-                const [resA, resB, resC] = await Promise.all([
-                    fetch(`https://equran.id/api/v2/surat/${nomor}`), // API Teks Latin & Indo
-                    fetch(`https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number=${nomor}`), // API Teks Arab Utsmani
-                    fetch(`https://quran-api-id.vercel.app/surah/${nomor}`) // API Asbabun Nuzul
-                ]);
+                // AMBIL DATA SECARA BERTAHAP (Sequential) UNTUK MENGHINDARI BLOKIR
+                // 1. Ambil Arab, Latin, Terjemahan (Situs B)
+                const resB = await fetch(`https://equran.id/api/v2/surat/${nomor}`);
+                const dataB = await resB.json();
+                const ayatList = dataB.data.ayat;
 
-                const dataIndo = await resA.json();
-                const dataArab = await resB.json();
-                const dataAsbab = await resC.json();
+                // 2. Audio (Situs C) - Langsung tembak URL CDN
+                const audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${nomor}.mp3`;
 
-                // Mashup Bagian Audio (API D)
+                // 3. Render ke HTML
                 let html = `
                     <div class="audio-card">
-                        <audio controls style="width:100%">
-                            <source src="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${nomor}.mp3" type="audio/mpeg">
-                        </audio>
-                        <p style="font-size:10px; margin-top:5px; color:grey">Audio Source: Islamic Network</p>
+                        <audio controls style="width:100%"><source src="${audioUrl}" type="audio/mpeg"></audio>
+                        <p style="font-size:10px; color:gray; margin-top:5px;">Audio: Mishary Rashid</p>
                     </div>
                 `;
 
-                // Mashup Bagian Asbabun Nuzul (Jika ada)
-                if(dataAsbab.description) {
-                    html += `<div class="asbab-card"><b>Info Surat:</b><br>${dataAsbab.description}</div>`;
-                }
+                html += ayatList.map(a => {
+                    // 4. Tajwid (Situs D - Library Lokal)
+                    // Kita pakai teksArab dari equran.id dan diwarnai otomatis
+                    const tajwidHtml = alifTajwid.render(a.teksArab);
 
-                // Menggabungkan Ayat dari API A dan API B
-                dataIndo.data.ayat.forEach((ayat, index) => {
-                    const teksArabMurni = dataArab.verses[index].text_uthmani;
-                    
-                    // Render Tajwid (API E - Client Side Library)
-                    const teksBerwarna = alifTajwid.render(teksArabMurni);
-
-                    html += `
+                    return `
                         <div class="ayat-card">
-                            <div style="font-size:11px; color:var(--primary); margin-bottom:10px; font-weight:800;">AYAT ${ayat.nomorAyat}</div>
-                            <div class="teks-arab">${teksBerwarna}</div>
-                            <div class="teks-latin">${ayat.teksLatin}</div>
-                            <div class="teks-indo">${ayat.teksIndonesia}</div>
+                            <div style="font-size:11px; color:var(--primary); margin-bottom:10px; font-weight:700;">AYAT ${a.nomorAyat}</div>
+                            <div class="teks-arab">${tajwidHtml}</div>
+                            <div class="teks-latin">${a.teksLatin}</div>
+                            <div class="teks-indo">${a.teksIndonesia}</div>
                         </div>
                     `;
-                });
+                }).join('');
 
                 container.innerHTML = html;
             } catch (e) {
-                container.innerHTML = "<div class='loading-text'>Gagal merakit data. Coba lagi.</div>";
+                console.error(e);
+                container.innerHTML = "<div class='loading-text'>Gagal merakit data. Cek koneksi atau coba lagi nanti.</div>";
             }
         }
 
