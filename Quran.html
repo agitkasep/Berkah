@@ -3,108 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Qur'an Berkah - Mashup System</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <title>Al-Qur'an Digital - Berkah</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --primary: #00a86b; --ghunnah: #ff7e00; --ikhfa: #ff0000; --idgham: #2196f3; --qlq: #9c27b0; --mad: #e91e63; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f8fafc; color: #1e293b; }
-        .nav-header { padding: 15px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; }
-        .btn-back { border: none; background: none; font-size: 20px; cursor: pointer; color: var(--primary); margin-right: 10px; }
-        .container { max-width: 600px; margin: 0 auto; padding: 10px; }
-        .audio-card { background: white; padding: 15px; border-radius: 15px; text-align: center; margin-bottom: 15px; border: 1px solid #eee; }
-        .ayat-card { background: white; margin-bottom: 15px; padding: 25px 20px; border-radius: 18px; border: 1px solid #e2e8f0; }
-        .teks-arab { font-family: 'Amiri', serif; font-size: 30px; text-align: right; line-height: 2.5; direction: rtl; margin-bottom: 15px; }
-        .teks-latin { font-size: 14px; color: var(--primary); font-style: italic; margin-bottom: 8px; }
-        .teks-indo { font-size: 14px; color: #475569; border-top: 1px solid #f1f5f9; padding-top: 12px; }
-        .loading-text { text-align: center; padding: 50px; color: #94a3b8; }
-        /* Tajwid Colors */
-        .ghn { color: var(--ghunnah) !important; font-weight: bold; }
-        .ikh { color: var(--ikhfa) !important; font-weight: bold; }
-        .idg { color: var(--idgham) !important; }
-        .qlq { color: var(--qlq) !important; font-weight: bold; }
-        .mad { color: var(--mad) !important; }
+        body { background-color: #f4f7f6; color: #1e293b; }
+        
+        /* Navigasi */
+        .nav-header { 
+            display: flex; align-items: center; padding: 15px 20px; 
+            background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100;
+        }
+        .btn-back { text-decoration: none; font-size: 18px; margin-right: 15px; color: #00a86b; cursor: pointer; }
+        .title { font-size: 16px; font-weight: 700; }
+
+        /* Search Bar */
+        .search-container { padding: 15px 20px; background: white; }
+        .search-input {
+            width: 100%; padding: 12px 15px; border: 1px solid #e2e8f0;
+            border-radius: 12px; outline: none; font-size: 14px; background: #f8fafc;
+        }
+
+        /* Daftar Surat */
+        .surat-list { padding: 10px 20px; display: grid; gap: 10px; }
+        .surat-item {
+            background: white; padding: 15px; border-radius: 15px;
+            display: flex; align-items: center; justify-content: space-between;
+            text-decoration: none; color: inherit; border: 1px solid #f1f5f9;
+        }
+        .surat-left { display: flex; align-items: center; gap: 15px; }
+        .nomor-surat { 
+            width: 35px; height: 35px; background: #f0fff4; color: #00a86b; 
+            display: flex; align-items: center; justify-content: center; 
+            border-radius: 10px; font-weight: 700; font-size: 12px;
+        }
+        .nama-latin { font-size: 14px; font-weight: 700; color: #334155; }
+        .arti-surat { font-size: 11px; color: #64748b; }
+        .nama-arab { font-family: 'Amiri', serif; font-size: 20px; color: #00a86b; font-weight: 700; }
+
+        /* Detail Surat (Ayat) */
+        #detail-surat { display: none; padding-bottom: 40px; }
+        .ayat-item { padding: 25px 20px; border-bottom: 1px solid #eee; background: white; }
+        .ayat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .nomor-ayat { color: #00a86b; font-weight: 700; font-size: 14px; }
+        .teks-arab { 
+            font-family: 'Amiri', serif; font-size: 28px; text-align: right; 
+            line-height: 2.2; margin-bottom: 15px; color: #0f172a;
+        }
+        .teks-latin { font-size: 13px; color: #00a86b; font-style: italic; margin-bottom: 8px; line-height: 1.5; }
+        .teks-terjemahan { font-size: 13px; color: #475569; line-height: 1.6; }
+        
+        .audio-player { width: 100%; margin-top: 15px; height: 35px; }
+
+        .loading { text-align: center; padding: 50px; color: #64748b; font-size: 14px; }
     </style>
 </head>
 <body>
 
+    <!-- Header & Search -->
     <div id="main-view">
-        <div class="nav-header"><b>Al-Qur'an Berkah</b></div>
-        <div id="list-container" class="container"></div>
-    </div>
-
-    <div id="detail-surat" style="display:none;">
         <div class="nav-header">
-            <button class="btn-back" onclick="backToList()">⬅️</button>
-            <b id="judul-surat"></b>
+            <a href="index.html" class="btn-back">⬅️</a>
+            <div class="title">Al-Qur'an Digital</div>
         </div>
-        <div id="ayat-container" class="container"></div>
+        <div class="search-container">
+            <input type="text" id="searchSurat" class="search-input" placeholder="Cari nama surat..." onkeyup="filterSurat()">
+        </div>
+        <div id="list-container" class="surat-list">
+            <div class="loading">Memuat daftar surat...</div>
+        </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/gh/alif-type/alif-tajwid@main/dist/alif-tajwid.min.js"></script>
+    <!-- Detail View -->
+    <div id="detail-surat">
+        <div class="nav-header">
+            <div class="btn-back" onclick="backToList()">⬅️</div>
+            <div class="title" id="judul-surat">Nama Surat</div>
+        </div>
+        <div id="ayat-container"></div>
+    </div>
 
     <script>
-        // Load Daftar Surat (Situs A)
-        async function loadSurat() {
-            const container = document.getElementById('list-container');
-            container.innerHTML = '<div class="loading-text">Memuat Daftar Surat...</div>';
+        let dataSurat = [];
+
+        // 1. Ambil Daftar Surat
+        async function getDaftarSurat() {
             try {
                 const res = await fetch('https://equran.id/api/v2/surat');
                 const json = await res.json();
-                container.innerHTML = json.data.map(s => `
-                    <div style="background:white; padding:15px; border-radius:12px; margin-bottom:8px; border:1px solid #eee; display:flex; justify-content:space-between; align-items:center;" onclick="openSurat(${s.nomor}, '${s.namaLatin}')">
-                        <div><b>${s.nomor}. ${s.namaLatin}</b><br><small>${s.arti}</small></div>
-                        <div style="font-family:'Amiri'; font-size:20px; color:var(--primary);">${s.nama}</div>
-                    </div>
-                `).join('');
-            } catch (e) { container.innerHTML = "Gagal memuat."; }
+                dataSurat = json.data;
+                renderSurat(dataSurat);
+            } catch (e) {
+                document.getElementById('list-container').innerHTML = "Gagal memuat data.";
+            }
         }
 
-        async function openSurat(nomor, nama) {
-            const container = document.getElementById('ayat-container');
-            document.getElementById('main-view').style.display = "none";
-            document.getElementById('detail-surat').style.display = "block";
-            document.getElementById('judul-surat').innerText = nama;
-            container.innerHTML = '<div class="loading-text">Merakit Ayat dari Berbagai Sumber...</div>';
-            window.scrollTo(0,0);
-
-            try {
-                // AMBIL DATA SECARA BERTAHAP (Sequential) UNTUK MENGHINDARI BLOKIR
-                // 1. Ambil Arab, Latin, Terjemahan (Situs B)
-                const resB = await fetch(`https://equran.id/api/v2/surat/${nomor}`);
-                const dataB = await resB.json();
-                const ayatList = dataB.data.ayat;
-
-                // 2. Audio (Situs C) - Langsung tembak URL CDN
-                const audioUrl = `https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${nomor}.mp3`;
-
-                // 3. Render ke HTML
-                let html = `
-                    <div class="audio-card">
-                        <audio controls style="width:100%"><source src="${audioUrl}" type="audio/mpeg"></audio>
-                        <p style="font-size:10px; color:gray; margin-top:5px;">Audio: Mishary Rashid</p>
+        // 2. Tampilkan List Surat
+        function renderSurat(list) {
+            const container = document.getElementById('list-container');
+            container.innerHTML = "";
+            list.forEach(s => {
+                container.innerHTML += `
+                    <div class="surat-item" onclick="getDetailSurat(${s.nomor})">
+                        <div class="surat-left">
+                            <div class="nomor-surat">${s.nomor}</div>
+                            <div>
+                                <div class="nama-latin">${s.namaLatin}</div>
+                                <div class="arti-surat">${s.arti} (${s.jumlahAyat} Ayat)</div>
+                            </div>
+                        </div>
+                        <div class="nama-arab">${s.nama}</div>
                     </div>
                 `;
+            });
+        }
 
-                html += ayatList.map(a => {
-                    // 4. Tajwid (Situs D - Library Lokal)
-                    // Kita pakai teksArab dari equran.id dan diwarnai otomatis
-                    const tajwidHtml = alifTajwid.render(a.teksArab);
+        // 3. Filter Pencarian
+        function filterSurat() {
+            const q = document.getElementById('searchSurat').value.toLowerCase();
+            const filtered = dataSurat.filter(s => s.namaLatin.toLowerCase().includes(q));
+            renderSurat(filtered);
+        }
 
-                    return `
-                        <div class="ayat-card">
-                            <div style="font-size:11px; color:var(--primary); margin-bottom:10px; font-weight:700;">AYAT ${a.nomorAyat}</div>
-                            <div class="teks-arab">${tajwidHtml}</div>
+        // 4. Ambil Detail Ayat
+        async function getDetailSurat(nomor) {
+            window.scrollTo(0,0);
+            document.getElementById('main-view').style.display = "none";
+            document.getElementById('detail-surat').style.display = "block";
+            document.getElementById('ayat-container').innerHTML = '<div class="loading">Memuat ayat...</div>';
+
+            try {
+                const res = await fetch(`https://equran.id/api/v2/surat/${nomor}`);
+                const json = await res.json();
+                const s = json.data;
+
+                document.getElementById('judul-surat').innerText = s.namaLatin;
+                
+                let html = `<div style="padding: 20px; text-align: center; background: #fff; margin-bottom: 10px;">
+                                <audio controls class="audio-player">
+                                    <source src="${s.audioFull['05']}" type="audio/mpeg">
+                                </audio>
+                                <p style="font-size: 11px; margin-top: 8px; color: #64748b;">Putar Murottal Surat</p>
+                            </div>`;
+
+                s.ayat.forEach(a => {
+                    html += `
+                        <div class="ayat-item">
+                            <div class="ayat-header">
+                                <div class="nomor-ayat">${a.nomorAyat}</div>
+                            </div>
+                            <div class="teks-arab">${a.teksArab}</div>
                             <div class="teks-latin">${a.teksLatin}</div>
-                            <div class="teks-indo">${a.teksIndonesia}</div>
+                            <div class="teks-terjemahan">${a.teksIndonesia}</div>
                         </div>
                     `;
-                }).join('');
-
-                container.innerHTML = html;
+                });
+                document.getElementById('ayat-container').innerHTML = html;
             } catch (e) {
-                console.error(e);
-                container.innerHTML = "<div class='loading-text'>Gagal merakit data. Cek koneksi atau coba lagi nanti.</div>";
+                alert("Gagal memuat ayat.");
             }
         }
 
@@ -113,7 +169,7 @@
             document.getElementById('detail-surat').style.display = "none";
         }
 
-        loadSurat();
+        getDaftarSurat();
     </script>
 </body>
 </html>
