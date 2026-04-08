@@ -3,232 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Qur'an Berkah - Tajwid & Offline</title>
+    <title>Al-Qur'an Berkah - Fast Loading</title>
+    <link rel="preconnect" href="https://equran.id">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
         :root {
             --primary: #00a86b;
-            --bg-body: #f8fafc;
-            /* Warna Tajwid Standar */
-            --ghunnah: #ff7e00;
-            --ikhfa: #ff0000;
-            --idgham: #2196f3;
-            --iqlab: #4caf50;
-            --qolqolah: #9c27b0;
-            --mad: #e91e63;
+            --ghunnah: #ff7e00; --ikhfa: #ff0000; --idgham: #2196f3;
+            --iqlab: #4caf50; --qolqolah: #9c27b0; --mad: #e91e63;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg-body); color: #1e293b; line-height: 1.6; }
-
-        /* Navigasi */
-        .nav-header { 
-            display: flex; align-items: center; padding: 15px 20px; 
-            background: white; border-bottom: 1px solid #e2e8f0; position: sticky; top: 0; z-index: 100;
-        }
-        .btn-back { border: none; background: none; font-size: 20px; color: var(--primary); cursor: pointer; margin-right: 15px; }
-        .title { font-size: 17px; font-weight: 700; flex: 1; }
-
-        /* Container */
-        .container { max-width: 600px; margin: 0 auto; padding-bottom: 30px; }
-
-        /* Audio Card */
-        .audio-card { 
-            background: white; margin: 15px; padding: 20px; border-radius: 20px; 
-            text-align: center; border: 1px solid #e2e8f0;
-        }
-        .btn-download {
-            margin-top: 12px; width: 100%; padding: 12px; border-radius: 12px;
-            border: 2px solid var(--primary); background: white; color: var(--primary);
-            font-weight: 700; cursor: pointer; transition: 0.3s;
-        }
-        .btn-download.saved { background: var(--primary); color: white; }
-
-        /* Ayat Card */
-        .ayat-card { 
-            background: white; margin: 15px; padding: 25px 20px; 
-            border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.02);
-        }
-
-        /* Typography Tajwid */
-        .teks-arab { 
-            font-family: 'Amiri', serif; font-size: 32px; text-align: right; 
-            line-height: 2.6; direction: rtl; margin-bottom: 20px; color: #0f172a;
-        }
-        /* Tajwid Class dari Library */
-        .ghn { color: var(--ghunnah) !important; font-weight: bold; }
-        .ikh { color: var(--ikhfa) !important; font-weight: bold; }
-        .idg { color: var(--idgham) !important; }
-        .iql { color: var(--iqlab) !important; font-weight: bold; }
-        .qlq { color: var(--qolqolah) !important; font-weight: bold; }
-        .mad { color: var(--mad) !important; }
-
-        .teks-latin { font-size: 14px; color: var(--primary); font-style: italic; margin-bottom: 10px; }
-        .teks-terjemahan { font-size: 14px; color: #475569; border-top: 1px solid #f1f5f9; padding-top: 15px; }
-
-        /* Info Box */
-        .info-box { margin-top: 15px; padding: 12px; background: #f8fafc; border-radius: 12px; font-size: 12px; border-left: 4px solid var(--primary); }
+        body { background-color: #f8fafc; color: #1e293b; }
+        .nav-header { display: flex; align-items: center; padding: 15px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; }
+        .btn-back { border: none; background: none; font-size: 20px; color: var(--primary); cursor: pointer; margin-right: 10px; }
+        .container { max-width: 600px; margin: 0 auto; padding: 10px; }
+        .audio-card { background: white; padding: 15px; border-radius: 15px; text-align: center; margin-bottom: 15px; border: 1px solid #eee; }
+        .ayat-card { background: white; margin-bottom: 10px; padding: 20px; border-radius: 15px; border: 1px solid #eee; }
+        .teks-arab { font-family: 'Amiri', serif; font-size: 30px; text-align: right; line-height: 2.2; direction: rtl; margin-bottom: 15px; }
+        /* Tajwid Colors */
+        .ghn { color: var(--ghunnah); font-weight: bold; }
+        .ikh { color: var(--ikhfa); font-weight: bold; }
+        .idg { color: var(--idgham); }
+        .qlq { color: var(--qolqolah); font-weight: bold; }
+        .mad { color: var(--mad); }
         
-        .legend { 
-            display: flex; flex-wrap: wrap; gap: 8px; padding: 10px 20px; 
-            background: #fff; border-bottom: 1px solid #eee; font-size: 10px; font-weight: 600;
-        }
-        .l-item { display: flex; align-items: center; gap: 4px; }
-        .dot { width: 8px; height: 8px; border-radius: 50%; }
-
-        .loading { text-align: center; padding: 50px; color: #94a3b8; }
-        audio { width: 100%; height: 40px; }
+        .loading-spinner { display: flex; justify-content: center; align-items: center; height: 200px; color: #94a3b8; font-size: 14px; }
+        .btn-download { width: 100%; padding: 10px; border-radius: 10px; border: 2px solid var(--primary); background: white; color: var(--primary); font-weight: 700; margin-top: 10px; cursor: pointer; }
+        .btn-download.saved { background: var(--primary); color: white; }
     </style>
 </head>
 <body>
 
-    <!-- Halaman Daftar Surat -->
     <div id="main-view">
-        <div class="nav-header"><div class="title">Al-Qur'an Berkah</div></div>
-        <div id="list-container" class="container"><div class="loading">Memuat Al-Qur'an...</div></div>
+        <div class="nav-header"><div style="font-weight:700;">Al-Qur'an Berkah</div></div>
+        <div id="list-container" class="container"></div>
     </div>
 
-    <!-- Halaman Detail Ayat -->
     <div id="detail-surat" style="display:none;">
         <div class="nav-header">
             <button class="btn-back" onclick="backToList()">⬅️</button>
-            <div class="title" id="judul-surat">Detail Surat</div>
+            <div id="judul-surat" style="font-weight:700;"></div>
         </div>
-        
-        <div class="legend">
-            <div class="l-item"><span class="dot" style="background:var(--ghunnah)"></span> GHUNNAH</div>
-            <div class="l-item"><span class="dot" style="background:var(--ikhfa)"></span> IKHFÂ'</div>
-            <div class="l-item"><span class="dot" style="background:var(--idgham)"></span> IDGHÂM</div>
-            <div class="l-item"><span class="dot" style="background:var(--qolqolah)"></span> QOLQOLAH</div>
-            <div class="l-item"><span class="dot" style="background:var(--mad)"></span> MAD</div>
-        </div>
-
         <div id="ayat-container" class="container"></div>
     </div>
 
-    <!-- Library Tajwid CDN -->
     <script src="https://cdn.jsdelivr.net/gh/alif-type/alif-tajwid@main/dist/alif-tajwid.min.js"></script>
 
     <script>
-        let allSurat = [];
-        const CACHE_NAME = 'berkah-quran-v1';
+        const CACHE_NAME = 'berkah-v2';
+        let suratStorage = {}; // RAM Cache agar loading instan saat balik lagi
 
-        // 1. Load Daftar Surat
+        // Load Daftar Surat
         async function loadSurat() {
+            const container = document.getElementById('list-container');
+            container.innerHTML = '<div class="loading-spinner">Membuka Mushaf...</div>';
             try {
                 const res = await fetch('https://equran.id/api/v2/surat');
                 const json = await res.json();
-                allSurat = json.data;
-                renderList(allSurat);
-            } catch (e) { document.getElementById('list-container').innerHTML = "Gagal memuat data."; }
-        }
-
-        function renderList(data) {
-            const container = document.getElementById('list-container');
-            container.innerHTML = data.map(s => `
-                <div style="background:white; margin:10px; padding:18px; border-radius:15px; display:flex; justify-content:space-between; align-items:center; border: 1px solid #f1f5f9;" onclick="openSurat(${s.nomor})">
-                    <div>
-                        <span style="font-weight:700;">${s.nomor}. ${s.namaLatin}</span><br>
-                        <small style="color:#94a3b8;">${s.arti} • ${s.jumlahAyat} Ayat</small>
+                container.innerHTML = json.data.map(s => `
+                    <div style="background:white; padding:15px; border-radius:12px; margin-bottom:8px; display:flex; justify-content:space-between; border:1px solid #eee;" onclick="openSurat(${s.nomor})">
+                        <div><b>${s.nomor}. ${s.namaLatin}</b><br><small>${s.arti}</small></div>
+                        <div style="font-family:'Amiri'; font-size:20px; color:var(--primary);">${s.nama}</div>
                     </div>
-                    <div style="font-family:'Amiri'; font-size:22px; color:var(--primary); font-weight:700;">${s.nama}</div>
-                </div>
-            `).join('');
+                `).join('');
+            } catch (e) { container.innerHTML = "Gagal memuat."; }
         }
 
-        // 2. Load Detail Ayat & Tajwid
         async function openSurat(nomor) {
-            window.scrollTo(0,0);
+            const container = document.getElementById('ayat-container');
             document.getElementById('main-view').style.display = "none";
             document.getElementById('detail-surat').style.display = "block";
-            document.getElementById('ayat-container').innerHTML = '<div class="loading">Memproses Tajwid & Audio...</div>';
-            history.pushState({view: 'detail'}, '');
+            window.scrollTo(0,0);
+
+            // Jika sudah pernah dibuka, ambil dari RAM (Instan!)
+            if (suratStorage[nomor]) {
+                renderAyat(suratStorage[nomor]);
+                return;
+            }
+
+            container.innerHTML = '<div class="loading-spinner">Menyiapkan Ayat...</div>';
 
             try {
                 const res = await fetch(`https://equran.id/api/v2/surat/${nomor}`);
                 const json = await res.json();
-                const s = json.data;
-                document.getElementById('judul-surat').innerText = s.namaLatin;
-
-                // Cek apakah audio sudah ada di cache
-                const isSaved = await checkCache(s.audioFull['05']);
-
-                let html = `
-                    <div class="audio-card">
-                        <audio controls><source src="${s.audioFull['05']}" type="audio/mpeg"></audio>
-                        <button id="dl-btn" class="btn-download ${isSaved ? 'saved' : ''}" 
-                            onclick="downloadAudio('${s.audioFull['05']}')">
-                            ${isSaved ? '✅ Tersimpan Offline' : '📥 Download Untuk Offline'}
-                        </button>
-                        <p id="dl-status" style="font-size:10px; margin-top:8px; color:#94a3b8;">
-                            ${isSaved ? 'Audio siap diputar tanpa internet.' : 'Klik untuk simpan ke memori HP.'}
-                        </p>
-                    </div>
-                `;
-
-                s.ayat.forEach(a => {
-                    // Render Tajwid Akurat 100%
-                    const teksTajwid = alifTajwid.render(a.teksArab);
-                    
-                    html += `
-                        <div class="ayat-card">
-                            <div style="color:var(--primary); font-weight:800; font-size:12px; margin-bottom:12px;">AYAT ${a.nomorAyat}</div>
-                            <div class="teks-arab">${teksTajwid}</div>
-                            <div class="teks-latin">${a.teksLatin}</div>
-                            <div class="teks-terjemahan">${a.teksIndonesia}</div>
-                            <div class="info-box">
-                                <b>Asbabun Nuzul:</b> <span style="color:#64748b;">Ketuk untuk melihat riwayat turunnya ayat...</span>
-                            </div>
-                        </div>
-                    `;
-                });
-                document.getElementById('ayat-container').innerHTML = html;
-            } catch (e) { alert("Koneksi gagal."); }
+                suratStorage[nomor] = json.data;
+                renderAyat(json.data);
+            } catch (e) { container.innerHTML = "Koneksi terputus."; }
         }
 
-        // 3. Logic Download Offline
+        async function renderAyat(s) {
+            document.getElementById('judul-surat').innerText = s.namaLatin;
+            const container = document.getElementById('ayat-container');
+            const isSaved = await checkCache(s.audioFull['05']);
+
+            let html = `
+                <div class="audio-card">
+                    <audio id="player" controls style="width:100%"><source src="${s.audioFull['05']}"></audio>
+                    <button id="dl-btn" class="btn-download ${isSaved ? 'saved' : ''}" onclick="downloadAudio('${s.audioFull['05']}')">
+                        ${isSaved ? '✅ Tersimpan Offline' : '📥 Download Surat'}
+                    </button>
+                </div>
+            `;
+
+            // Batch Rendering untuk performa
+            html += s.ayat.map(a => `
+                <div class="ayat-card">
+                    <div style="font-size:12px; color:var(--primary); margin-bottom:10px;">AYAT ${a.nomorAyat}</div>
+                    <div class="teks-arab">${alifTajwid.render(a.teksArab)}</div>
+                    <div style="font-size:13px; color:#64748b; margin-top:10px;">${a.teksIndonesia}</div>
+                </div>
+            `).join('');
+
+            container.innerHTML = html;
+        }
+
         async function downloadAudio(url) {
             const btn = document.getElementById('dl-btn');
-            const status = document.getElementById('dl-status');
-            
-            if(btn.classList.contains('saved')) return;
-
-            status.innerText = "Mengunduh... (Mohon jangan tutup halaman)";
-            btn.innerText = "⏳ Sedang Proses...";
-            btn.disabled = true;
-
+            btn.innerText = "⚡ Mendownload...";
             try {
                 const cache = await caches.open(CACHE_NAME);
                 await cache.add(url);
-                
-                btn.classList.add('saved');
                 btn.innerText = "✅ Tersimpan Offline";
-                status.innerText = "Berhasil! Audio sekarang bisa diputar offline.";
-            } catch (e) {
-                status.innerText = "Gagal mengunduh. Cek koneksi internet.";
-                btn.disabled = false;
-                btn.innerText = "📥 Coba Download Lagi";
-            }
+                btn.classList.add('saved');
+            } catch (e) { btn.innerText = "❌ Gagal Simpan"; }
         }
 
         async function checkCache(url) {
             const cache = await caches.open(CACHE_NAME);
-            const response = await cache.match(url);
-            return !!response;
+            const res = await cache.match(url);
+            return !!res;
         }
 
         function backToList() {
             document.getElementById('main-view').style.display = "block";
             document.getElementById('detail-surat').style.display = "none";
-        }
-
-        // Handle Tombol Back HP
-        window.onpopstate = () => backToList();
-
-        // Register Service Worker otomatis
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js');
         }
 
         loadSurat();
