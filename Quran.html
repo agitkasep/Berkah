@@ -3,101 +3,95 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quran Tajwid Pro - Agit Studio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <title>Agit Studio - Universal Izhar Engine</title>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
     <style>
-        :root {
-            --primary: #00a86b; --bg: #f4f7f6;
-            --mad: #2196f3; --ghn: #ff9800; --idg: #f44336;
-            --ikh: #9c27b0; --iql: #4caf50; --qlq: #795548;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); font-family: 'Inter', sans-serif; }
+        :root { --primary: #00a86b; --bg: #121212; --izhar: #ffff00; }
+        body { background: var(--bg); color: white; font-family: sans-serif; margin: 0; }
+        .header { background: var(--primary); padding: 15px; text-align: center; border-bottom: 3px solid #008f5a; }
+        #clock { font-size: 22px; font-weight: bold; }
         
-        .header { 
-            background: var(--primary); color: white; padding: 15px; 
-            text-align: center; border-radius: 0 0 20px 20px; position: sticky; top: 0; z-index: 1000;
-        }
-        #clock { font-size: 24px; font-weight: bold; }
-
-        .container { padding: 15px; }
-        .ayat-card { 
-            background: white; border-radius: 15px; padding: 20px; 
-            margin-bottom: 15px; border: 1px solid #eee; box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
+        .container { padding: 20px; }
+        .ayat-card { background: #1e1e1e; border-radius: 15px; padding: 25px; margin-bottom: 20px; border: 1px solid #333; }
         .teks-arab { 
-            font-family: 'Amiri', serif; font-size: 32px; line-height: 2.5; 
-            text-align: right; direction: rtl; 
+            font-family: 'Amiri', serif; font-size: 34px; line-height: 2.8; 
+            text-align: right; direction: rtl; word-spacing: 8px;
         }
 
-        /* Warna Tajwid Berdasarkan Class */
-        .tajwid-mad { color: var(--mad); }
-        .tajwid-ghunnah { color: var(--ghn); font-weight: bold; }
-        .tajwid-idgham { color: var(--idg); font-weight: bold; }
-        .tajwid-ikhfa { color: var(--ikh); font-weight: bold; }
-        .tajwid-iqlab { color: var(--iql); font-weight: bold; }
-        .tajwid-qolqolah { color: var(--qlq); border-bottom: 2px solid var(--qlq); }
-
-        .loading { text-align: center; padding: 50px; color: var(--primary); font-weight: bold; }
+        /* Styling Karakter Izhar */
+        .izhar { 
+            color: var(--izhar) !important; 
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255,255,0,0.3);
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div id="clock">00:00:00</div>
-        <div style="font-size: 11px; opacity: 0.9;">AUTO-MAPPING TAJWID ENGINE</div>
-    </div>
+<div class="header">
+    <div id="clock">00:00:00</div>
+    <div style="font-size: 10px;">UNIVERSAL IZHAR PARSER PRO</div>
+</div>
 
-    <div class="container" id="app">
-        <div class="loading">Menyusun Database Tajwid...</div>
-    </div>
+<div class="container" id="app">
+    <div style="text-align:center; padding:50px;">Memproses Seluruh Ayat...</div>
+</div>
 
-    <script>
-        // Jam Realtime
-        setInterval(() => {
-            document.getElementById('clock').innerText = new Date().toLocaleTimeString('id-ID');
-        }, 1000);
+<script>
+    // 1. REGEX ENGINE (Logika Pencarian Hukum Izhar)
+    const IZHAR_RULES = {
+        // Izhar Halqi: Nun sukun/Tanwin bertemu Alif, Ha, Kha, 'Ain, Ghain, Ha besar
+        halqi: /([نًٌٍْ])\s*([أاھهحخعغ])/g,
+        
+        // Izhar Syafawi: Mim sukun bertemu selain Mim dan Ba
+        syafawi: /([مْ])\s*([^مب\s])/g,
+        
+        // Izhar Qomariyah: Alif Lam bertemu huruf Qomariyah
+        qomariyah: /(ال)\s*([أبجحخعغفقكموهي])/g
+    };
 
-        async function loadQuran() {
-            const app = document.getElementById('app');
-            try {
-                // Mengambil data dari API yang sudah memiliki klasifikasi tajwid
-                const res = await fetch('https://api.quran.com/api/v4/quran/verses/uthmani?chapter_number=1');
-                const data = await res.json();
-                
-                app.innerHTML = '';
-                data.verses.forEach(verse => {
-                    // Logika Smart Parser: 
-                    // Karena kita tidak punya file JSON manual, kita gunakan parser 
-                    // yang mendeteksi pola tajwid langsung pada string Uthmani.
-                    const coloredText = parseTajwid(verse.text_uthmani);
-                    
-                    app.innerHTML += `
-                        <div class="ayat-card">
-                            <div style="font-size: 12px; color: var(--primary); font-weight: bold; margin-bottom: 10px;">AYAT ${verse.verse_key.split(':')[1]}</div>
-                            <div class="teks-arab">${coloredText}</div>
-                        </div>
-                    `;
-                });
-            } catch (e) {
-                app.innerHTML = '<div class="loading">Gagal memuat data.</div>';
-            }
-        }
+    // 2. FUNGSI PEMBUNGKUS OTOMATIS
+    function applyIzhar(text) {
+        let processed = text;
 
-        function parseTajwid(text) {
-            // Parser ini menggunakan pola karakter untuk membungkus hukum tajwid
-            return text
-                // Ghunnah
-                .replace(/([نّمّ]ّ)/g, '<span class="tajwid-ghunnah">$1</span>')
-                // Qolqolah
-                .replace(/([بجدهق][ْ])/g, '<span class="tajwid-qolqolah">$1</span>')
-                // Mad & Harakat Panjang
-                .replace(/([~ٰ]|([َاِيُو]ْ?[اىو]))/g, '<span class="tajwid-mad">$1</span>')
-                // Iqlab
-                .replace(/([ۭۢ])/g, '<span class="tajwid-iqlab">$1</span>');
-        }
+        // Terapkan Hukum 1: Halqi
+        processed = processed.replace(IZHAR_RULES.halqi, '<span class="izhar">$1</span> $2');
+        
+        // Terapkan Hukum 2: Syafawi
+        processed = processed.replace(IZHAR_RULES.syafawi, '<span class="izhar">$1</span> $2');
+        
+        // Terapkan Hukum 3: Qomariyah
+        processed = processed.replace(IZHAR_RULES.qomariyah, '<span class="izhar">$1</span>$2');
 
-        loadQuran();
-    </script>
+        return processed;
+    }
+
+    // 3. FETCH & RENDER (Bisa untuk semua surat)
+    async function loadSurah(nomorSurah = 1) {
+        const response = await fetch(`https://equran.id/api/v2/surat/${nomorSurah}`);
+        const json = await response.json();
+        const container = document.getElementById('app');
+        container.innerHTML = '';
+
+        json.data.ayat.forEach(ayat => {
+            const highligtedTeks = applyIzhar(ayat.teksArab);
+            
+            container.innerHTML += `
+                <div class="ayat-card">
+                    <div style="color:var(--primary); font-size:12px; margin-bottom:15px;">SURAH ${json.data.namaLatin} : AYAT ${ayat.nomorAyat}</div>
+                    <div class="teks-arab">${highligtedTeks}</div>
+                </div>
+            `;
+        });
+    }
+
+    // Jam Update
+    setInterval(() => {
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString('id-ID');
+    }, 1000);
+
+    // Jalankan (Contoh Surah ke-1, tinggal ganti angka untuk surah lain)
+    loadSurah(1); 
+</script>
 </body>
 </html>
