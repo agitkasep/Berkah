@@ -3,164 +3,166 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Qur'an Digital - Berkah</title>
+    <title>Al-Qur'an Berkah</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
+        :root { 
+            --primary: #00a86b; --bg: #f4f7f6;
+            --ghunnah: #ff7e00; --ikhfa: #ff0000; --idgham: #2196f3;
+            --iqlab: #4caf50; --qolqolah: #9c27b0; --mad: #e91e63;
+        }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: #f4f7f6; color: #1e293b; }
+        body { background-color: var(--bg); color: #1e293b; }
         
-        /* Navigasi */
-        .nav-header { 
-            display: flex; align-items: center; padding: 15px 20px; 
-            background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100;
+        /* Navigasi & Jam */
+        .header-top { 
+            padding: 20px; background: var(--primary); color: white; 
+            border-radius: 0 0 25px 25px; text-align: center; margin-bottom: 10px;
         }
-        .btn-back { text-decoration: none; font-size: 18px; margin-right: 15px; color: #00a86b; cursor: pointer; }
-        .title { font-size: 16px; font-weight: 700; }
+        #clock { font-size: 32px; font-weight: 700; margin-bottom: 5px; }
+        #date { font-size: 14px; opacity: 0.9; }
 
-        /* Search Bar */
-        .search-container { padding: 15px 20px; background: white; }
-        .search-input {
-            width: 100%; padding: 12px 15px; border: 1px solid #e2e8f0;
-            border-radius: 12px; outline: none; font-size: 14px; background: #f8fafc;
-        }
-
-        /* Daftar Surat */
-        .surat-list { padding: 10px 20px; display: grid; gap: 10px; }
-        .surat-item {
-            background: white; padding: 15px; border-radius: 15px;
-            display: flex; align-items: center; justify-content: space-between;
-            text-decoration: none; color: inherit; border: 1px solid #f1f5f9;
-        }
-        .surat-left { display: flex; align-items: center; gap: 15px; }
-        .nomor-surat { 
-            width: 35px; height: 35px; background: #f0fff4; color: #00a86b; 
-            display: flex; align-items: center; justify-content: center; 
-            border-radius: 10px; font-weight: 700; font-size: 12px;
-        }
-        .nama-latin { font-size: 14px; font-weight: 700; color: #334155; }
-        .arti-surat { font-size: 11px; color: #64748b; }
-        .nama-arab { font-family: 'Amiri', serif; font-size: 20px; color: #00a86b; font-weight: 700; }
-
-        /* Detail Surat (Ayat) */
-        #detail-surat { display: none; padding-bottom: 40px; }
-        .ayat-item { padding: 25px 20px; border-bottom: 1px solid #eee; background: white; }
-        .ayat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .nomor-ayat { color: #00a86b; font-weight: 700; font-size: 14px; }
-        .teks-arab { 
-            font-family: 'Amiri', serif; font-size: 28px; text-align: right; 
-            line-height: 2.2; margin-bottom: 15px; color: #0f172a;
-        }
-        .teks-latin { font-size: 13px; color: #00a86b; font-style: italic; margin-bottom: 8px; line-height: 1.5; }
-        .teks-terjemahan { font-size: 13px; color: #475569; line-height: 1.6; }
+        .nav-header { padding: 15px 20px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; }
+        .btn-back { font-size: 18px; margin-right: 15px; color: var(--primary); cursor: pointer; border:none; background:none; }
         
-        .audio-player { width: 100%; margin-top: 15px; height: 35px; }
+        /* Search & List */
+        .search-container { padding: 10px 20px; }
+        .search-input { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; outline: none; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .surat-list { padding: 10px 20px; }
+        .surat-item { background: white; padding: 15px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; cursor: pointer; border: 1px solid #f1f5f9; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        
+        .nomor-surat { width: 35px; height: 35px; background: #f0fff4; color: var(--primary); display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 700; margin-right: 15px; }
+        .nama-arab { font-family: 'Amiri', serif; font-size: 20px; color: var(--primary); font-weight: 700; }
 
-        .loading { text-align: center; padding: 50px; color: #64748b; font-size: 14px; }
+        /* Detail */
+        #detail-surat { display: none; background: var(--bg); min-height: 100vh; }
+        .ayat-item { padding: 25px 20px; border-bottom: 1px solid #eee; background: white; margin-bottom: 1px; }
+        .teks-arab { font-family: 'Amiri', serif; font-size: 30px; text-align: right; line-height: 2.3; margin-bottom: 15px; color: #0f172a; }
+        .teks-latin { font-size: 14px; color: var(--primary); font-style: italic; margin-bottom: 8px; font-weight: 500; }
+        .teks-terjemahan { font-size: 14px; color: #475569; line-height: 1.6; }
+        .audio-container { padding: 20px; background: white; margin-bottom: 10px; text-align: center; border-bottom: 1px solid #eee; }
+        .loading { text-align: center; padding: 50px; color: #64748b; }
+
+        /* Tajwid Colors */
+        .ghn { color: var(--ghunnah) !important; font-weight: bold; }
+        .ikh { color: var(--ikhfa) !important; font-weight: bold; }
+        .idg { color: var(--idgham) !important; }
+        .qlq { color: var(--qolqolah) !important; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <!-- Header & Search -->
     <div id="main-view">
-        <div class="nav-header">
-            <a href="index.html" class="btn-back">⬅️</a>
-            <div class="title">Al-Qur'an Digital</div>
+        <div class="header-top">
+            <div id="clock">00:00:00</div>
+            <div id="date">Memuat Tanggal...</div>
         </div>
+        
         <div class="search-container">
             <input type="text" id="searchSurat" class="search-input" placeholder="Cari nama surat..." onkeyup="filterSurat()">
         </div>
+
         <div id="list-container" class="surat-list">
             <div class="loading">Memuat daftar surat...</div>
         </div>
     </div>
 
-    <!-- Detail View -->
     <div id="detail-surat">
         <div class="nav-header">
-            <div class="btn-back" onclick="backToList()">⬅️</div>
-            <div class="title" id="judul-surat">Nama Surat</div>
+            <button class="btn-back" onclick="backToList()">⬅️</button>
+            <b id="judul-surat">Nama Surat</b>
         </div>
         <div id="ayat-container"></div>
     </div>
 
+    <!-- Library Tajwid -->
+    <script src="https://cdn.jsdelivr.net/gh/alif-type/alif-tajwid@main/dist/alif-tajwid.min.js"></script>
+
     <script>
         let dataSurat = [];
 
-        // 1. Ambil Daftar Surat
+        // 1. Fungsi Jam (Agar tidak hilang lagi)
+        function updateClock() {
+            const now = new Date();
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+            
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            document.getElementById('clock').innerText = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('date').innerText = `${days[now.getDay()]}, ${now.getDate()} ${months[now.getMonth()]} ${now.getFullYear()}`;
+        }
+        setInterval(updateClock, 1000);
+        updateClock();
+
+        // 2. Load Daftar Surat
         async function getDaftarSurat() {
             try {
-                const res = await fetch('https://equran.id/api/v2/surat');
-                const json = await res.json();
-                dataSurat = json.data;
+                const res = await fetch('https://quran-api-id.vercel.app/surah');
+                dataSurat = await res.json();
                 renderSurat(dataSurat);
             } catch (e) {
-                document.getElementById('list-container').innerHTML = "Gagal memuat data.";
+                document.getElementById('list-container').innerHTML = "<div class='loading'>Gagal memuat. Periksa internet.</div>";
             }
         }
 
-        // 2. Tampilkan List Surat
         function renderSurat(list) {
             const container = document.getElementById('list-container');
-            container.innerHTML = "";
-            list.forEach(s => {
-                container.innerHTML += `
-                    <div class="surat-item" onclick="getDetailSurat(${s.nomor})">
-                        <div class="surat-left">
-                            <div class="nomor-surat">${s.nomor}</div>
-                            <div>
-                                <div class="nama-latin">${s.namaLatin}</div>
-                                <div class="arti-surat">${s.arti} (${s.jumlahAyat} Ayat)</div>
-                            </div>
+            container.innerHTML = list.map(s => `
+                <div class="surat-item" onclick="getDetailSurat(${s.number})">
+                    <div style="display:flex; align-items:center;">
+                        <div class="nomor-surat">${s.number}</div>
+                        <div>
+                            <div style="font-weight:700;">${s.name}</div>
+                            <div style="font-size:11px; color:gray;">${s.translation} • ${s.numberOfAyahs} Ayat</div>
                         </div>
-                        <div class="nama-arab">${s.nama}</div>
                     </div>
-                `;
-            });
+                    <div class="nama-arab">${s.asm}</div>
+                </div>
+            `).join('');
         }
 
-        // 3. Filter Pencarian
         function filterSurat() {
             const q = document.getElementById('searchSurat').value.toLowerCase();
-            const filtered = dataSurat.filter(s => s.namaLatin.toLowerCase().includes(q));
+            const filtered = dataSurat.filter(s => s.name.toLowerCase().includes(q));
             renderSurat(filtered);
         }
 
-        // 4. Ambil Detail Ayat
+        // 3. Load Detail (Arab + Latin + Tajwid + Audio)
         async function getDetailSurat(nomor) {
-            window.scrollTo(0,0);
+            const container = document.getElementById('ayat-container');
             document.getElementById('main-view').style.display = "none";
             document.getElementById('detail-surat').style.display = "block";
-            document.getElementById('ayat-container').innerHTML = '<div class="loading">Memuat ayat...</div>';
+            container.innerHTML = '<div class="loading">Menyiapkan teks tajwid...</div>';
+            window.scrollTo(0,0);
 
             try {
-                const res = await fetch(`https://equran.id/api/v2/surat/${nomor}`);
-                const json = await res.json();
-                const s = json.data;
-
-                document.getElementById('judul-surat').innerText = s.namaLatin;
+                const res = await fetch(`https://quran-api-id.vercel.app/surah/${nomor}`);
+                const s = await res.json();
+                document.getElementById('judul-surat').innerText = s.name;
                 
-                let html = `<div style="padding: 20px; text-align: center; background: #fff; margin-bottom: 10px;">
-                                <audio controls class="audio-player">
-                                    <source src="${s.audioFull['05']}" type="audio/mpeg">
-                                </audio>
-                                <p style="font-size: 11px; margin-top: 8px; color: #64748b;">Putar Murottal Surat</p>
-                            </div>`;
+                let html = `
+                    <div class="audio-container">
+                        <audio controls style="width:100%"><source src="https://cdn.islamic.network/quran/audio-surah/128/ar.alafasy/${nomor}.mp3" type="audio/mpeg"></audio>
+                    </div>
+                `;
 
-                s.ayat.forEach(a => {
+                s.ayaths.forEach(a => {
+                    const arabTajwid = typeof alifTajwid !== 'undefined' ? alifTajwid.render(a.ar) : a.ar;
                     html += `
                         <div class="ayat-item">
-                            <div class="ayat-header">
-                                <div class="nomor-ayat">${a.nomorAyat}</div>
-                            </div>
-                            <div class="teks-arab">${a.teksArab}</div>
-                            <div class="teks-latin">${a.teksLatin}</div>
-                            <div class="teks-terjemahan">${a.teksIndonesia}</div>
+                            <div style="color:var(--primary); font-weight:700; margin-bottom:10px; font-size:12px;">AYAT ${a.number}</div>
+                            <div class="teks-arab">${arabTajwid}</div>
+                            <div class="teks-latin">${a.tr}</div>
+                            <div class="teks-terjemahan">${a.id}</div>
                         </div>
                     `;
                 });
-                document.getElementById('ayat-container').innerHTML = html;
-            } catch (e) {
-                alert("Gagal memuat ayat.");
+                container.innerHTML = html;
+            } catch (e) { 
+                container.innerHTML = "<div class='loading'>Gagal memuat ayat.</div>"; 
             }
         }
 
