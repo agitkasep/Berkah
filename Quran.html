@@ -3,173 +3,93 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Al-Qur'an Tajwid LPMQ - Agit Studio</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <title>Agit Studio - Quran Tajwid Mapper</title>
     <style>
-        :root { 
-            --primary: #00a86b; --bg: #f8fafc;
-            /* Palet Warna Tajwid Standar Kemenag */
-            --c-mad: #2196f3;       /* Biru (Mad) */
-            --c-ghunnah: #ff9800;   /* Oranye (Ghunnah) */
-            --c-idgham: #f44336;    /* Merah (Idgham) */
-            --c-ikhfa: #9c27b0;     /* Ungu (Ikhfa) */
-            --c-iqlab: #4caf50;     /* Hijau (Iqlab) */
-            --c-qolqolah: #795548;   /* Cokelat (Qolqolah) */
+        :root {
+            --bg: #f4f7f6; --primary: #00a86b;
+            --c-mad: #2196f3; --c-ghn: #ff9800; --c-idg: #f44336;
+            --c-ikh: #9c27b0; --c-iql: #4caf50; --c-qlq: #795548;
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background-color: var(--bg); }
-
-        /* Header Jam Minimalis */
-        .header-top { padding: 12px; background: var(--primary); color: white; border-radius: 0 0 20px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-        #clock { font-size: 24px; font-weight: 700; }
-        #date { font-size: 11px; opacity: 0.8; }
-
-        .nav-header { padding: 15px 20px; background: white; border-bottom: 1px solid #eee; position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; }
-        .btn-back { font-size: 20px; color: var(--primary); border:none; background:none; cursor: pointer; }
-
-        /* Legend Tajwid */
-        .tajwid-legend { display: flex; overflow-x: auto; gap: 8px; padding: 10px 20px; background: #fff; border-bottom: 1px solid #eee; scrollbar-width: none; }
-        .badge { padding: 5px 12px; border-radius: 15px; color: white; font-size: 10px; font-weight: bold; white-space: nowrap; }
-
-        /* Detail Ayat */
-        .ayat-item { background: white; padding: 25px 20px; border-bottom: 1px solid #f1f5f9; }
-        .teks-arab { 
-            font-family: 'Amiri', serif; font-size: 34px; text-align: right; 
-            line-height: 2.8; direction: rtl; margin-bottom: 15px; word-spacing: 5px;
-        }
-
-        /* Kelas Warna Tajwid LPMQ */
-        .t-mad { color: var(--c-mad) !important; }
-        .t-ghn { color: var(--c-ghunnah) !important; font-weight: bold; }
-        .t-idg { color: var(--c-idgham) !important; font-weight: bold; }
-        .t-ikh { color: var(--c-ikhfa) !important; font-weight: bold; }
-        .t-iql { color: var(--c-iqlab) !important; font-weight: bold; }
-        .t-qlq { color: var(--c-qolqolah) !important; font-weight: bold; }
-
-        .teks-latin { color: var(--primary); font-style: italic; font-size: 14px; margin-bottom: 8px; }
-        .teks-indo { font-size: 14px; color: #64748b; line-height: 1.6; }
-        .loading { text-align: center; padding: 100px 20px; color: var(--primary); font-weight: 600; }
+        body { background: var(--bg); font-family: sans-serif; margin: 0; }
+        .header { background: var(--primary); color: white; padding: 10px; text-align: center; border-radius: 0 0 20px 20px; }
         
-        .surat-card { background: white; padding: 15px; border-radius: 12px; margin-bottom: 10px; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        /* CSS Tajwid yang dipanggil oleh JSON Mapper */
+        .mad { color: var(--c-mad); font-weight: bold; }
+        .ghn { color: var(--c-ghn); text-decoration: underline; }
+        .idg { color: var(--c-idg); font-weight: bold; }
+        .ikh { color: var(--c-ikh); font-weight: bold; }
+        .iql { color: var(--c-iql); border: 1px solid var(--c-iql); border-radius: 3px; }
+        .qlq { color: var(--c-qlq); font-style: italic; }
+
+        .ayat-box { background: white; margin: 10px; padding: 20px; border-radius: 15px; border: 1px solid #ddd; }
+        .teks-arab { font-size: 30px; line-height: 2.5; text-align: right; direction: rtl; font-family: 'Amiri', serif; }
     </style>
 </head>
 <body>
 
-    <div id="main-view">
-        <div class="header-top">
-            <div id="clock">00:00:00</div>
-            <div id="date">Memuat Tanggal...</div>
-        </div>
-        <div id="surat-list" style="padding: 15px;">
-            <div class="loading">Menghubungkan ke Server LPMQ...</div>
-        </div>
+    <div class="header">
+        <div id="clock" style="font-size: 20px; font-weight: bold;">00:00:00</div>
+        <div style="font-size: 10px;">DATA TAJWID MAPPER (JSON)</div>
     </div>
 
-    <div id="detail-view" style="display:none;">
-        <div class="nav-header">
-            <button class="btn-back" onclick="location.reload()">⬅️</button>
-            <b id="judul-surat">Detail</b>
-            <div style="width:20px;"></div>
-        </div>
-        <div class="tajwid-legend">
-            <span class="badge" style="background:var(--c-mad)">MAD</span>
-            <span class="badge" style="background:var(--c-ghunnah)">GHUNNAH</span>
-            <span class="badge" style="background:var(--c-idgham)">IDGHAM</span>
-            <span class="badge" style="background:var(--c-ikhfa)">IKHFA</span>
-            <span class="badge" style="background:var(--c-iqlab)">IQLAB</span>
-            <span class="badge" style="background:var(--c-qolqolah)">QOLQOLAH</span>
-        </div>
-        <div id="ayat-container"></div>
+    <div id="app">
+        <!-- Hasil Mapping Muncul Di Sini -->
     </div>
 
     <script>
-        // 1. Sinkronisasi Waktu
-        function updateTime() {
-            const now = new Date();
-            document.getElementById('clock').innerText = now.toLocaleTimeString('id-ID');
-            document.getElementById('date').innerText = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-        }
-        setInterval(updateTime, 1000); updateTime();
+        // 1. CONTOH DATA JSON TAJWID (Simulasi hasil fetch dari Database Kemenag/LPMQ)
+        const quranData = [
+            {
+                ayat: 1,
+                arab: "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ",
+                map: [
+                    { start: 5, end: 9, hukum: "mad" },    // Allah
+                    { start: 14, end: 18, hukum: "mad" },  // Rahman
+                    { start: 23, end: 27, hukum: "mad" }   // Rahim
+                ]
+            },
+            {
+                ayat: 2,
+                arab: "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ",
+                map: [
+                    { start: 10, end: 13, hukum: "mad" },
+                    { start: 20, end: 24, hukum: "mad" }
+                ]
+            }
+        ];
 
-        // 2. Fetch Data Surat
-        async function loadSuratList() {
-            try {
-                const res = await fetch('https://equran.id/api/v2/surat');
-                const json = await res.json();
-                const container = document.getElementById('surat-list');
-                container.innerHTML = json.data.map(s => `
-                    <div class="surat-card" onclick="loadDetailTajwid(${s.nomor}, '${s.namaLatin}')">
-                        <div>
-                            <span style="font-weight:700; color:var(--primary); margin-right:10px;">${s.nomor}</span>
-                            <b>${s.namaLatin}</b>
-                        </div>
-                        <div style="font-family:'Amiri'; font-size:18px; color:var(--primary)">${s.nama}</div>
-                    </div>
-                `).join('');
-            } catch (e) { console.error("Error API"); }
-        }
-
-        // 3. Engine Parser Tajwid (Logika LPMQ)
-        // Karena data asli LPMQ sangat besar, kita menggunakan Smart Parser 
-        // yang mengemulasi mapping Indeks Tajwid dari Database Kemenag.
-        async function loadDetailTajwid(nomor, nama) {
-            document.getElementById('main-view').style.display = 'none';
-            document.getElementById('detail-view').style.display = 'block';
-            document.getElementById('judul-surat').innerText = nama;
-            const container = document.getElementById('ayat-container');
-            container.innerHTML = '<div class="loading">Menerapkan Indeks Tajwid LPMQ...</div>';
-            window.scrollTo(0,0);
-
-            try {
-                const res = await fetch(`https://equran.id/api/v2/surat/${nomor}`);
-                const json = await res.json();
-                
-                let html = '';
-                json.data.ayat.forEach(a => {
-                    // PARSER: Kita membedah teks berdasarkan indeks hukum
-                    // Logika ini menggantikan "tebakan" library dengan koordinat warna presisi
-                    let teksTajwid = applyLpmqRules(a.teksArab);
-
-                    html += `
-                        <div class="ayat-item">
-                            <div style="font-size:11px; font-weight:700; color:var(--primary); margin-bottom:12px;">AYAT ${a.nomorAyat}</div>
-                            <div class="teks-arab">${teksTajwid}</div>
-                            <div class="teks-latin">${a.teksLatin}</div>
-                            <div class="teks-indo">${a.teksIndonesia}</div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-            } catch (e) { container.innerHTML = "Gagal memproses data tajwid."; }
-        }
-
-        function applyLpmqRules(text) {
-            if (!text) return '';
+        // 2. FUNGSI MAPPER (Merubah JSON menjadi HTML Berwarna)
+        function renderTajwidJSON(text, mapping) {
+            let charArray = Array.from(text);
             
-            // Urutan eksekusi sangat penting (Hirarki Tajwid)
-            let result = text;
-
-            // 1. Ghunnah (Nun/Mim Tasydid)
-            result = result.replace(/([نّمّ]ّ)/g, '<span class="t-ghn">$1</span>');
-
-            // 2. Iqlab (Pola Mim kecil di atas nun/tanwin)
-            result = result.replace(/([ۭۢ])/g, '<span class="t-iql">$1</span>');
-
-            // 3. Qolqolah (Huruf mati B-J-D-T-Q)
-            result = result.replace(/([بجدهق][ْ])/g, '<span class="t-qlq">$1</span>');
-
-            // 4. Idgham & Ikhfa (Pola Tanwin/Nun Mati bertemu huruf selanjutnya)
-            // Menggunakan regex untuk mendeteksi hukum antar-kata
-            result = result.replace(/([ًٌٍنْ])\s*([يمنو])/g, '<span class="t-idg">$1</span> $2');
-            result = result.replace(/([ًٌٍنْ])\s*([تثجدذرزسشصضطظفقك])/g, '<span class="t-ikh">$1</span> $2');
-
-            // 5. Mad (Semua tanda panjang & bendera)
-            result = result.replace(/([~ٰ]|([َاِيُو]ْ?[اىو]))/g, '<span class="t-mad">$1</span>');
-
-            return result;
+            // Kita bungkus tiap karakter yang masuk dalam koordinat
+            mapping.forEach(rule => {
+                for (let i = rule.start; i <= rule.end; i++) {
+                    if (charArray[i]) {
+                        charArray[i] = `<span class="${rule.hukum}">${charArray[i]}</span>`;
+                    }
+                }
+            });
+            
+            return charArray.join('');
         }
 
-        loadSuratList();
+        // 3. Eksekusi ke Layar
+        const app = document.getElementById('app');
+        quranData.forEach(item => {
+            const result = renderTajwidJSON(item.arab, item.map);
+            app.innerHTML += `
+                <div class="ayat-box">
+                    <div style="font-size:12px; color:gray;">Ayat ${item.ayat}</div>
+                    <div class="teks-arab">${result}</div>
+                </div>
+            `;
+        });
+
+        // Jam Realtime
+        setInterval(() => {
+            document.getElementById('clock').innerText = new Date().toLocaleTimeString('id-ID');
+        }, 1000);
     </script>
 </body>
 </html>
