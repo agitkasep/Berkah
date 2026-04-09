@@ -3,17 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agit Studio - Universal Tajwid Engine</title>
+    <title>BERKAH - Universal Tajwid Engine</title>
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
     <style>
         :root { 
             --primary: #00a86b; 
             --bg-body: #ffffff;
             --bg-card: #1e1e1e;
-            /* Warna Hukum Tajwid */
-            --izhar: #ffff00;      /* Kuning */
-            --bighunnah: #00d4ff;  /* Biru Cerah */
-            --bilaghunnah: #32ff7e; /* Hijau Muda */
+            /* Palette Warna Tajwid */
+            --izhar: #ffff00;       /* Kuning */
+            --bighunnah: #00d4ff;   /* Biru */
+            --bilaghunnah: #32ff7e;  /* Hijau Muda */
+            --ikhfa: #ff00ff;       /* Ungu/Magenta */
         }
         
         body { 
@@ -44,7 +45,7 @@
         }
         .surah-item:hover { border-color: var(--primary); background: #f0fff0; }
         
-        /* Box Ayat */
+        /* Card Ayat */
         .ayat-card { 
             background: var(--bg-card); border-radius: 15px; padding: 25px; 
             margin-bottom: 20px; border: 1px solid #333; box-shadow: 0 4px 10px rgba(0,0,0,0.2); 
@@ -55,34 +56,37 @@
             text-align: right; direction: rtl; color: white; word-spacing: 4px;
         }
 
-        /* Styling Tajwid */
+        /* Styling Warna Tajwid */
         .izhar { color: var(--izhar) !important; font-weight: bold; text-shadow: 0 0 8px rgba(255,255,0,0.5); }
         .bighunnah { color: var(--bighunnah) !important; font-weight: bold; text-shadow: 0 0 8px rgba(0,212,255,0.5); }
         .bilaghunnah { color: var(--bilaghunnah) !important; font-weight: bold; text-shadow: 0 0 8px rgba(50,255,126,0.5); }
+        .ikhfa { color: var(--ikhfa) !important; font-weight: bold; text-shadow: 0 0 8px rgba(255,0,255,0.5); }
 
         .loading { text-align: center; padding: 50px; color: var(--primary); font-weight: bold; }
         
-        /* Legend Warna */
+        /* Legend Panel */
         .legend { 
-            background: #eee; padding: 10px; border-radius: 8px; margin-bottom: 20px; 
-            display: flex; justify-content: space-around; font-size: 11px; flex-wrap: wrap;
+            background: #f0f0f0; padding: 12px; border-radius: 10px; margin-bottom: 20px; 
+            display: flex; justify-content: space-around; font-size: 11px; flex-wrap: wrap; gap: 10px;
         }
-        .dot { height: 10px; width: 10px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+        .legend-item { display: flex; align-items: center; font-weight: bold; }
+        .dot { height: 12px; width: 12px; border-radius: 3px; display: inline-block; margin-right: 6px; }
     </style>
 </head>
 <body>
 
 <div class="header">
     <div id="clock">00:00:00</div>
-    <div style="font-size: 10px; letter-spacing: 1px;">AGIT STUDIO TAJWID ENGINE V2</div>
+    <div style="font-size: 10px; letter-spacing: 2px; font-weight: bold;">APLIKASI BERKAH V3</div>
 </div>
 
 <div class="container">
     <div id="legendContainer" style="display:none;">
         <div class="legend">
-            <div><span class="dot" style="background:var(--izhar)"></span>Izhar</div>
-            <div><span class="dot" style="background:var(--bighunnah)"></span>Idgham Bighunnah</div>
-            <div><span class="dot" style="background:var(--bilaghunnah)"></span>Idgham Bilaghunnah</div>
+            <div class="legend-item"><span class="dot" style="background:var(--izhar)"></span>Izhar</div>
+            <div class="legend-item"><span class="dot" style="background:var(--bighunnah)"></span>Idgham Big.</div>
+            <div class="legend-item"><span class="dot" style="background:var(--bilaghunnah)"></span>Idgham Bila.</div>
+            <div class="legend-item"><span class="dot" style="background:var(--ikhfa)"></span>Ikhfa</div>
         </div>
     </div>
     
@@ -91,40 +95,41 @@
 </div>
 
 <script>
-    // ENGINE REGEX TAJWID
+    // ENGINE REGEX TAJWID BERKAH
     const RULES = {
-        // Izhar Halqi, Syafawi, Qomariyah (Kuning)
+        mutlaq: /(دُنْيَا|بُنْيَان|قِنْوَان|صِنْوَان)/g,
         izhar: /([نًٌٍْ])\s*([أاھهحخعغ])|([مْ])\s*([^مب\s])|(ال)\s*([أبجحخعغفقكموهي])/g,
-        // Idgham Bighunnah (Biru) - ي ن م و
         bighunnah: /([نًٌٍْ])\s*([يَنْمُوْ])/g,
-        // Idgham Bilaghunnah (Hijau Muda) - ل r
         bilaghunnah: /([نًٌٍْ])\s*([لر])/g,
-        // Pengecualian: Izhar Mutlaq (Jangan diwarnai Idgham)
-        mutlaq: /(دُنْيَا|بُنْيَان|قِنْوَان|صِنْوَان)/g
+        // Ikhfa Haqiqi (15 Huruf)
+        ikhfa: /([نًٌٍْ])\s*([تثجدذزسشصضطظفقك])/g
     };
 
     function applyTajwid(text) {
         if (!text) return "";
         let p = text;
 
-        // 1. Amankan Izhar Mutlaq dulu (beri tanda sementara)
+        // 1. Proteksi Izhar Mutlaq
         p = p.replace(RULES.mutlaq, '##$1##');
 
-        // 2. Terapkan Idgham Bighunnah (Biru)
+        // 2. Ikhfa (Ungu)
+        p = p.replace(RULES.ikhfa, '<span class="ikhfa">$1</span> $2');
+
+        // 3. Idgham Bighunnah (Biru)
         p = p.replace(RULES.bighunnah, '<span class="bighunnah">$1</span> $2');
 
-        // 3. Terapkan Idgham Bilaghunnah (Hijau Muda)
+        // 4. Idgham Bilaghunnah (Hijau Muda)
         p = p.replace(RULES.bilaghunnah, '<span class="bilaghunnah">$1</span> $2');
 
-        // 4. Terapkan Izhar (Kuning)
+        // 5. Izhar (Kuning)
         p = p.replace(RULES.izhar, (match, p1, p2, p3, p4, p5, p6) => {
-            if (p1) return `<span class="izhar">${p1}</span> ${p2}`; // Halqi
-            if (p3) return `<span class="izhar">${p3}</span> ${p4}`; // Syafawi
-            if (p5) return `<span class="izhar">${p5}</span>${p6}`;  // Qomariyah
+            if (p1) return `<span class="izhar">${p1}</span> ${p2}`; 
+            if (p3) return `<span class="izhar">${p3}</span> ${p4}`; 
+            if (p5) return `<span class="izhar">${p5}</span>${p6}`;  
             return match;
         });
 
-        // 5. Kembalikan Izhar Mutlaq ke teks biasa (atau beri warna Kuning jika ingin dianggap Izhar)
+        // 6. Kembalikan Mutlaq (Beri warna Kuning karena hukumnya Izhar)
         p = p.replace(/##(.*?)##/g, '<span class="izhar">$1</span>');
 
         return p;
@@ -144,7 +149,7 @@
                 html += `<div class="surah-item" onclick="loadSurah(${s.nomor})"><strong>${s.nomor}. ${s.namaLatin}</strong></div>`;
             });
             app.innerHTML = html + '</div>';
-        } catch (e) { app.innerHTML = 'Koneksi Error.'; }
+        } catch (e) { app.innerHTML = 'Koneksi Bermasalah.'; }
     }
 
     async function loadSurah(n) {
