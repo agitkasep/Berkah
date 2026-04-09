@@ -7,32 +7,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" rel="stylesheet">
     <style>
         :root { 
-            --primary: #00a86b; 
-            --bg-body: #ffffff;
-            --bg-card: #1e1e1e;
-            --izhar: #ffff00;       /* Kuning */
-            --bighunnah: #00d4ff;   /* Biru */
-            --bilaghunnah: #32ff7e;  /* Hijau Muda */
-            --ikhfa: #ff00ff;       /* Ungu */
+            --primary: #00a86b; --bg-body: #ffffff; --bg-card: #1e1e1e;
+            --izhar: #ffff00; --bighunnah: #00d4ff; --bilaghunnah: #32ff7e; --ikhfa: #ff00ff;
         }
-        
         body { background: var(--bg-body); color: #333; font-family: sans-serif; margin: 0; overscroll-behavior-y: contain; }
         .header { background: var(--primary); padding: 15px; text-align: center; color: white; border-bottom: 3px solid #008f5a; position: sticky; top: 0; z-index: 100; }
         #clock { font-size: 22px; font-weight: bold; }
         .container { padding: 20px; max-width: 800px; margin: auto; }
         .btn-back { background: #444; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; margin-bottom: 20px; display: none; font-weight: bold; }
-        
-        /* Card Ayat */
         .ayat-card { background: var(--bg-card); border-radius: 15px; padding: 25px; margin-bottom: 20px; border: 1px solid #333; }
         .info-ayat { color: var(--primary); font-size: 12px; margin-bottom: 15px; font-weight: bold; }
         .teks-arab { font-family: 'Amiri', serif; font-size: 34px; line-height: 2.8; text-align: right; direction: rtl; color: white; word-spacing: 4px; }
-
-        /* Tajwid Colors */
         .izhar { color: var(--izhar) !important; font-weight: bold; }
         .bighunnah { color: var(--bighunnah) !important; font-weight: bold; }
         .bilaghunnah { color: var(--bilaghunnah) !important; font-weight: bold; }
         .ikhfa { color: var(--ikhfa) !important; font-weight: bold; }
-
         .legend { background: #f0f0f0; padding: 12px; border-radius: 10px; margin-bottom: 20px; display: flex; justify-content: space-around; font-size: 11px; flex-wrap: wrap; gap: 10px; }
         .dot { height: 12px; width: 12px; border-radius: 3px; display: inline-block; margin-right: 6px; }
     </style>
@@ -41,7 +30,7 @@
 
 <div class="header">
     <div id="clock">00:00:00</div>
-    <div style="font-size: 10px; letter-spacing: 2px; font-weight: bold;">BERKAH TAJWID ENGINE V3.2</div>
+    <div style="font-size: 10px; letter-spacing: 2px; font-weight: bold;">BERKAH TAJWID V3.3 (FINAL)</div>
 </div>
 
 <div class="container">
@@ -58,41 +47,40 @@
 </div>
 
 <script>
-    const CHARS = {
-        nun_sukun: 'نْ',
-        tanwin: '[ًٌٍ]',
-        ikhfa: '[تثجدذزسشصضطظفقك]',
-        bighunnah: '[يَنْمُوْ]',
-        bilaghunnah: '[لر]',
-        izhar: '[أاھهحخعغ]'
-    };
-
     function applyTajwid(text) {
         if (!text) return "";
         let p = text;
 
-        // 1. Ikhfa (Ungu) - Deteksi Nun Sukun / Tanwin diikuti huruf Ikhfa
-        // Menggunakan regex yang lebih fleksibel terhadap spasi dan karakter sisipan
-        const ikhfaRegex = new RegExp(`([نًٌٍْ])(\\s*[${CHARS.ikhfa}])`, 'g');
-        p = p.replace(ikhfaRegex, '<span class="ikhfa">$1</span>$2');
+        // Definisi Huruf Berdasarkan Kategori
+        const huruf_ikhfa = "تثجدذزسشصضطظفقك";
+        const huruf_bighunnah = "يَنْمُوْ";
+        const huruf_bilaghunnah = "لر";
+        const huruf_izhar = "أاھهحخعغ";
+
+        // Regex sakti: Menangkap Nun/Tanwin, lalu melewati semua harakat/spasi ([\u064B-\u065F\s]*), sampai ketemu huruf target
+        
+        // 1. Ikhfa (Ungu)
+        const reIkhfa = new RegExp(`([نًٌٍ])([\\u064B-\\u065F\\s]*)([${huruf_ikhfa}])`, "g");
+        p = p.replace(reIkhfa, '<span class="ikhfa">$1$2</span>$3');
 
         // 2. Idgham Bighunnah (Biru)
-        const bighunnahRegex = new RegExp(`([نًٌٍْ])(\\s*[${CHARS.bighunnah}])`, 'g');
-        p = p.replace(bighunnahRegex, '<span class="bighunnah">$1</span>$2');
+        const reBighunnah = new RegExp(`([نًٌٍ])([\\u064B-\\u065F\\s]*)([${huruf_bighunnah}])`, "g");
+        p = p.replace(reBighunnah, '<span class="bighunnah">$1$2</span>$3');
 
-        // 3. Idgham Bilaghunnah (Hijau)
-        const bilaghunnahRegex = new RegExp(`([نًٌٍْ])(\\s*[${CHARS.bilaghunnah}])`, 'g');
-        p = p.replace(bilaghunnahRegex, '<span class="bilaghunnah">$1</span>$2');
+        // 3. Idgham Bilaghunnah (Hijau Muda)
+        const reBilaghunnah = new RegExp(`([نًٌٍ])([\\u064B-\\u065F\\s]*)([${huruf_bilaghunnah}])`, "g");
+        p = p.replace(reBilaghunnah, '<span class="bilaghunnah">$1$2</span>$3');
 
         // 4. Izhar Halqi (Kuning)
-        const izharRegex = new RegExp(`([نًٌٍْ])(\\s*[${CHARS.izhar}])`, 'g');
-        p = p.replace(izharRegex, '<span class="izhar">$1</span>$2');
+        const reIzhar = new RegExp(`([نًٌٍ])([\\u064B-\\u065F\\s]*)([${huruf_izhar}])`, "g");
+        p = p.replace(reIzhar, '<span class="izhar">$1$2</span>$3');
 
-        // 5. Izhar Syafawi (Mim Sukun)
-        p = p.replace(/([مْ])(\s*[^مب\s])/g, '<span class="izhar">$1</span>$2');
+        // 5. Izhar Syafawi (Mim Sukun bertemu selain Mim dan Ba)
+        // Kita cari Mim (م) yang diikuti Sukun (\u0652)
+        p = p.replace(/(م[\u0652]?)([\s]*)([^مب\s])/g, '<span class="izhar">$1</span>$2$3');
 
         // 6. Al-Qomariyah
-        p = p.replace(/(ال)(\s*[أبجحخعغفقكموهي])/g, '<span class="izhar">$1</span>$2');
+        p = p.replace(/(ال)([\u064B-\u065F\s]*)([أبجحخعغفقكموهي])/g, '<span class="izhar">$1</span>$2$3');
 
         return p;
     }
@@ -103,13 +91,15 @@
         document.getElementById('legendContainer').style.display = 'none';
         const app = document.getElementById('app');
         app.innerHTML = 'Memuat...';
-        const res = await fetch('https://equran.id/api/v2/surat');
-        const json = await res.json();
-        let html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">';
-        json.data.forEach(s => {
-            html += `<div style="background:#f9f9f9;padding:15px;border-radius:10px;cursor:pointer;text-align:center;border:1px solid #ddd;" onclick="loadSurah(${s.nomor})">${s.nomor}. ${s.namaLatin}</div>`;
-        });
-        app.innerHTML = html + '</div>';
+        try {
+            const res = await fetch('https://equran.id/api/v2/surat');
+            const json = await res.json();
+            let html = '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">';
+            json.data.forEach(s => {
+                html += `<div style="background:#f9f9f9;padding:15px;border-radius:10px;cursor:pointer;text-align:center;border:1px solid #ddd;" onclick="loadSurah(${s.nomor})"><b>${s.nomor}. ${s.namaLatin}</b></div>`;
+            });
+            app.innerHTML = html + '</div>';
+        } catch(e) { app.innerHTML = "Error koneksi."; }
     }
 
     async function loadSurah(n) {
@@ -119,20 +109,22 @@
         const app = document.getElementById('app');
         app.innerHTML = 'Menganalisis...';
         window.scrollTo(0,0);
-        const res = await fetch('https://equran.id/api/v2/surat/' + n);
-        const json = await res.json();
-        app.innerHTML = '';
-        json.data.ayat.forEach(a => {
-            app.innerHTML += `
-                <div class="ayat-card">
-                    <div class="info-ayat">SURAH ${json.data.namaLatin} : AYAT ${a.nomorAyat}</div>
-                    <div class="teks-arab">${applyTajwid(a.teksArab)}</div>
-                </div>`;
-        });
+        try {
+            const res = await fetch('https://equran.id/api/v2/surat/' + n);
+            const json = await res.json();
+            app.innerHTML = '';
+            json.data.ayat.forEach(a => {
+                app.innerHTML += `
+                    <div class="ayat-card">
+                        <div class="info-ayat">SURAH ${json.data.namaLatin} : AYAT ${a.nomorAyat}</div>
+                        <div class="teks-arab">${applyTajwid(a.teksArab)}</div>
+                    </div>`;
+            });
+        } catch(e) { app.innerHTML = "Gagal memuat."; }
     }
 
     function backToList() { showList(); }
-    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('id-ID'); }, 1000);
+    setInterval(() => { if(document.getElementById('clock')) document.getElementById('clock').innerText = new Date().toLocaleTimeString('id-ID'); }, 1000);
     const savedSurah = localStorage.getItem('lastSurah');
     if (savedSurah) { loadSurah(savedSurah); } else { showList(); }
 </script>
