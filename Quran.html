@@ -77,7 +77,7 @@
 
 <div class="header">
     <div id="clock">00:00:00</div>
-    <div style="font-size: 10px; letter-spacing: 2px; font-weight: bold;">APLIKASI BERKAH V3</div>
+    <div style="font-size: 10px; letter-spacing: 2px; font-weight: bold;">APLIKASI BERKAH V3.1</div>
 </div>
 
 <div class="container">
@@ -95,14 +95,15 @@
 </div>
 
 <script>
-    // ENGINE REGEX TAJWID BERKAH
+    // ENGINE REGEX BERKAH V3.1 (FIXED ACCURACY)
     const RULES = {
         mutlaq: /(دُنْيَا|بُنْيَان|قِنْوَان|صِنْوَان)/g,
-        izhar: /([نًٌٍْ])\s*([أاھهحخعغ])|([مْ])\s*([^مب\s])|(ال)\s*([أبجحخعغفقكموهي])/g,
+        ikhfa: /([نًٌٍْ])\s*([تثجدذزسشصضطظفقك])/g,
         bighunnah: /([نًٌٍْ])\s*([يَنْمُوْ])/g,
         bilaghunnah: /([نًٌٍْ])\s*([لر])/g,
-        // Ikhfa Haqiqi (15 Huruf)
-        ikhfa: /([نًٌٍْ])\s*([تثجدذزسشصضطظفقك])/g
+        izhar_halqi: /([نًٌٍْ])\s*([أاھهحخعغ])/g,
+        izhar_syafawi: /([مْ])\s*([^مب\s])/g,
+        al_qomariyah: /(ال)\s*([أبجحخعغفقكموهي])/g
     };
 
     function applyTajwid(text) {
@@ -112,7 +113,7 @@
         // 1. Proteksi Izhar Mutlaq
         p = p.replace(RULES.mutlaq, '##$1##');
 
-        // 2. Ikhfa (Ungu)
+        // 2. Ikhfa (Ungu) - Prioritas Utama
         p = p.replace(RULES.ikhfa, '<span class="ikhfa">$1</span> $2');
 
         // 3. Idgham Bighunnah (Biru)
@@ -121,15 +122,16 @@
         // 4. Idgham Bilaghunnah (Hijau Muda)
         p = p.replace(RULES.bilaghunnah, '<span class="bilaghunnah">$1</span> $2');
 
-        // 5. Izhar (Kuning)
-        p = p.replace(RULES.izhar, (match, p1, p2, p3, p4, p5, p6) => {
-            if (p1) return `<span class="izhar">${p1}</span> ${p2}`; 
-            if (p3) return `<span class="izhar">${p3}</span> ${p4}`; 
-            if (p5) return `<span class="izhar">${p5}</span>${p6}`;  
-            return match;
-        });
+        // 5. Izhar Halqi (Kuning)
+        p = p.replace(RULES.izhar_halqi, '<span class="izhar">$1</span> $2');
 
-        // 6. Kembalikan Mutlaq (Beri warna Kuning karena hukumnya Izhar)
+        // 6. Al-Qomariyah (Kuning)
+        p = p.replace(RULES.al_qomariyah, '<span class="izhar">$1</span>$2');
+
+        // 7. Izhar Syafawi (Kuning) - Terakhir agar tidak memakan Nun sukun di depannya
+        p = p.replace(RULES.izhar_syafawi, '<span class="izhar">$1</span> $2');
+
+        // 8. Kembalikan Mutlaq (Beri warna Kuning)
         p = p.replace(/##(.*?)##/g, '<span class="izhar">$1</span>');
 
         return p;
