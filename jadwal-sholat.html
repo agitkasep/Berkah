@@ -3,136 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jadwal Sholat Akurat - Berkah</title>
+    <title>Jadwal Sholat Bulanan</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: #f0f4f3; color: #1a202c; }
+        body { background-color: #f8fafc; padding: 15px; }
         
-        .top-bar { background: #00a86b; color: white; padding: 20px; text-align: center; border-radius: 0 0 30px 30px; position: relative; }
-        .back-link { position: absolute; left: 20px; top: 22px; color: white; text-decoration: none; font-size: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         
-        .main-card { background: white; margin: -20px 20px 20px; padding: 20px; border-radius: 20px; box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1); text-align: center; }
-        #city-name { font-weight: 700; color: #00a86b; font-size: 1.2rem; margin-bottom: 5px; }
-        #full-date { font-size: 0.8rem; color: #718096; }
+        /* Judul Hijau Seperti Gambar */
+        .table-header { background: #00a86b; color: white; padding: 15px; text-align: center; }
+        .table-header h2 { font-size: 16px; margin-bottom: 5px; }
+        .table-header p { font-size: 14px; opacity: 0.9; }
 
-        .sholat-list { padding: 0 20px; display: grid; gap: 10px; margin-bottom: 30px; }
-        .sholat-row { 
-            background: white; padding: 15px 20px; border-radius: 15px; 
-            display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 3px solid #edf2f7;
-        }
-        .sholat-row.active { border-bottom: 3px solid #00a86b; background: #f0fff4; }
-        .label { font-weight: 600; color: #4a5568; font-size: 14px; }
-        .time { font-weight: 800; color: #2d3748; font-size: 18px; }
-
-        .search-box { padding: 0 20px; margin-bottom: 20px; }
-        input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; text-align: center; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        th { background: #00a86b; color: white; padding: 10px 5px; font-weight: 600; text-transform: uppercase; }
+        td { padding: 10px 5px; text-align: center; border-bottom: 1px solid #f0f0f0; }
         
-        .loading-state { text-align: center; padding: 40px; color: #718096; font-size: 14px; }
+        /* Highlight hari ini */
+        .today { background: #e8f5e8; font-weight: bold; color: #00a86b; }
+        
+        tr:nth-child(even) { background: #fafafa; }
+        .back-btn { display: inline-block; margin-bottom: 15px; text-decoration: none; color: #00a86b; font-weight: bold; font-size: 14px; }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <a href="index.html" class="back-link">⬅️</a>
-        <h3 style="font-size: 16px;">Jadwal Sholat</h3>
-    </div>
+    <a href="index.html" class="back-btn">← Kembali</a>
 
-    <div class="main-card">
-        <div id="city-name">Mencari Lokasi...</div>
-        <div id="full-date">---</div>
-    </div>
-
-    <div class="search-box">
-        <input type="text" id="manualCity" placeholder="Cari Kota (Contoh: Jakarta)" onchange="cariManual()">
-    </div>
-
-    <div id="display-area" class="sholat-list">
-        <div class="loading-state">⏳ Sedang mencocokkan koordinat lokasi Anda...</div>
+    <div class="container">
+        <div class="table-header">
+            <h2 id="lokasi-title">Jadwal Sholat</h2>
+            <p id="bulan-title">Memuat data...</p>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Tgl</th>
+                    <th>Subuh</th>
+                    <th>Dzuhur</th>
+                    <th>Ashar</th>
+                    <th>Maghrib</th>
+                    <th>Isya</th>
+                </tr>
+            </thead>
+            <tbody id="jadwal-body">
+                </tbody>
+        </table>
     </div>
 
     <script>
-        // Data Fallback jika koordinat gagal
-        const DEFAULT_CITY = "Jakarta";
-
-        async function initJadwal() {
-            try {
-                // Step 1: Ambil Koordinat via IP (Sangat Cepat)
-                const geoRes = await fetch('https://ipapi.co/json/');
-                const geoData = await geoRes.json();
-                
-                // Ambil Lintang & Bujur
-                const lat = geoData.latitude;
-                const lon = geoData.longitude;
-                
-                // Step 2: Cari Kota Terdekat berdasarkan Koordinat ke API MyQuran
-                const findCity = await fetch(`https://api.myquran.com/v2/sholat/kota/lokasi?lat=${lat}&lon=${lon}`);
-                const cityData = await findCity.json();
-
-                if (cityData.status && cityData.data) {
-                    loadJadwal(cityData.data.id, cityData.data.lokasi);
-                } else {
-                    loadJadwal("1301", "Jakarta"); // ID 1301 adalah Jakarta
-                }
-            } catch (err) {
-                loadJadwal("1301", "Jakarta");
-            }
-        }
-
-        async function loadJadwal(cityId, cityName) {
-            const today = new Date();
-            const y = today.getFullYear();
-            const m = today.getMonth() + 1;
-            const d = today.getDate();
-
-            document.getElementById('city-name').innerText = cityName;
-            document.getElementById('full-date').innerText = today.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
-
-            try {
-                const res = await fetch(`https://api.myquran.com/v2/sholat/jadwal/${cityId}/${y}/${m}/${d}`);
-                const result = await res.json();
-                const jadwal = result.data.jadwal;
-
-                const times = [
-                    {n: 'Imsak', v: jadwal.imsak},
-                    {n: 'Subuh', v: jadwal.subuh},
-                    {n: 'Terbit', v: jadwal.terbit},
-                    {n: 'Dzuhur', v: jadwal.dzuhur},
-                    {n: 'Ashar', v: jadwal.ashar},
-                    {n: 'Maghrib', v: jadwal.maghrib},
-                    {n: 'Isya', v: jadwal.isya}
-                ];
-
-                let html = '';
-                times.forEach(t => {
-                    html += `
-                        <div class="sholat-row">
-                            <span class="label">${t.n.toUpperCase()}</span>
-                            <span class="time">${t.v}</span>
-                        </div>
-                    `;
-                });
-                document.getElementById('display-area').innerHTML = html;
-            } catch (e) {
-                document.getElementById('display-area').innerHTML = '<div class="loading-state">Gagal memuat jadwal.</div>';
-            }
-        }
-
-        async function cariManual() {
-            const query = document.getElementById('manualCity').value;
-            if(!query) return;
+        async function loadJadwal() {
+            const now = new Date();
+            const month = now.getMonth() + 1;
+            const year = now.getFullYear();
+            const day = now.getDate();
             
+            // Nama Bulan Indonesia
+            const namaBulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+            document.getElementById('bulan-title').innerText = `${namaBulan[now.getMonth()]} ${year}`;
+
+            // Mengambil lokasi (Default Jakarta jika gagal)
+            let city = "Jakarta"; 
+            document.getElementById('lokasi-title').innerText = `Jadwal Sholat untuk ${city}`;
+
             try {
-                const res = await fetch(`https://api.myquran.com/v2/sholat/kota/cari/${query}`);
+                const res = await fetch(`https://api.aladhan.com/v1/calendarByCity/${year}/${month}?city=${city}&country=Indonesia&method=20`);
                 const data = await res.json();
-                if(data.data && data.data.length > 0) {
-                    loadJadwal(data.data[0].id, data.data[0].lokasi);
-                }
-            } catch(e) {}
+                const jadwal = data.data;
+                
+                let html = "";
+                jadwal.forEach((hari) => {
+                    const tgl = parseInt(hari.date.gregorian.day);
+                    const isToday = tgl === day ? "class='today'" : "";
+                    
+                    html += `<tr ${isToday}>
+                        <td>${tgl}</td>
+                        <td>${hari.timings.Fajr.split(' ')[0]}</td>
+                        <td>${hari.timings.Dhuhr.split(' ')[0]}</td>
+                        <td>${hari.timings.Asr.split(' ')[0]}</td>
+                        <td>${hari.timings.Maghrib.split(' ')[0]}</td>
+                        <td>${hari.timings.Isha.split(' ')[0]}</td>
+                    </tr>`;
+                });
+                document.getElementById('jadwal-body').innerHTML = html;
+            } catch (e) {
+                document.getElementById('jadwal-body').innerHTML = "<tr><td colspan='6'>Gagal memuat data</td></tr>";
+            }
         }
 
-        initJadwal();
+        loadJadwal();
     </script>
 </body>
 </html>
