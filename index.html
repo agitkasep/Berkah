@@ -26,7 +26,7 @@
         .doa-container { 
             margin: 20px; padding: 25px; background: white;
             border-radius: 24px; text-align: center; border-left: 6px solid #00a86b; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05); height: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05); min-height: 200px;
         }
         .doa-judul { font-size: 13px; font-weight: 700; color: #00a86b; margin-bottom: 15px; text-transform: uppercase; }
         .doa-arab { font-size: 24px; font-weight: 700; margin-bottom: 12px; line-height: 1.8; direction: rtl; font-family: 'Amiri', serif; }
@@ -41,7 +41,6 @@
         .sholat-box span { font-size: 9px; display: block; margin-bottom: 4px; opacity: 0.7; font-weight: bold; }
         .sholat-box b { font-size: 12px; display: block; color: #00a86b; }
 
-        /* Menu Grid 9 Kotak - Efek Hover & Klik Aktif */
         .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 0 20px; }
         .menu-item { 
             background: white; padding: 18px 10px; border-radius: 20px; 
@@ -49,22 +48,8 @@
             text-decoration: none; color: #334155; 
             box-shadow: 0 4px 12px rgba(0,0,0,0.05);
             transition: all 0.3s ease;
-            position: relative; overflow: hidden;
         }
-        /* Efek Kilatan Cahaya saat disentuh */
-        .menu-item::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.3) 0%, transparent 70%);
-            transform: scale(0); transition: transform 0.5s;
-        }
-        .menu-item:active::after { transform: scale(1); }
-        
-        /* Animasi Angkat Kotak */
-        .menu-item:hover { 
-            transform: translateY(-5px); 
-            box-shadow: 0 12px 20px rgba(0,168,107,0.15);
-            background: #f0fff4;
-        }
+        .menu-item:active { transform: scale(0.95); background: #f0fff4; }
         .menu-icon { font-size: 28px; margin-bottom: 8px; }
         .menu-item span { font-size: 10px; font-weight: 700; text-align: center; }
     </style>
@@ -84,10 +69,10 @@
     </div>
 
     <div class="doa-container">
-        <div class="doa-judul" id="judul-doa">Doa Harian</div>
-        <div class="doa-arab" id="arab-doa">...</div>
+        <div class="doa-judul" id="judul-doa">Doa Hari Ini</div>
+        <div class="doa-arab" id="arab-doa">Memuat doa...</div>
         <div id="latin-doa"></div>
-        <div class="doa-arti" id="arti-doa">...</div>
+        <div class="doa-arti" id="arti-doa">Silakan pastikan file doa tersedia.</div>
     </div>
 
     <div class="sholat-mini">
@@ -99,7 +84,7 @@
     </div>
 
     <div class="menu-grid">
-        <a href="https://jadwalsholat.org/" target="_blank" class="menu-item"><div class="menu-icon">🕌</div><span>Jadwal</span></a>
+        <a href="jadwal sholat.html" class="menu-item"><div class="menu-icon">🕌</div><span>Jadwal</span></a>
         <a href="https://quran.com/id" target="_blank" class="menu-item"><div class="menu-icon">📖</div><span>Al-Qur'an</span></a>
         <a href="https://hadits.id/" target="_blank" class="menu-item"><div class="menu-icon">📚</div><span>Hadist</span></a>
         <a href="https://www.jobstreet.co.id/" target="_blank" class="menu-item"><div class="menu-icon">💼</div><span>Loker</span></a>
@@ -111,51 +96,73 @@
     </div>
 
     <script>
-        const widgetDoa = [
-            { judul: "Doa sebelum tidur", arab: "بِسْمِكَ االلّٰهُمَّ اَحْيَا وَبِاسْمِكَ اَمُوْتُ", latin: "Bismikallaahumma ahyaa wa ammuut", arti: "Dengan menyebut nama Allah, aku hidup dan aku mati" },
-            { judul: "Doa bangun tidur", arab: "اَلْحَمْدُ ِللهِ الَّذِىْ اَحْيَانَا بَعْدَمَآ اَمَاتَنَا وَاِلَيْهِ النُّشُوْرُ", latin: "Alhamdu lillahil ladzii ahyaanaa ba’da maa amaa tanaa wa ilahin nusyuuru", arti: "Segala puji bagi Allah yang telah menghidupkan kami sesudah kami mati dan kepada-Nya kami dikembalikan" },
-            { judul: "Doa masuk kamar mandi", arab: "اَللّٰهُمَّ اِنّىْ اَعُوْذُبِكَ مِنَ الْخُبُثِ وَالْخَبَآئِثِ", latin: "Allahumma Innii a'uudzubika minal khubutsi wal khoaaitsi", arti: "Ya Allah, aku berlindung pada-Mu dari godaan setan laki-laki dan setan perempuan" },
-            { judul: "Doa sebelum membaca Al-Qur'an", arab: "اَللّٰهُمَّ افْتَحْ عَلَىَّ حِكْمَتَكَ وَانْشُرْ عَلَىَّ رَحْمَتَكَ وَذَكِّرْنِىْ مَانَسِيْتُ", latin: "Allahummaftah 'alayya hikmataka wansyur 'alayya rohmataka wa dzakkirnii maanasiitu", arti: "Ya Allah bukakanlah hikmah-Mu padaku, bentangkanlah rahmat-Mu padaku dan ingatkanlah aku terhadap apa yang aku lupa." }
-        ];
+        async function updateDoa() {
+            try {
+                const now = new Date();
+                const bulan = now.getMonth() + 1; // Januari = 1
+                const tanggal = now.getDate();
 
-        function updateUI() {
+                // Mengambil file JSON sesuai bulan saat ini
+                const response = await fetch(`doa${bulan}.json`);
+                if (!response.ok) throw new Error('File tidak ditemukan');
+                
+                const daftarDoa = await response.json();
+                
+                // Ambil doa berdasarkan indeks tanggal (tanggal 1 = index 0)
+                const doa = daftarDoa[tanggal - 1];
+
+                if (doa) {
+                    document.getElementById('judul-doa').innerText = doa.judul;
+                    document.getElementById('arab-doa').innerText = doa.arab;
+                    document.getElementById('latin-doa').innerText = doa.latin;
+                    document.getElementById('arti-doa').innerText = doa.arti;
+                }
+            } catch (e) {
+                console.log("Menunggu file JSON...");
+                document.getElementById('arab-doa').innerText = "Data Doa Belum Siap";
+                document.getElementById('arti-doa').innerText = "Pastikan file doa" + (new Date().getMonth()+1) + ".json sudah ada.";
+            }
+        }
+
+        function updateTime() {
             const now = new Date();
-            const options = { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            const options = { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' };
             document.getElementById('tgl-jam').innerText = now.toLocaleDateString('id-ID', options);
-            
-            const doaIndex = now.getDate() % widgetDoa.length;
-            const doa = widgetDoa[doaIndex];
-            document.getElementById('judul-doa').innerText = doa.judul;
-            document.getElementById('arab-doa').innerText = doa.arab;
-            document.getElementById('latin-doa').innerText = doa.latin;
-            document.getElementById('arti-doa').innerText = doa.arti;
         }
 
         async function getSholat() {
+            // Default Jakarta
+            let url = `https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=20`;
+            
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(async (pos) => {
                     const { latitude, longitude } = pos.coords;
-                    document.getElementById('lokasi-text').innerText = `📍 Lokasi: Aktif (${latitude.toFixed(2)})`;
-                    try {
-                        const res = await fetch(`https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=20`);
-                        const data = await res.json();
-                        const t = data.data.timings;
-                        ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].forEach(k => document.getElementById(`j-${k}`).innerText = t[k]);
-                    } catch (e) { fallback(); }
-                }, () => { fallback(); });
-            } else { fallback(); }
+                    document.getElementById('lokasi-text').innerText = `📍 Lokasi: Aktif`;
+                    fetchSholat(`https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=20`);
+                }, () => {
+                    document.getElementById('lokasi-text').innerText = `📍 Lokasi: Jakarta`;
+                    fetchSholat(url);
+                });
+            } else {
+                fetchSholat(url);
+            }
         }
 
-        async function fallback() {
-            document.getElementById('lokasi-text').innerText = "📍 Lokasi: Jakarta (Default)";
-            const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=20`);
-            const data = await res.json();
-            const t = data.data.timings;
-            ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].forEach(k => document.getElementById(`j-${k}`).innerText = t[k]);
+        async function fetchSholat(url) {
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+                const t = data.data.timings;
+                ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].forEach(k => {
+                    document.getElementById(`j-${k}`).innerText = t[k];
+                });
+            } catch (e) { console.error("Gagal muat jadwal sholat"); }
         }
 
-        setInterval(updateUI, 1000);
-        updateUI();
+        // Jalankan fungsi
+        setInterval(updateTime, 60000);
+        updateTime();
+        updateDoa();
         getSholat();
     </script>
 </body>
