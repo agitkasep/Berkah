@@ -4,111 +4,44 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Berkah - Aplikasi Islami</title>
-    <!-- FIXED: Google Fonts link yang benar -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: linear-gradient(135deg, #f4f7f6 0%, #e8f5e8 100%); color: #1e293b; padding-bottom: 40px; min-height: 100vh; }
         
-        /* Header */
         .header { 
             display: flex; justify-content: space-between; align-items: center; 
             padding: 20px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0,168,107,0.1); box-shadow: 0 2px 20px rgba(0,0,0,0.05);
+            border-bottom: 1px solid rgba(0,168,107,0.1); position: sticky; top: 0; z-index: 100;
         }
         .user-profile { display: flex; align-items: center; gap: 12px; }
         .logo-box { 
             width: 45px; height: 45px; background: linear-gradient(135deg, #00a86b, #00d084); 
             border-radius: 12px; display: flex; align-items: center; justify-content: center; 
-            color: white; font-weight: 700; font-size: 18px; box-shadow: 0 4px 15px rgba(0,168,107,0.3);
+            color: white; font-weight: 700; font-size: 18px;
         }
-        .user-info h2 { font-size: 18px; font-weight: 700; background: linear-gradient(135deg, #00a86b, #00d084); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .user-info h2 { font-size: 18px; font-weight: 700; color: #00a86b; }
         .user-info p { font-size: 10px; color: #64748b; font-weight: 600; }
-        .foto-profil { 
-            width: 40px; height: 40px; border-radius: 50%; background: linear-gradient(135deg, #e2e8f0, #cbd5e1); 
-            display: flex; align-items: center; justify-content: center; font-size: 18px; 
-            border: 3px solid #00a86b; box-shadow: 0 4px 12px rgba(0,168,107,0.2); cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .foto-profil:hover { transform: scale(1.05); }
 
-        /* Widget Doa */
         .doa-container { 
-            margin: 20px; padding: 25px; background: rgba(255,255,255,0.9); backdrop-filter: blur(15px);
+            margin: 20px; padding: 25px; background: white;
             border-radius: 24px; text-align: center; border-left: 6px solid #00a86b; 
-            box-shadow: 0 8px 32px rgba(0,168,107,0.1); position: relative; overflow: hidden;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.05);
         }
-        .doa-container::before {
-            content: '✨'; position: absolute; top: 15px; right: 20px; font-size: 24px; opacity: 0.3;
-        }
-        .doa-judul { font-size: 16px; font-weight: 700; color: #1e293b; margin-bottom: 12px; }
-        .doa-arab { 
-            font-size: 24px; font-weight: 700; margin-bottom: 12px; line-height: 1.6; 
-            color: #0f172a; direction: rtl; font-family: 'Amiri', serif;
-            background: linear-gradient(135deg, #00a86b, #00d084); -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .doa-arti { font-size: 12px; color: #475569; font-style: italic; line-height: 1.6; padding: 0 12px; }
+        .doa-judul { font-size: 14px; font-weight: 700; color: #00a86b; margin-bottom: 12px; text-transform: uppercase; }
+        .doa-arab { font-size: 22px; font-weight: 700; margin-bottom: 12px; line-height: 1.8; direction: rtl; font-family: 'Amiri', serif; }
+        .doa-arti { font-size: 12px; color: #64748b; font-style: italic; line-height: 1.5; }
 
-        /* Jadwal Sholat Mini */
-        .sholat-mini { 
-            margin: 0 20px 25px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; 
-        }
-        .sholat-box { 
-            background: linear-gradient(135deg, #00a86b, #00d084); color: white; padding: 14px 8px; 
-            border-radius: 16px; text-align: center; font-weight: 600;
-            box-shadow: 0 6px 20px rgba(0,168,107,0.3); transition: all 0.3s ease;
-            position: relative; overflow: hidden;
-        }
-        .sholat-box::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: rgba(255,255,255,0.3);
-        }
-        .sholat-box:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(0,168,107,0.4); }
-        .sholat-box span { font-size: 9px; display: block; opacity: 0.9; text-transform: uppercase; letter-spacing: 0.5px; }
-        .sholat-box b { font-size: 13px; display: block; font-weight: 800; }
+        .sholat-mini { margin: 0 20px 25px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+        .sholat-box { background: white; padding: 12px 5px; border-radius: 12px; text-align: center; border: 1px solid #e2e8f0; }
+        .sholat-box span { font-size: 9px; display: block; margin-bottom: 4px; opacity: 0.8; }
+        .sholat-box b { font-size: 12px; display: block; }
 
-        /* Menu Grid */
-        .menu-grid { 
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; padding: 0 20px 20px; 
-        }
-        .menu-item { 
-            background: rgba(255,255,255,0.85); padding: 20px 12px; border-radius: 20px; 
-            display: flex; flex-direction: column; align-items: center; text-align: center; 
-            text-decoration: none; color: inherit; border: 2px solid transparent;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            position: relative; overflow: hidden;
-        }
-        .menu-item::before {
-            content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; 
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-            transition: left 0.5s;
-        }
-        .menu-item:hover::before { left: 100%; }
-        .menu-item:hover { 
-            transform: translateY(-8px) scale(1.02); border-color: #00a86b; 
-            box-shadow: 0 15px 35px rgba(0,168,107,0.25); background: rgba(255,255,255,0.95);
-        }
-        .menu-item:active { transform: translateY(-4px) scale(0.98); }
-        .menu-icon { font-size: 28px; margin-bottom: 10px; transition: transform 0.3s ease; }
-        .menu-item:hover .menu-icon { transform: scale(1.2) rotate(5deg); }
-        .menu-item span { 
-            font-size: 10px; font-weight: 700; color: #334155; line-height: 1.3; 
-            text-transform: uppercase; letter-spacing: 0.5px;
-        }
-
-        /* Loading */
-        .loading { text-align: center; padding: 40px; color: #64748b; }
-        .spinner { display: inline-block; width: 20px; height: 20px; border: 2px solid #e2e8f0; border-top: 2px solid #00a86b; border-radius: 50%; animation: spin 1s linear infinite; margin-right: 10px; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Responsive */
-        @media (max-width: 480px) {
-            .menu-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 15px 20px; }
-            .sholat-mini { gap: 10px; margin: 0 15px 20px; }
-            .doa-container { margin: 15px; padding: 20px; }
-        }
+        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 20px; }
+        .menu-item { background: white; padding: 15px 10px; border-radius: 16px; display: flex; flex-direction: column; align-items: center; text-decoration: none; color: #334155; box-shadow: 0 4px 10px rgba(0,0,0,0.04); }
+        .menu-icon { font-size: 24px; margin-bottom: 8px; }
+        .menu-item span { font-size: 10px; font-weight: 700; text-align: center; }
     </style>
-    <!-- Tambahan font Arab -->
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -117,268 +50,103 @@
             <div class="logo-box">B</div>
             <div class="user-info">
                 <h2>BERKAH</h2>
-                <p id="tgl-jam">MEMUAT...</p>
+                <p id="tgl-jam">Memuat...</p>
+                <small id="lokasi-text" style="font-size: 8px; color: #00a86b;">Mencari lokasi...</small>
             </div>
         </div>
-        <div class="foto-profil" onclick="alert('Fitur profil dalam pengembangan! 👋')">👤</div>
     </div>
 
     <div class="doa-container">
-        <div class="doa-judul" id="judul-doa">Memuat Doa Harian...</div>
-        <div class="doa-arab" id="arab-doa">اللّهُ أَكْبَرُ</div>
-        <div class="doa-arti" id="arti-doa">Allah Maha Besar</div>
+        <div class="doa-judul" id="judul-doa">Doa Harian</div>
+        <div class="doa-arab" id="arab-doa">...</div>
+        <div id="latin-doa" style="font-size: 11px; color: #00a86b; margin-bottom: 8px; font-weight: 600;"></div>
+        <div class="doa-arti" id="arti-doa">...</div>
     </div>
 
     <div class="sholat-mini">
-        <div class="sholat-box"><span>Subuh</span><b id="j-subuh">--:--</b></div>
-        <div class="sholat-box"><span>Dzuhur</span><b id="j-dzuhur">--:--</b></div>
-        <div class="sholat-box"><span>Ashar</span><b id="j-ashar">--:--</b></div>
-        <div class="sholat-box"><span>Maghrib</span><b id="j-maghrib">--:--</b></div>
-        <div class="sholat-box"><span>Isya</span><b id="j-isya">--:--</b></div>
+        <div class="sholat-box"><span>Subuh</span><b id="j-Fajr">--:--</b></div>
+        <div class="sholat-box"><span>Dzuhur</span><b id="j-Dhuhr">--:--</b></div>
+        <div class="sholat-box"><span>Ashar</span><b id="j-Asr">--:--</b></div>
+        <div class="sholat-box"><span>Maghrib</span><b id="j-Maghrib">--:--</b></div>
+        <div class="sholat-box"><span>Isya</span><b id="j-Isha">--:--</b></div>
     </div>
 
     <div class="menu-grid">
-        <a href="jadwal-sholat.html" class="menu-item">
-            <div class="menu-icon">🕌</div><span>Waktu Sholat</span>
-        </a>
-        <a href="Quran.html" class="menu-item">
-            <div class="menu-icon">📖</div><span>Al-Qur'an</span>
-        </a>
-        <a href="Hadist.html" class="menu-item">
-            <div class="menu-icon">📚</div><span>Hadist</span>
-        </a>
-        <a href="Infoloker.html" class="menu-item">
-            <div class="menu-icon">💼</div><span>Info Loker</span>
-        </a>
-        <a href="Berita.html" class="menu-item">
-            <div class="menu-icon">📰</div><span>Berita Islami</span>
-        </a>
-        <a href="#" class="menu-item" onclick="alert('Fitur dalam pengembangan!')">
-            <div class="menu-icon">🛠️</div><span>Alat Sholeh</span>
-        </a>
-        <a href="#" class="menu-item" onclick="alert('Fitur dalam pengembangan!')">
-            <div class="menu-icon">🛒</div><span>Toko Muslim</span>
-        </a>
-        <a href="#" class="menu-item" onclick="alert('Fitur dalam pengembangan!')">
-            <div class="menu-icon">🎁</div><span>Donasi</span>
-        </a>
-        <a href="https://wa.me/6281234567890?text=Halo%20Berkah!" target="_blank" class="menu-item">
-            <div class="menu-icon">💬</div><span>Chat WA</span>
-        </a>
+        <a href="#" class="menu-item"><div class="menu-icon">🕌</div><span>Jadwal</span></a>
+        <a href="#" class="menu-item"><div class="menu-icon">📖</div><span>Al-Qur'an</span></a>
+        <a href="#" class="menu-item"><div class="menu-icon">📚</div><span>Hadist</span></a>
+        <a href="#" class="menu-item"><div class="menu-icon">💼</div><span>Loker</span></a>
+        <a href="#" class="menu-item"><div class="menu-icon">📰</div><span>Berita</span></a>
+        <a href="#" class="menu-item"><div class="menu-icon">💬</div><span>Chat WA</span></a>
     </div>
 
     <script>
-        // Data doa yang lebih lengkap
         const widgetDoa = [
-            { 
-                judul: "Doa Sapu Jagad", 
-                arab: "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ", 
-                arti: "Ya Tuhan kami, berilah kami kebaikan di dunia dan kebaikan di akhirat, dan lindungilah kami dari azab neraka." 
-            },
-            { 
-                judul: "Doa Kedua Orang Tua", 
-                arab: "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَارْحَمْهُمَا كَمَا رَبَّيَانِي صَغِيرًا", 
-                arti: "Ya Tuhanku, ampunilah dosaku dan dosa kedua orang tuaku, dan sayangilah mereka sebagaimana mereka mendidikku waktu kecil." 
-            },
-            { 
-                judul: "Doa Masuk Masjid", 
-                arab: "اللَّهُمَّ افْتَحْ لِي أَبْوَابَ رَحْمَتِكَ", 
-                arti: "Ya Allah, bukakanlah bagiku pintu-pintu rahmat-Mu." 
-            },
-            { 
-                judul: "Doa Sehari-hari", 
-                arab: "حَسْبِيَ اللَّهُ لَا إِلَٰهَ إِلَّا هُوَ عَلَيْهِ تَوَكَّلْتُ", 
-                arti: "Cukuplah Allah bagiku, tidak ada Tuhan selain Dia, kepada-Nya aku bertawakal." 
-            },
-            <script>
-    // 37 DOA SEHARI-HARI LENGKAP - Berganti otomatis setiap hari
-    const widgetDoa = [
-        { 
-            judul: "Doa sebelum tidur", 
-            arab: "بِسْمِكَ االلّٰهُمَّ اَحْيَا وَبِاسْمِكَ اَمُوْتُ", 
-            latin: "Bismikallaahumma ahyaa wa ammuut",
-            arti: "Dengan menyebut nama Allah, aku hidup dan aku mati"
-        },
-        { 
-            judul: "Doa bangun tidur", 
-            arab: "اَلْحَمْدُ ِللهِ الَّذِىْ اَحْيَانَا بَعْدَمَآ اَمَاتَنَا وَاِلَيْهِ النُّشُوْرُ", 
-            latin: "Alhamdu lillahil ladzii ahyaanaa ba’da maa amaa tanaa wa ilahin nusyuuru",
-            arti: "Segala puji bagi Allah yang telah menghidupkan kami sesudah kami mati (membangunkan dari tidur) dan hanya kepada-Nya kami dikembalikan"
-        },
-        { 
-            judul: "Doa masuk kamar mandi", 
-            arab: "اَللّٰهُمَّ اِنّىْ اَعُوْذُبِكَ مِنَ الْخُبُثِ وَالْخَبَآئِثِ", 
-            latin: "Allahumma Innii a'uudzubika minal khubutsi wal khoaaitsi",
-            arti: "Ya Allah, aku berlindung pada-Mu dari godaan setan laki-laki dan setan perempuan"
-        },
-        { 
-            judul: "Doa ketika bercermin", 
-            arab: "اَلْحَمْدُ ِللهِ كَمَا حَسَّنْتَ خَلْقِىْ فَحَسِّـنْ خُلُقِىْ", 
-            latin: "Alhamdulillaahi kamaa hassanta kholqii fahassin khuluqii",
-            arti: "Segala puji bagi Allah, baguskanlah budi pekertiku sebagaimana Engkau telah membaguskan rupa wajahku"
-        },
-        { 
-            judul: "Doa keluar rumah", 
-            arab: "بِسْمِ اللهِ تَوَكَّلْتُ عَلَى اللهِ لاَحَوْلَ وَلاَقُوَّةَ اِلاَّ بِالله", 
-            latin: "Bismillaahi tawakkaltu 'alalloohi laa hawlaa walaa quwwata illaa bilaahi",
-            arti: "Dengan menyebut nama Allah aku bertawakal kepada Allah, tiada daya kekuatan melainkan dengan pertolongan Allah."
-        },
-        { 
-            judul: "Doa masuk rumah", 
-            arab: "اَللّٰهُمَّ اِنّىْ اَسْأَلُكَ خَيْرَالْمَوْلِجِ وَخَيْرَالْمَخْرَجِ بِسْمِ اللهِ وَلَجْنَا وَبِسْمِ اللهِ خَرَجْنَا وَعَلَى اللهِ رَبّنَا تَوَكَّلْنَا", 
-            latin: "Allahumma innii as-aluka khoirol mauliji wa khoirol makhroji bismillaahi wa lajnaa wa bismillaahi khorojnaa wa'alallohi robbina tawakkalnaa",
-            arti: "Ya Allah, sesungguhnya aku mohon kepada-Mu baiknya tempat masuk dan baiknya tempat keluar dengan menyebut nama Allah kami masuk, dan dengan menyebut nama Allah kami keluar dan kepada Allah Tuhan kami, kami bertawakkal"
-        },
-        { 
-            judul: "Doa memohon ilmu yang bermanfaat", 
-            arab: "اَللّٰهُمَّ اِنِّى اَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلاً مُتَقَبَّلاً", 
-            latin: "Allahumma innii as-aluka 'ilmaan naafi'aan wa rizqoon thoyyibaan wa 'amalaan mutaqobbalaan",
-            arti: "Ya Allah, sesungguhnya aku mohon kepada-Mu ilmu yang berguna, rezki yang baik dan amal yang baik Diterima."
-        },
-        { 
-            judul: "Doa sebelum belajar", 
-            arab: "يَارَبِّ زِدْنِىْ عِلْمًا وَارْزُقْنِىْ فَهْمًا", 
-            latin: "Yaa robbi zidnii 'ilman warzuqnii fahmaa",
-            arti: "Ya Allah, tambahkanlah aku ilmu dan berikanlah aku rizqi akan kepahaman"
-        },
-        { 
-            judul: "Doa sesudah belajar", 
-            arab: "اَللّٰهُمَّ اِنِّى اِسْتَوْدِعُكَ مَاعَلَّمْتَنِيْهِ فَارْدُدْهُ اِلَىَّ عِنْدَ حَاجَتِىْ وَلاَ تَنْسَنِيْهِ يَارَبَّ الْعَالَمِيْنَ", 
-            latin: "Allaahumma innii astaudi'uka maa 'allamtaniihi fardud-hu ilayya 'inda haajatii wa laa tansaniihi yaa robbal 'alamiin",
-            arti: "Ya Allah, sesungguhnya aku menitipkan kepada Engkau ilmu-ilmu yang telah Engkau ajarkan kepadaku, dan kembalikanlah kepadaku sewaktu aku butuh kembali dan janganlah Engkau lupakan aku kepada ilmu itu wahai Tuhan seru sekalian alam."
-        },
-        { 
-            judul: "Doa sebelum wudhu", 
-            arab: "نَوَيْتُ الْوُضُوْءَ لِرَفْعِ الْحَدَثِ اْلاَصْغَرِ فَرْضًا لِلّٰهِ تَعَالَى", 
-            latin: "Nawaitul whudu-a lirof'il hadatsii ashghori fardhon lillaahi ta'aalaa",
-            arti: "Saya niat berwudhu untuk menghilangkan hadast kecil fardu (wajib) karena Allah ta'ala"
-        },
-        { 
-            judul: "Doa setelah wudhu", 
-            arab: "اَشْهَدُ اَنْ لاَّاِلَهَ اِلاَّاللهُ وَحْدَهُ لاَشَرِيْكَ لَهُ وَاَشْهَدُ اَنَّ مُحَمَّدًاعَبْدُهُ وَرَسُوْلُهُ. اَللّٰهُمَّ اجْعَلْنِىْ مِنَ التَّوَّابِيْنَ وَاجْعَلْنِىْ مِنَ الْمُتَطَهِّرِيْنَ، وَجْعَلْنِيْ مِنْ عِبَادِكَ الصَّالِحِيْنَ", 
-            latin: "Asyhadu allaa ilaaha illalloohu wahdahuu laa syariika lahu wa asyhadu anna muhammadan ‘abduhuuwa rosuuluhuu, alloohummaj’alnii minat tawwaabiina waj’alnii minal mutathohhiriina, waj'alnii min 'ibadikash shaalihiina.",
-            arti: "Aku bersaksi, tidak ada Tuhan selain Allah Yang Maha Esa, tidak ada sekutu bagi-Nya, dan aku mengaku bahwa Nabi Muhammad itu adalah hamba dan Utusan Allah. Ya Allah, jadikanlah aku dari golongan orang-orang yang bertaubat dan jadikanlah aku dari golongan orang-orang yang suci dan jadikanlah aku dari golongan hamba-hamba Mu yang shaleh"
-        },
-        { 
-            judul: "Doa sebelum membaca al-qur'an", 
-            arab: "اَللّٰهُمَّ افْتَحْ عَلَىَّ حِكْمَتَكَ وَانْشُرْ عَلَىَّ رَحْمَتَكَ وَذَكِّرْنِىْ مَانَسِيْتُ يَاذَاالْجَلاَلِ وَاْلاِكْرَامِ", 
-            latin: "Allahummaftah 'alayya hikmataka wansyur 'alayya rohmataka wa dzakkirnii maanasiitu yaa dzal jalaali wal ikhroomi",
-            arti: "Ya Allah bukakanlah hikmahMu padaku, bentangkanlah rahmatMu padaku dan ingatkanlah aku terhadap apa yang aku lupa, wahai Dzat yang memiliki keagungan dan kemuliaan"
-        },
-        { 
-            judul: "Doa setelah membaca al-qur'an", 
-            arab: "اَللّٰهُمَّ ارْحَمْنِىْ بِالْقُرْآنِ. وَاجْعَلْهُ لِىْ اِمَامًا وَنُوْرًا وَّهُدًى وَّرَحْمَةً. اَللّٰهُمَّ ذَكِّرْنِىْ مِنْهُ مَانَسِيْتُ وَعَلِّمْنِىْ مِنْهُ مَاجَهِلْتُ. وَارْزُقْنِىْ تِلاَ وَتَهُ آنَآءَ اللَّيْلِ وَاَطْرَافَ النَّهَارٍ. وَاجْعَلْهُ لِىْ حُجَّةً يَارَبَّ الْعَالَمِيْنَ", 
-            latin: "Allahummarhamnii bil qur'aani. waj'alhu lii imaaman wa nuuran wa hudan wa rohman. Allahumma dzakkirnii minhu maa nasiitu wa'allimnii minhu maa jahiltu. wazuqnii tilaa watahu aanaa-al laili wa athroofan nahaari. waj'alhu lii hujjatan yaa robbal 'aalamiina.",
-            arti: "Ya Allah, rahmatilah aku dengan Al-Quran yang agung, jadikanlah ia bagiku ikutan cahaya petunjuk rahmat. Ya Allah, ingatkanlah apa yang telah aku lupa dan ajarkan kepadaku apa yang tidak aku ketahui darinya, anugerahkanlah padaku kesempatan membacanya pada sebagian malam dan siang, jadikanlah ia hujjah yang kuat bagiku, wahai Tuhan seru sekalian alam."
-        },
-        { 
-            judul: "Doa sebelum mandi", 
-            arab: "اَللّٰهُمَّ اغْفِرْلِى ذَنْبِى وَوَسِّعْ لِى فِىْ دَارِىْ وَبَارِكْ لِىْ فِىْ رِزْقِىْ", 
-            latin: "Allahummaghfirlii dzambii wa wassi'lii fii daarii wa baarik lii fii rizqii",
-            arti: "Ya Allah ampunilah dosa kesalahanku dan berilah keluasaan di rumahku serta berkahilah pada rezekiku"
-        },
-        { 
-            judul: "Doa hendak berpergian", 
-            arab: "اَللّٰهُمَّ هَوِّنْ عَلَيْنَا سَفَرَنَا هَذَا وَاطْوِعَنَّابُعْدَهُ اَللّٰهُمَّ اَنْتَ الصَّاحِبُ فِى السَّفَرِوَالْخَلِيْفَةُفِى الْاَهْلِ", 
-            latin: "Allahumma hawwin 'alainaa safaranaa hadzaa waatwi 'annaa bu'dahu. Alloohumma antashookhibu fiissafari walkholiifatu fiil ahli",
-            arti: "Ya Allah, mudahkanlah kami berpergian ini, dan dekatkanlah kejauhannya. Ya Allah yang menemani dalam berpergian, dan Engkau pula yang melindungi keluarga."
-        },
-        { 
-            judul: "Doa ketika sampai di tempat tujuan", 
-            arab: "اَلْحَمْدُ ِللهِ الَّذِى سَلَمَنِى وَالَّذِى اَوَنِى وَالَّذِى جَمَعَ الشَّمْلَ بِ", 
-            latin: "Alhamdulillahil ladzi sallamani wal ladzi awani wal ladzi jama’asy syamla bi",
-            arti: "Segala puji bagi Allah, yang telah menyelamatkan akau dan yang telah melindungiku dan yang mengumpulkanku dengan keluargaku."
-        },
-        { 
-            judul: "Doa memakai pakaian", 
-            arab: "بِسْمِ اللهِ اَللّٰهُمَّ اِنِّى اَسْأَلُكَ مِنْ خَيْرِهِ وَخَيْرِ مَاهُوَ لَهُ وَاَعُوْذُبِكَ مِنْ شَرِّهِ وَشَرِّمَا هُوَلَهُ", 
-            latin: "Bismillaahi, Alloohumma innii as-aluka min khoirihi wa khoiri maa huwa lahuu wa'a'uu dzubika min syarrihi wa syarri maa huwa lahuu",
-            arti: "Dengan nama-Mu yaa Allah akku minta kepada Engkau kebaikan pakaian ini dan kebaikan apa yang ada padanya, dan aku berlindung kepada Engkau dari kejahatan pakaian ini dan kejahatan yang ada padanya"
-        },
-        { 
-            judul: "Doa memakai pakaian baru", 
-            arab: " اَلْحَمْدُ لِلّٰهِ الَّذِىْ كَسَانِىْ هَذَا وَرَزَقَنِيْهِ مِنْ غَيْرِ حَوْلٍ مِنِّىْ وَلاَقُوَّةٍ", 
-            latin: "Alhamdu lillaahil ladzii kasaanii haadzaa wa rozaqoniihi min ghoiri hawlim minni wa laa quwwatin",
-            arti: "Segala puji bagi Allah yang memberi aku pakaian ini dan memberi rizeki dengan tiada upaya dan kekuatan dariku"
-        },
-        { 
-            judul: "Doa melepas pakaian", 
-            arab: "بِسْمِ اللهِ الَّذِيْ لاَ إِلَهَ إِلاَّ هُوَ", 
-            latin: "Bismillaahil ladzii laa ilaaha illaa huwa",
-            arti: "Dengan nama Allah yang tiada Tuhan selain-Nya"
-        },
-        { 
-            judul: "Doa menjelang sholat subuh", 
-            arab: "اَللّٰهُمَّ اِنِّى اَعُوْذُ بِكَ مِنْ ضِيْقِ الدُّنْيَا وَضِيْقِ يَوْمِ الْقِيَامَةِ", 
-            latin: "Allaahumma inni a'udzubika min dzhiiqid-dunyaa wa dzhiiqi yaumal-qiyaamati",
-            arti: "Ya Allah! Sesungguhnya aku berlindung kepada-Mu dari kesempitan dunia dan kesempitan hari kiamat."
-        },
-        { 
-            judul: "Doa menyambut pagi hari", 
-            arab: "اَللّٰهُمَّ بِكَ اَصْبَحْنَا وَبِكَ اَمْسَيْنَا وَبِكَ نَحْيَا وَبِكَ نَمُوْتُ وَاِلَيْكَ النُّشُوْرُ", 
-            latin: "Alloohumma bika ashbahnaa wa bika amsainaa wa bika nahy
-        }
-
+            { judul: "Doa sebelum tidur", arab: "بِسْمِكَ االلّٰهُمَّ اَحْيَا وَبِاسْمِكَ اَمُوْتُ", latin: "Bismikallaahumma ahyaa wa ammuut", arti: "Dengan menyebut nama Allah, aku hidup dan aku mati" },
+            { judul: "Doa bangun tidur", arab: "اَلْحَمْدُ ِللهِ الَّذِىْ اَحْيَانَا بَعْدَمَآ اَمَاتَنَا وَاِلَيْهِ النُّشُوْرُ", latin: "Alhamdu lillahil ladzii ahyaanaa ba’da maa amaa tanaa wa ilahin nusyuuru", arti: "Segala puji bagi Allah yang telah menghidupkan kami sesudah kami mati dan kepada-Nya kami dikembalikan" },
+            { judul: "Doa masuk kamar mandi", arab: "اَللّٰهُمَّ اِنّىْ اَعُوْذُبِكَ مِنَ الْخُبُثِ وَالْخَبَآئِثِ", latin: "Allahumma Innii a'uudzubika minal khubutsi wal khoaaitsi", arti: "Ya Allah, aku berlindung pada-Mu dari godaan setan laki-laki dan setan perempuan" },
+            { judul: "Doa ketika bercermin", arab: "اَلْحَمْدُ ِللهِ كَمَا حَسَّنْتَ خَلْقِىْ فَحَسِّـنْ خُلُقِىْ", latin: "Alhamdulillaahi kamaa hassanta kholqii fahassin khuluqii", arti: "Segala puji bagi Allah, baguskanlah budi pekertiku sebagaimana Engkau telah membaguskan rupa wajahku" },
+            { judul: "Doa keluar rumah", arab: "بِسْمِ اللهِ تَوَكَّلْتُ عَلَى اللهِ لاَحَوْلَ وَلاَقُوَّةَ اِلاَّ بِالله", latin: "Bismillaahi tawakkaltu 'alalloohi laa hawlaa walaa quwwata illaa bilaahi", arti: "Dengan menyebut nama Allah aku bertawakal kepada Allah, tiada daya kekuatan melainkan dengan pertolongan Allah." },
+            { judul: "Doa masuk rumah", arab: "اَللّٰهُمَّ اِنّىْ اَسْأَلُكَ خَيْرَالْمَوْلِجِ وَخَيْرَالْمَخْرَجِ بِسْمِ اللهِ وَلَجْنَا وَبِسْمِ اللهِ خَرَجْنَا وَعَلَى اللهِ رَبّنَا تَوَكَّلْنَا", latin: "Allahumma innii as-aluka khoirol mauliji wa khoirol makhroji...", arti: "Ya Allah, sesungguhnya aku mohon kepada-Mu baiknya tempat masuk dan baiknya tempat keluar..." },
+            { judul: "Doa ilmu bermanfaat", arab: "اَللّٰهُمَّ اِنِّى اَسْأَلُكَ عِلْمًا نَافِعًا وَرِزْقًا طَيِّبًا وَعَمَلاً مُتَقَبَّلاً", latin: "Allahumma innii as-aluka 'ilmaan naafi'aan...", arti: "Ya Allah, sesungguhnya aku mohon kepada-Mu ilmu yang berguna, rezki yang baik dan amal yang diterima." },
+            { judul: "Doa sebelum belajar", arab: "يَارَبِّ زِدْنِىْ عِلْمًا وَارْزُقْنِىْ فَهْمًا", latin: "Yaa robbi zidnii 'ilman warzuqnii fahmaa", arti: "Ya Allah, tambahkanlah aku ilmu dan berikanlah aku rizqi akan kepahaman" },
+            { judul: "Doa sesudah belajar", arab: "اَللّٰهُمَّ اِنِّى اِسْتَوْدِعُكَ مَاعَلَّمْتَنِيْهِ فَارْدُدْهُ اِلَىَّ عِنْدَ حَاجَتِىْ", latin: "Allaahumma innii astaudi'uka maa 'allamtaniihi...", arti: "Ya Allah, sesungguhnya aku menitipkan kepada Engkau ilmu-ilmu yang telah Engkau ajarkan kepadaku..." },
+            { judul: "Doa sebelum wudhu", arab: "نَوَيْتُ الْوُضُوْءَ لِرَفْعِ الْحَدَثِ اْلاَصْغَرِ فَرْضًا لِلّٰهِ تَعَالَى", latin: "Nawaitul whudu-a lirof'il hadatsii ashghori...", arti: "Saya niat berwudhu untuk menghilangkan hadast kecil fardu karena Allah ta'ala" },
+            { judul: "Doa setelah wudhu", arab: "اَشْهَدُ اَنْ لاَّاِلَهَ اِلاَّاللهُ وَحْدَهُ لاَشَرِيْكَ لَهُ", latin: "Asyhadu allaa ilaaha illalloohu wahdahuu...", arti: "Aku bersaksi, tidak ada Tuhan selain Allah Yang Maha Esa..." },
+            { judul: "Doa sebelum baca Al-Qur'an", arab: "اَللّٰهُمَّ افْتَحْ عَلَىَّ حِكْمَتَكَ وَانْشُرْ عَلَىَّ رَحْمَتَكَ", latin: "Allahummaftah 'alayya hikmataka...", arti: "Ya Allah bukakanlah hikmahMu padaku, bentangkanlah rahmatMu padaku..." },
+            { judul: "Doa setelah baca Al-Qur'an", arab: "اَللّٰهُمَّ ارْحَمْنِىْ بِالْقُرْآنِ. وَاجْعَلْهُ لِىْ اِمَامًا وَنُوْرًا", latin: "Allahummarhamnii bil qur'aani...", arti: "Ya Allah, rahmatilah aku dengan Al-Quran yang agung..." },
+            { judul: "Doa sebelum mandi", arab: "اَللّٰهُمَّ اغْفِرْلِى ذَنْبِى وَوَسِّعْ لِى فِىْ دَارِىْ", latin: "Allahummaghfirlii dzambii...", arti: "Ya Allah ampunilah dosa kesalahanku dan berilah keluasaan di rumahku..." },
+            { judul: "Doa berpergian", arab: "اَللّٰهُمَّ هَوِّنْ عَلَيْنَا سَفَرَنَا هَذَا", latin: "Allahumma hawwin 'alainaa safaranaa...", arti: "Ya Allah, mudahkanlah kami berpergian ini, dan dekatkanlah kejauhannya." },
+            { judul: "Doa sampai tujuan", arab: "اَلْحَمْدُ ِللهِ الَّذِى سَلَمَنِى وَالَّذِى اَوَنِى", latin: "Alhamdulillahil ladzi sallamani...", arti: "Segala puji bagi Allah, yang telah menyelamatkan aku..." },
+            { judul: "Doa memakai pakaian", arab: "بِسْمِ اللهِ اَللّٰهُمَّ اِنِّى اَسْأَلُكَ مِنْ خَيْرِهِ", latin: "Bismillaahi, Alloohumma innii as-aluka...", arti: "Dengan nama-Mu yaa Allah aku minta kebaikan pakaian ini..." },
+            { judul: "Doa pakaian baru", arab: " اَلْحَمْدُ لِلّٰهِ الَّذِىْ كَسَانِىْ هَذَا", latin: "Alhamdu lillaahil ladzii kasaanii...", arti: "Segala puji bagi Allah yang memberi aku pakaian ini..." },
+            { judul: "Doa melepas pakaian", arab: "بِسْمِ اللهِ الَّذِيْ لاَ إِلَهَ إِلاَّ هُوَ", latin: "Bismillaahil ladzii laa ilaaha illaa huwa", arti: "Dengan nama Allah yang tiada Tuhan selain-Nya" },
+            { judul: "Doa menjelang subuh", arab: "اَللّٰهُمَّ اِنِّى اَعُوْذُ بِكَ مِنْ ضِيْقِ الدُّنْيَا", latin: "Allaahumma inni a'udzubika min dzhiiqid-dunyaa", arti: "Ya Allah! Aku berlindung dari kesempitan dunia dan kiamat." },
+            { judul: "Doa menyambut pagi", arab: "اَللّٰهُمَّ بِكَ اَصْبَحْنَا وَبِكَ اَمْسَيْنَا", latin: "Alloohumma bika ashbahnaa wa bika amsainaa", arti: "Ya Allah, dengan-Mu kami berpagi hari dan bersore hari." }
         ];
 
         function updateUI() {
-            const sekarang = new Date();
-            const opsi = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' };
-            document.getElementById('tgl-jam').innerText = sekarang.toLocaleDateString('id-ID', opsi);
+            const now = new Date();
+            const options = { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            document.getElementById('tgl-jam').innerText = now.toLocaleDateString('id-ID', options);
             
-            // Doa berganti setiap hari
-            const doaIndex = sekarang.getDate() % widgetDoa.length;
+            const doaIndex = now.getDate() % widgetDoa.length;
             const doa = widgetDoa[doaIndex];
             document.getElementById('judul-doa').innerText = doa.judul;
             document.getElementById('arab-doa').innerText = doa.arab;
+            document.getElementById('latin-doa').innerText = doa.latin;
             document.getElementById('arti-doa').innerText = doa.arti;
         }
 
-        // FIXED: API jadwal sholat yang benar + fallback
-        async function ambilSholat() {
-            try {
-                // Coba API Aladhan dulu (lebih reliable)
-                const sekarang = new Date();
-                const tahun = sekarang.getFullYear();
-                const bulan = String(sekarang.getMonth() + 1).padStart(2, '0');
-                const tanggal = String(sekarang.getDate()).padStart(2, '0');
-                
-                const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=5`);
-                const data = await res.json();
-                
-                if(data.code === 200) {
-                    const j = data.data.timings;
-                    document.getElementById('j-subuh').innerText = j.Fajr;
-                    document.getElementById('j-dzuhur').innerText = j.Dhuhr;
-                    document.getElementById('j-ashar').innerText = j.Asr;
-                    document.getElementById('j-maghrib').innerText = j.Maghrib;
-                    document.getElementById('j-isya').innerText = j.Isha;
-                    return;
-                }
-            } catch (e) {
-                console.warn("API Aladhan gagal, pakai fallback:", e);
-            }
-            
-            // Fallback: Dummy data (ganti dengan koordinat lokasi kamu)
-            const dummyTimes = ['04:52', '12:05', '15:18', '18:02', '19:28'];
-            const ids = ['j-subuh', 'j-dzuhur', 'j-ashar', 'j-maghrib', 'j-isya'];
-            ids.forEach((id, i) => {
-                document.getElementById(id).innerText = dummyTimes[i];
-            });
+        async function getSholat() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(async (pos) => {
+                    const { latitude, longitude } = pos.coords;
+                    document.getElementById('lokasi-text').innerText = `📍 Lokasi: Aktif (${latitude.toFixed(2)})`;
+                    try {
+                        const res = await fetch(`https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=20`);
+                        const data = await res.json();
+                        updateSholatUI(data.data.timings);
+                    } catch (e) { fallback(); }
+                }, () => { fallback(); });
+            } else { fallback(); }
         }
 
-        // Inisialisasi
+        function updateSholatUI(t) {
+            const list = ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+            list.forEach(k => document.getElementById(`j-${k}`).innerText = t[k]);
+        }
+
+        async function fallback() {
+            document.getElementById('lokasi-text').innerText = "📍 Lokasi: Jakarta (Default)";
+            const res = await fetch(`https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=20`);
+            const data = await res.json();
+            updateSholatUI(data.data.timings);
+        }
+
+        setInterval(updateUI, 1000);
         updateUI();
-        ambilSholat();
-        
-        // Update setiap menit
-        setInterval(updateUI, 60000);
-        setInterval(ambilSholat, 5 * 60000); // Update sholat setiap 5 menit
-
-        // PWA Ready: Service Worker (opsional)
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js').catch(() => {});
-        }
+        getSholat();
     </script>
 </body>
 </html>
