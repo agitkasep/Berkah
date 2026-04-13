@@ -1,4 +1,4 @@
-const CACHE_NAME = 'berkah-app-v2'; // Ini akan otomatis berubah jika GitHub Action Anda jalan
+const CACHE_NAME = 'berkah-app-v1776083404';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
