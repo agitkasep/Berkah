@@ -1,36 +1,41 @@
-const CACHE_NAME = 'berkah-app-v2'; // Naikkan versi jika Anda mengubah file doa atau kode index
+const CACHE_NAME = 'berkah-app-v2'; // Ini akan otomatis berubah jika GitHub Action Anda jalan
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './logo.svg',
   './manifest.json',
-  './doa1.json',
-  './doa2.json',
-  './doa3.json',
-  './doa4.json',
-  './doa5.json',
-  './doa6.json',
-  './doa7.json',
-  './doa8.json',
-  './doa9.json',
-  './doa10.json',
-  './doa11.json',
-  './doa12.json',
+  /* PATH FONT LOKAL */
+  './fonts/amiri-v30-arabic-700.woff2',
+  './fonts/amiri-quran-v19-arabic-regular.woff2',
+  './fonts/amiri-v30-arabic-regular.woff2',
+  /* PATH DOA DI DALAM FOLDER */
+  './doa harian/doa1.json',
+  './doa harian/doa2.json',
+  './doa harian/doa3.json',
+  './doa harian/doa4.json',
+  './doa harian/doa5.json',
+  './doa harian/doa6.json',
+  './doa harian/doa7.json',
+  './doa harian/doa8.json',
+  './doa harian/doa9.json',
+  './doa harian/doa10.json',
+  './doa harian/doa11.json',
+  './doa harian/doa12.json',
   './sw.js'
 ];
 
-// 1. Install & Pre-cache (Menyimpan semua doa saat pertama kali aplikasi dibuka)
+// 1. Install & Pre-cache
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('Berkah App: Mengamankan aset untuk mode offline...');
+      console.log('Berkah App: Mengamankan aset folder doa dan fonts...');
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );
   self.skipWaiting();
 });
 
-// 2. Aktivasi & Cleanup (Menghapus cache versi lama seperti v1)
+// 2. Aktivasi & Cleanup
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -42,12 +47,11 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// 3. Strategi Fetch yang Optimal
+// 3. Strategi Fetch
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // Strategi Khusus untuk File JSON Doa (Stale-While-Revalidate)
-  if (url.pathname.endsWith('.json')) {
+  if (url.pathname.endsWith('.json') || url.pathname.endsWith('.woff2')) {
     event.respondWith(
       caches.match(event.request).then((cachedResponse) => {
         const fetchPromise = fetch(event.request).then((networkResponse) => {
@@ -56,14 +60,12 @@ self.addEventListener('fetch', (event) => {
             return networkResponse;
           });
         });
-        // Berikan cache dulu (cepat), perbarui di background (jika ada internet)
         return cachedResponse || fetchPromise;
       })
     );
     return;
   }
 
-  // Strategi untuk Aset Statis (Cache-First)
   event.respondWith(
     caches.match(event.request).then((response) => {
       return response || fetch(event.request);
