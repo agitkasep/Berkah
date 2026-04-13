@@ -53,6 +53,16 @@
         #latin-doa { font-size: 13px; color: #00a86b; margin-bottom: 10px; font-weight: 600; line-height: 1.5; }
         .doa-arti { font-size: 12px; color: #64748b; font-style: italic; line-height: 1.6; }
 
+        /* GAYA TOMBOL WHATSAPP */
+        .share-container { margin-top: 20px; display: flex; justify-content: center; }
+        .btn-wa {
+            background: #25D366; color: white; border: none; padding: 10px 20px;
+            border-radius: 50px; font-size: 11px; font-weight: 700; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,211,102,0.3);
+            transition: all 0.2s ease;
+        }
+        .btn-wa:active { transform: scale(0.95); background: #1eb954; }
+
         .sholat-mini { margin: 0 20px 25px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
         .sholat-box { 
             background: white; padding: 12px 5px; border-radius: 12px; text-align: center; 
@@ -92,102 +102,4 @@
         <div class="doa-judul" id="judul-doa">Doa Hari Ini</div>
         <div class="doa-arab" id="arab-doa">جاري التحميل...</div>
         <div id="latin-doa"></div>
-        <div class="doa-arti" id="arti-doa">Sedang menyiapkan keberkahan hari ini.</div>
-    </div>
-
-    <div class="sholat-mini">
-        <div class="sholat-box"><span>Subuh</span><b id="j-Fajr">--:--</b></div>
-        <div class="sholat-box"><span>Dzuhur</span><b id="j-Dhuhr">--:--</b></div>
-        <div class="sholat-box"><span>Ashar</span><b id="j-Asr">--:--</b></div>
-        <div class="sholat-box"><span>Maghrib</span><b id="j-Maghrib">--:--</b></div>
-        <div class="sholat-box"><span>Isya</span><b id="j-Isha">--:--</b></div>
-    </div>
-
-    <div class="menu-grid">
-        <a href="jadwal sholat.html" class="menu-item"><div class="menu-icon">🕌</div><span>Jadwal</span></a>
-        <a href="https://quran.com/id" target="_blank" class="menu-item"><div class="menu-icon">📖</div><span>Al-Qur'an</span></a>
-        <a href="https://hadits.id/" target="_blank" class="menu-item"><div class="menu-icon">📚</div><span>Hadist</span></a>
-        <a href="https://www.jobstreet.co.id/" target="_blank" class="menu-item"><div class="menu-icon">💼</div><span>Loker</span></a>
-        <a href="https://www.republika.co.id/kanal/islam" target="_blank" class="menu-item"><div class="menu-icon">📰</div><span>Berita</span></a>
-        <a href="https://kalam.sindonews.com/doa" target="_blank" class="menu-item"><div class="menu-icon">🛠️</div><span>Alat</span></a>
-        <a href="https://shopee.co.id/" target="_blank" class="menu-item"><div class="menu-icon">🛒</div><span>Toko</span></a>
-        <a href="https://kitabisa.com/" target="_blank" class="menu-item"><div class="menu-icon">🎁</div><span>Donasi</span></a>
-        <a href="https://wa.me/628123456789" target="_blank" class="menu-item"><div class="menu-icon">💬</div><span>Chat WA</span></a>
-    </div>
-
-    <script>
-        // DAFTARKAN SERVICE WORKER UNTUK OFFLINE
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js')
-            .then(() => console.log("Service Worker Aktif"));
-        }
-
-        async function updateDoa() {
-            try {
-                const now = new Date();
-                const bulan = now.getMonth() + 1;
-                const tanggal = now.getDate();
-
-                // PATH DISESUAIKAN KE FOLDER 'doa harian/'
-                const response = await fetch(`doa harian/doa${bulan}.json`);
-                if (!response.ok) throw new Error('File tidak ditemukan');
-                
-                const daftarDoa = await response.json();
-                const doa = daftarDoa[tanggal - 1];
-
-                if (doa) {
-                    document.getElementById('judul-doa').innerText = doa.judul;
-                    document.getElementById('arab-doa').innerText = doa.arab;
-                    document.getElementById('latin-doa').innerText = doa.latin;
-                    document.getElementById('arti-doa').innerText = doa.arti;
-                }
-            } catch (e) {
-                console.log("Menunggu file JSON...");
-                document.getElementById('arab-doa').innerText = "Data Doa Belum Siap";
-                document.getElementById('arti-doa').innerText = "Pastikan folder 'doa harian' sudah berisi file doa" + (new Date().getMonth()+1) + ".json";
-            }
-        }
-
-        function updateTime() {
-            const now = new Date();
-            const options = { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' };
-            document.getElementById('tgl-jam').innerText = now.toLocaleDateString('id-ID', options);
-        }
-
-        async function getSholat() {
-            let url = `https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=20`;
-            
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(async (pos) => {
-                    const { latitude, longitude } = pos.coords;
-                    document.getElementById('lokasi-text').innerText = `📍 Lokasi: Aktif`;
-                    fetchSholat(`https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=20`);
-                }, () => {
-                    document.getElementById('lokasi-text').innerText = `📍 Lokasi: Jakarta`;
-                    fetchSholat(url);
-                });
-            } else {
-                fetchSholat(url);
-            }
-        }
-
-        async function fetchSholat(url) {
-            try {
-                const res = await fetch(url);
-                const data = await res.json();
-                const t = data.data.timings;
-                ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].forEach(k => {
-                    document.getElementById(`j-${k}`).innerText = t[k];
-                });
-            } catch (e) { console.error("Gagal muat jadwal sholat"); }
-        }
-
-        updateTime();
-        updateDoa();
-        getSholat();
-        setInterval(updateTime, 60000);
-    </script>
-</body>
-</html>
-   
-   
+        <div class="doa-arti" id="arti-doa">Sedang
