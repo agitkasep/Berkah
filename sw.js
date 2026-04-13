@@ -1,4 +1,4 @@
-const CACHE_NAME = 'berkah-app-v1776083404';
+const CACHE_NAME = 'berkah-app-v1776083489';
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
