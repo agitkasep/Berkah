@@ -1,25 +1,36 @@
-const CACHE_NAME = 'berkah-app-v1';
+const CACHE_NAME = 'berkah-app-v2'; // Naikkan versi jika Anda mengubah file doa atau kode index
 const ASSETS_TO_CACHE = [
   './',
   './index.html',
   './logo.svg',
   './manifest.json',
-  // Tambahkan file HTML atau CSS lain jika ada, contoh:
-  // './jadwal-sholat.html'
+  './doa1.json',
+  './doa2.json',
+  './doa3.json',
+  './doa4.json',
+  './doa5.json',
+  './doa6.json',
+  './doa7.json',
+  './doa8.json',
+  './doa9.json',
+  './doa10.json',
+  './doa11.json',
+  './doa12.json',
+  './sw.js'
 ];
 
-// 1. Install Service Worker dan simpan aset utama ke Cache
+// 1. Install & Pre-cache (Menyimpan semua doa saat pertama kali aplikasi dibuka)
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      console.log('Caching shell assets');
+      console.log('Berkah App: Mengamankan aset untuk mode offline...');
       return cache.addAll(ASSETS_TO_CACHE);
     })
   );
   self.skipWaiting();
 });
 
-// 2. Aktivasi Service Worker dan bersihkan cache lama jika ada
+// 2. Aktivasi & Cleanup (Menghapus cache versi lama seperti v1)
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) => {
@@ -31,33 +42,31 @@ self.addEventListener('activate', (event) => {
   self.clients.claim();
 });
 
-// 3. Logika Pintar: Strategi Fetch
+// 3. Strategi Fetch yang Optimal
 self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
 
-  // STRATEGI KHUSUS JSON: Selalu ambil dari internet (Network-First)
+  // Strategi Khusus untuk File JSON Doa (Stale-While-Revalidate)
   if (url.pathname.endsWith('.json')) {
     event.respondWith(
-      fetch(event.request)
-        .then((response) => {
-          // Opsional: Simpan salinan terbaru ke cache untuk cadangan offline
+      caches.match(event.request).then((cachedResponse) => {
+        const fetchPromise = fetch(event.request).then((networkResponse) => {
           return caches.open(CACHE_NAME).then((cache) => {
-            cache.put(event.request, response.clone());
-            return response;
+            cache.put(event.request, networkResponse.clone());
+            return networkResponse;
           });
-        })
-        .catch(() => {
-          // Jika internet mati/gagal, ambil dari cache yang terakhir tersimpan
-          return caches.match(event.request);
-        })
+        });
+        // Berikan cache dulu (cepat), perbarui di background (jika ada internet)
+        return cachedResponse || fetchPromise;
+      })
     );
     return;
   }
 
-  // STRATEGI BIASA: Cache-First (Untuk Gambar, CSS, Font agar cepat)
+  // Strategi untuk Aset Statis (Cache-First)
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request);
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
     })
   );
 });
