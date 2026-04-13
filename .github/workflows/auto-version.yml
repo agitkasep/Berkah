@@ -1,0 +1,28 @@
+name: Update SW Version
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'doa harian/**'
+      - 'index.html'
+      - 'sw.js'
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Update version in sw.js
+        run: |
+          # Mengganti versi dengan timestamp detik agar selalu unik
+          sed -i "s/const CACHE_NAME = 'berkah-app-v.*/const CACHE_NAME = 'berkah-app-v$(date +%s)';/" sw.js
+          
+      - name: Commit changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add sw.js
+          # Hanya commit jika ada perubahan di sw.js
+          git diff --quiet && git diff --staged --quiet || (git commit -m "Auto-update Service Worker version" && git push)
