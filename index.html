@@ -3,216 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Berkah - Aplikasi Islami</title>
+    <title>Al-Qur'an Digital - Berkah</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        /* DEFINISI FONT LOKAL */
+        /* Tetap gunakan font Amiri Anda */
         @font-face {
             font-family: 'Amiri';
             src: url('./fonts/amiri-v30-arabic-regular.woff2') format('woff2');
             font-weight: 400;
-            font-display: swap;
-        }
-        @font-face {
-            font-family: 'Amiri';
-            src: url('./fonts/amiri-v30-arabic-700.woff2') format('woff2');
-            font-weight: 700;
-            font-display: swap;
-        }
-        @font-face {
-            font-family: 'Amiri Quran';
-            src: url('./fonts/amiri-quran-v19-arabic-regular.woff2') format('woff2');
-            font-weight: 400;
-            font-display: swap;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
-        body { background: linear-gradient(135deg, #f4f7f6 0%, #e8f5e8 100%); color: #1e293b; padding-bottom: 40px; min-height: 100vh; }
+        body { background: #121212; color: white; min-height: 100vh; }
         
         .header { 
-            display: flex; justify-content: space-between; align-items: center; 
-            padding: 20px; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px);
-            border-bottom: 1px solid rgba(0,168,107,0.1); position: sticky; top: 0; z-index: 100;
+            padding: 15px 20px; background: #1e1e1e; display: flex; align-items: center; gap: 15px;
+            position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 12px rgba(0,0,0,0.5);
         }
-        .user-profile { display: flex; align-items: center; gap: 12px; }
-        .logo-box { 
-            width: 45px; height: 45px; background: linear-gradient(135deg, #00a86b, #00d084); 
-            border-radius: 12px; display: flex; align-items: center; justify-content: center; 
-            color: white; font-weight: 700; font-size: 18px; box-shadow: 0 4px 15px rgba(0,168,107,0.3);
-        }
-        .user-info h2 { font-size: 18px; font-weight: 700; color: #00a86b; }
-        .user-info p { font-size: 10px; color: #64748b; font-weight: 600; }
+        .btn-back { text-decoration: none; color: #00a86b; font-size: 24px; cursor: pointer; }
+        .header h2 { font-size: 18px; color: #00a86b; flex: 1; }
 
-        .doa-container { 
-            margin: 20px; padding: 25px; background: white;
-            border-radius: 24px; text-align: center; border-left: 6px solid #00a86b; 
-            box-shadow: 0 8px 32px rgba(0,0,0,0.05); min-height: 200px;
+        /* Search Bar agar makin pro */
+        .search-box { padding: 15px 20px; background: #121212; }
+        #search-input { 
+            width: 100%; padding: 12px 20px; border-radius: 12px; border: 1px solid #333;
+            background: #1e1e1e; color: white; outline: none; font-size: 14px;
         }
-        .doa-judul { font-size: 13px; font-weight: 700; color: #00a86b; margin-bottom: 15px; text-transform: uppercase; }
-        .doa-arab { font-size: 26px; font-weight: 700; margin-bottom: 12px; line-height: 1.8; direction: rtl; font-family: 'Amiri', serif; }
-        #latin-doa { font-size: 13px; color: #00a86b; margin-bottom: 10px; font-weight: 600; line-height: 1.5; }
-        .doa-arti { font-size: 12px; color: #64748b; font-style: italic; line-height: 1.6; }
 
-        /* GAYA TOMBOL WHATSAPP */
-        .share-container { margin-top: 20px; display: flex; justify-content: center; }
-        .btn-wa {
-            background: #25D366; color: white; border: none; padding: 10px 20px;
-            border-radius: 50px; font-size: 11px; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,211,102,0.3);
-            transition: all 0.2s ease;
+        .container { padding: 0 20px 30px; }
+        .surah-card { 
+            background: #1e1e1e; padding: 18px; border-radius: 16px; margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            border: 1px solid #2a2a2a; transition: 0.3s; cursor: pointer;
         }
-        .btn-wa:active { transform: scale(0.95); background: #1eb954; }
+        .surah-card:active { background: #252525; transform: scale(0.98); }
+        .surah-no { 
+            width: 35px; height: 35px; background: rgba(0,168,107,0.1); color: #00a86b;
+            border-radius: 10px; display: flex; align-items: center; justify-content: center;
+            font-weight: 700; font-size: 13px; margin-right: 15px;
+        }
+        .surah-info { display: flex; align-items: center; }
+        .surah-text h3 { font-size: 15px; margin-bottom: 2px; }
+        .surah-text p { font-size: 11px; color: #888; text-transform: uppercase; }
+        .surah-arab { font-family: 'Amiri', serif; font-size: 22px; color: #00a86b; }
 
-        .sholat-mini { margin: 0 20px 25px; display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
-        .sholat-box { 
-            background: white; padding: 12px 5px; border-radius: 12px; text-align: center; 
-            border: 1px solid #e2e8f0; box-shadow: 0 4px 10px rgba(0,0,0,0.03);
-        }
-        .sholat-box span { font-size: 9px; display: block; margin-bottom: 4px; opacity: 0.7; font-weight: bold; }
-        .sholat-box b { font-size: 12px; display: block; color: #00a86b; }
-
-        .menu-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; padding: 0 20px; }
-        .menu-item { 
-            background: white; padding: 18px 10px; border-radius: 20px; 
-            display: flex; flex-direction: column; align-items: center; 
-            text-decoration: none; color: #334155; 
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            transition: all 0.3s ease;
-        }
-        .menu-item:active { transform: scale(0.95); background: #f0fff4; }
-        .menu-icon { font-size: 28px; margin-bottom: 8px; }
-        .menu-item span { font-size: 10px; font-weight: 700; text-align: center; }
+        /* Detail Ayat View */
+        .ayat-item { padding: 25px 0; border-bottom: 1px solid #2a2a2a; }
+        .ayat-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .btn-play { background: #00a86b; border: none; width: 35px; height: 35px; border-radius: 50%; color: white; cursor: pointer; }
+        .text-arab { font-family: 'Amiri', serif; font-size: 30px; text-align: right; line-height: 2.2; margin-bottom: 15px; }
+        .text-arti { font-size: 13px; color: #aaa; line-height: 1.6; }
     </style>
 </head>
 <body>
 
     <div class="header">
-        <div class="user-profile">
-            <div class="logo-box">B</div>
-            <div class="user-info">
-                <h2>BERKAH</h2>
-                <p id="tgl-jam">Memuat waktu...</p>
-                <small id="lokasi-text" style="font-size: 9px; color: #00a86b;">Mencari lokasi...</small>
-            </div>
-        </div>
-        <div style="font-size: 20px;">👤</div>
+        <div class="btn-back" id="back-btn" style="display:none;" onclick="showHome()">←</div>
+        <h2 id="main-title">Al-Qur'an Digital</h2>
     </div>
 
-    <div class="doa-container">
-        <div class="doa-judul" id="judul-doa">Doa Hari Ini</div>
-        <div class="doa-arab" id="arab-doa">جاري التحميل...</div>
-        <div id="latin-doa"></div>
-        <div class="doa-arti" id="arti-doa">Sedang menyiapkan keberkahan hari ini.</div>
-        
-        <div class="share-container">
-            <button class="btn-wa" onclick="bagikanKeWA()">
-                <span>📲</span> BAGIKAN KE WHATSAPP
-            </button>
+    <div id="home-view">
+        <div class="search-box">
+            <input type="text" id="search-input" placeholder="Cari surah (misal: Al-Fatihah)..." onkeyup="filterSurah()">
+        </div>
+        <div class="container" id="surah-list">
+            <p style="text-align:center; padding:50px; opacity:0.5;">Memuat data suci...</p>
         </div>
     </div>
 
-    <div class="sholat-mini">
-        <div class="sholat-box"><span>Subuh</span><b id="j-Fajr">--:--</b></div>
-        <div class="sholat-box"><span>Dzuhur</span><b id="j-Dhuhr">--:--</b></div>
-        <div class="sholat-box"><span>Ashar</span><b id="j-Asr">--:--</b></div>
-        <div class="sholat-box"><span>Maghrib</span><b id="j-Maghrib">--:--</b></div>
-        <div class="sholat-box"><span>Isya</span><b id="j-Isha">--:--</b></div>
+    <div id="detail-view" style="display:none;" class="container">
+        <div id="ayat-list"></div>
     </div>
 
-    <div class="menu-grid">
-        <a href="jadwal sholat.html" class="menu-item"><div class="menu-icon">🕌</div><span>Jadwal</span></a>
-        <a href="Quran.html" class="menu-item"><div class="menu-icon">📖</div><span>Al-Qur'an</span></a>
-        <a href="https://hadits.id/" target="_blank" class="menu-item"><div class="menu-icon">📚</div><span>Hadist</span></a>
-        <a href="https://www.jobstreet.co.id/" target="_blank" class="menu-item"><div class="menu-icon">💼</div><span>Loker</span></a>
-        <a href="https://www.republika.co.id/kanal/islam" target="_blank" class="menu-item"><div class="menu-icon">📰</div><span>Berita</span></a>
-        <a href="https://kalam.sindonews.com/doa" target="_blank" class="menu-item"><div class="menu-icon">🛠️</div><span>Alat</span></a>
-        <a href="https://shopee.co.id/" target="_blank" class="menu-item"><div class="menu-icon">🛒</div><span>Toko</span></a>
-        <a href="https://kitabisa.com/" target="_blank" class="menu-item"><div class="menu-icon">🎁</div><span>Donasi</span></a>
-        <a href="https://wa.me/628123456789" target="_blank" class="menu-item"><div class="menu-icon">💬</div><span>Chat WA</span></a>
-    </div>
+    <audio id="player"></audio>
 
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js')
-            .then(() => console.log("Service Worker Aktif"));
-        }
+        let allSurah = [];
 
-        // FUNGSI BERBAGI KE WHATSAPP
-        function bagikanKeWA() {
-            const judul = document.getElementById('judul-doa').innerText;
-            const arab = document.getElementById('arab-doa').innerText;
-            const latin = document.getElementById('latin-doa').innerText;
-            const arti = document.getElementById('arti-doa').innerText;
-
-            const teks = `*${judul}*\n\n${arab}\n\n_${latin}_\n\n" ${arti} "\n\nShared via *Aplikasi Berkah*`;
-            const urlWA = `https://api.whatsapp.com/send?text=${encodeURIComponent(teks)}`;
-            
-            window.open(urlWA, '_blank');
-        }
-
-        async function updateDoa() {
+        // AMBIL DAFTAR SURAH (API alternatif yang lebih cepat)
+        async function fetchSurah() {
             try {
-                const now = new Date();
-                const bulan = now.getMonth() + 1;
-                const tanggal = now.getDate();
-
-                const response = await fetch(`doa harian/doa${bulan}.json`);
-                if (!response.ok) throw new Error('File tidak ditemukan');
-                
-                const daftarDoa = await response.json();
-                const doa = daftarDoa[tanggal - 1];
-
-                if (doa) {
-                    document.getElementById('judul-doa').innerText = doa.judul;
-                    document.getElementById('arab-doa').innerText = doa.arab;
-                    document.getElementById('latin-doa').innerText = doa.latin;
-                    document.getElementById('arti-doa').innerText = doa.arti;
-                }
-            } catch (e) {
-                console.log("Menunggu file JSON...");
-                document.getElementById('arab-doa').innerText = "Data Doa Belum Siap";
-                document.getElementById('arti-doa').innerText = "Pastikan folder 'doa harian' sudah berisi file doa" + (new Date().getMonth()+1) + ".json";
+                const res = await fetch('https://equran.id/api/v2/surat');
+                const json = await res.json();
+                allSurah = json.data;
+                renderSurah(allSurah);
+            } catch (err) {
+                document.getElementById('surah-list').innerHTML = `<p style="text-align:center; color:#ff4444;">Gagal memuat. Periksa internet Anda.</p>`;
             }
         }
 
-        function updateTime() {
-            const now = new Date();
-            const options = { weekday: 'long', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' };
-            document.getElementById('tgl-jam').innerText = now.toLocaleDateString('id-ID', options);
+        function renderSurah(data) {
+            const list = document.getElementById('surah-list');
+            list.innerHTML = '';
+            data.forEach(s => {
+                list.innerHTML += `
+                    <div class="surah-card" onclick="loadSurahDetail(${s.nomor}, '${s.namaLatin}')">
+                        <div class="surah-info">
+                            <div class="surah-no">${s.nomor}</div>
+                            <div class="surah-text">
+                                <h3>${s.namaLatin}</h3>
+                                <p>${s.tempatTurun} • ${s.jumlahAyat} Ayat</p>
+                            </div>
+                        </div>
+                        <div class="surah-arab">${s.nama}</div>
+                    </div>
+                `;
+            });
         }
 
-        async function getSholat() {
-            let url = `https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=20`;
+        async function loadSurahDetail(nomor, nama) {
+            document.getElementById('home-view').style.display = 'none';
+            document.getElementById('detail-view').style.display = 'block';
+            document.getElementById('back-btn').style.display = 'block';
+            document.getElementById('main-title').innerText = nama;
             
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(async (pos) => {
-                    const { latitude, longitude } = pos.coords;
-                    document.getElementById('lokasi-text').innerText = `📍 Lokasi: Aktif`;
-                    fetchSholat(`https://api.aladhan.com/v1/timings?latitude=${latitude}&longitude=${longitude}&method=20`);
-                }, () => {
-                    document.getElementById('lokasi-text').innerText = `📍 Lokasi: Jakarta`;
-                    fetchSholat(url);
-                });
-            } else {
-                fetchSholat(url);
-            }
-        }
+            const list = document.getElementById('ayat-list');
+            list.innerHTML = '<p style="text-align:center; padding:50px;">Membuka lembaran ayat...</p>';
 
-        async function fetchSholat(url) {
             try {
-                const res = await fetch(url);
-                const data = await res.json();
-                const t = data.data.timings;
-                ['Fajr', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'].forEach(k => {
-                    document.getElementById(`j-${k}`).innerText = t[k];
+                const res = await fetch(`https://equran.id/api/v2/surat/${nomor}`);
+                const json = await res.json();
+                const ayat = json.data.ayat;
+
+                list.innerHTML = '';
+                ayat.forEach(a => {
+                    list.innerHTML += `
+                        <div class="ayat-item">
+                            <div class="ayat-header">
+                                <div class="surah-no">${a.nomorAyat}</div>
+                                <button class="btn-play" onclick="playAudio('${Object.values(a.audio)[0]}')">▶</button>
+                            </div>
+                            <div class="text-arab">${a.teksArab}</div>
+                            <div class="text-arti">${a.teksIndonesia}</div>
+                        </div>
+                    `;
                 });
-            } catch (e) { console.error("Gagal muat jadwal sholat"); }
+            } catch (err) { list.innerHTML = 'Gagal memuat ayat.'; }
         }
 
-        updateTime();
-        updateDoa();
-        getSholat();
-        setInterval(updateTime, 60000);
+        function playAudio(url) {
+            const p = document.getElementById('player');
+            p.src = url;
+            p.play();
+        }
+
+        function showHome() {
+            document.getElementById('home-view').style.display = 'block';
+            document.getElementById('detail-view').style.display = 'none';
+            document.getElementById('back-btn').style.display = 'none';
+            document.getElementById('main-title').innerText = 'Al-Qur\'an Digital';
+        }
+
+        function filterSurah() {
+            const val = document.getElementById('search-input').value.toLowerCase();
+            const filtered = allSurah.filter(s => s.namaLatin.toLowerCase().includes(val));
+            renderSurah(filtered);
+        }
+
+        fetchSurah();
     </script>
 </body>
 </html>
