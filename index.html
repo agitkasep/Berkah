@@ -4,8 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Berkah - Aplikasi Islami</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        /* DEFINISI FONT LOKAL */
+        @font-face {
+            font-family: 'Amiri';
+            src: url('./fonts/amiri-v30-arabic-regular.woff2') format('woff2');
+            font-weight: 400;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Amiri';
+            src: url('./fonts/amiri-v30-arabic-700.woff2') format('woff2');
+            font-weight: 700;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Amiri Quran';
+            src: url('./fonts/amiri-quran-v19-arabic-regular.woff2') format('woff2');
+            font-weight: 400;
+            font-display: swap;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
         body { background: linear-gradient(135deg, #f4f7f6 0%, #e8f5e8 100%); color: #1e293b; padding-bottom: 40px; min-height: 100vh; }
         
@@ -29,7 +49,7 @@
             box-shadow: 0 8px 32px rgba(0,0,0,0.05); min-height: 200px;
         }
         .doa-judul { font-size: 13px; font-weight: 700; color: #00a86b; margin-bottom: 15px; text-transform: uppercase; }
-        .doa-arab { font-size: 24px; font-weight: 700; margin-bottom: 12px; line-height: 1.8; direction: rtl; font-family: 'Amiri', serif; }
+        .doa-arab { font-size: 26px; font-weight: 700; margin-bottom: 12px; line-height: 1.8; direction: rtl; font-family: 'Amiri', serif; }
         #latin-doa { font-size: 13px; color: #00a86b; margin-bottom: 10px; font-weight: 600; line-height: 1.5; }
         .doa-arti { font-size: 12px; color: #64748b; font-style: italic; line-height: 1.6; }
 
@@ -70,9 +90,9 @@
 
     <div class="doa-container">
         <div class="doa-judul" id="judul-doa">Doa Hari Ini</div>
-        <div class="doa-arab" id="arab-doa">Memuat doa...</div>
+        <div class="doa-arab" id="arab-doa">جاري التحميل...</div>
         <div id="latin-doa"></div>
-        <div class="doa-arti" id="arti-doa">Silakan pastikan file doa tersedia.</div>
+        <div class="doa-arti" id="arti-doa">Sedang menyiapkan keberkahan hari ini.</div>
     </div>
 
     <div class="sholat-mini">
@@ -96,19 +116,23 @@
     </div>
 
     <script>
+        // DAFTARKAN SERVICE WORKER UNTUK OFFLINE
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./sw.js')
+            .then(() => console.log("Service Worker Aktif"));
+        }
+
         async function updateDoa() {
             try {
                 const now = new Date();
-                const bulan = now.getMonth() + 1; // Januari = 1
+                const bulan = now.getMonth() + 1;
                 const tanggal = now.getDate();
 
-                // Mengambil file JSON sesuai bulan saat ini
-                const response = await fetch(`doa${bulan}.json`);
+                // PATH DISESUAIKAN KE FOLDER 'doa harian/'
+                const response = await fetch(`doa harian/doa${bulan}.json`);
                 if (!response.ok) throw new Error('File tidak ditemukan');
                 
                 const daftarDoa = await response.json();
-                
-                // Ambil doa berdasarkan indeks tanggal (tanggal 1 = index 0)
                 const doa = daftarDoa[tanggal - 1];
 
                 if (doa) {
@@ -120,7 +144,7 @@
             } catch (e) {
                 console.log("Menunggu file JSON...");
                 document.getElementById('arab-doa').innerText = "Data Doa Belum Siap";
-                document.getElementById('arti-doa').innerText = "Pastikan file doa" + (new Date().getMonth()+1) + ".json sudah ada.";
+                document.getElementById('arti-doa').innerText = "Pastikan folder 'doa harian' sudah berisi file doa" + (new Date().getMonth()+1) + ".json";
             }
         }
 
@@ -131,7 +155,6 @@
         }
 
         async function getSholat() {
-            // Default Jakarta
             let url = `https://api.aladhan.com/v1/timingsByCity?city=Jakarta&country=Indonesia&method=20`;
             
             if (navigator.geolocation) {
@@ -159,11 +182,10 @@
             } catch (e) { console.error("Gagal muat jadwal sholat"); }
         }
 
-        // Jalankan fungsi
-        setInterval(updateTime, 60000);
         updateTime();
         updateDoa();
         getSholat();
+        setInterval(updateTime, 60000);
     </script>
 </body>
 </html>
